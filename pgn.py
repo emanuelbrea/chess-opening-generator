@@ -128,8 +128,8 @@ class Pgn:
                 entry: Position = Position(
                     total_games=int(row[1]),
                     white_wins=int(row[2]),
-                    black_wins=int(row[3]),
-                    draws=int(row[4]),
+                    draws=int(row[3]),
+                    black_wins=int(row[4]),
                     year=int(row[5]),
                     elo=int(row[6])
                 )

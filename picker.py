@@ -28,7 +28,6 @@ class Picker:
         moves: List[chess.Move] = current_position.next_moves
         candidates: Dict[chess.Move, Position] = {}
         move_weights = []
-        turn = 1 if board.turn else -1
 
         for move in moves:
             board.push(move)
@@ -36,10 +35,11 @@ class Picker:
             board.pop()
 
         for move, position in candidates.items():
+            wins = position.white_wins if board.turn else position.black_wins
             popularity_weight = (1 / math.sqrt(self.popularity)) * (position.total_games / current_position.total_games)
-            risk_win_weight = (turn * position.white_wins / position.total_games) * (1 / math.sqrt(self.risk))
-            risk_lose_weight = (turn * position.black_wins / position.total_games) * (math.sqrt(self.risk))
-            weight = popularity_weight * (risk_win_weight - risk_lose_weight + 1)
+            winning_percentage_weight = ((wins + 0.5 * position.draws) / position.total_games) * (
+                    1 / math.sqrt(self.risk))
+            weight = popularity_weight * winning_percentage_weight
             if weight == 0:  # lost all games
                 moves.remove(move)
             else:
@@ -79,6 +79,8 @@ class Picker:
         return results
 
     def print_lines(self, lines: List, board: chess.Board):
+        if board.move_stack:
+            board.pop()
         for line in lines:
             if not any(isinstance(el, list) for el in line):
                 line[:] = [board.variation_san(line)]
