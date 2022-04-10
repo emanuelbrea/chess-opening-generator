@@ -15,19 +15,23 @@ MAX_MOVES = 10
 
 
 class Pgn:
+    __instance = None
 
     def __init__(self, max_moves: Optional[int] = MAX_MOVES, folder: Optional[str] = FOLDER,
                  save_file: Optional[str] = SAVE_FILE):
+
+        if Pgn.__instance is not None:
+            raise Exception("Can't create another PGN.")
+
         self.max_moves = max_moves
         self.book = {}
         self.folder = folder
         self.save_file = save_file
         self.total_games: int = 0
-
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(Pgn, cls).__new__(cls)
-        return cls.instance
+        self.load_games()
+        self.save_book_to_file()
+        self.load_book_from_file()
+        Pgn.__instance = self
 
     def load_games(self):
         for filename in os.listdir(self.folder):
@@ -137,16 +141,14 @@ class Pgn:
         key = zobrist_hash(board=board)
         try:
             entry = self.book[key]
-        except KeyError as e:
+        except KeyError:
             print("Position not found in book")
             return None
 
         return entry
 
-    def get_entries_from_moves(self, moves: List[chess.Move], board: chess.Board):
-        entries = []
-        for move in moves:
-            board.push(move)
-            entries.append(self.load_position_from_book(board=board))
-            board.pop()
-        return entries
+    @staticmethod
+    def get_instance():
+        if Pgn.__instance is None:
+            Pgn()
+        return Pgn.__instance

@@ -21,7 +21,7 @@ class Picker:
             board.push(my_move)
             current_position: Position = self.pgn.load_position_from_book(board=board)
         results = self.pick_variation(board, current_position, depth=depth)
-        self.print_lines(results)
+        self.print_lines(results, board)
         return results
 
     def pick_moves(self, board: chess.Board, current_position: Position, count: int = 1):
@@ -78,9 +78,9 @@ class Picker:
             results.append(self.pick_variation(new_board, current_position, depth))
         return results
 
-    def print_lines(self, lines: List):
+    def print_lines(self, lines: List, board: chess.Board):
         for line in lines:
             if not any(isinstance(el, list) for el in line):
-                print(line)
+                line[:] = [board.variation_san(line)]
             else:
-                self.print_lines(line)
+                self.print_lines(line, board)
