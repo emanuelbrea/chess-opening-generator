@@ -18,6 +18,8 @@ class Picker:
     def pick_variations(self, board: chess.Board, current_position: Position, color: bool, depth: int = 3):
         if board.turn == color:
             my_move: chess.Move = self.pick_moves(board, current_position)
+            if not my_move:  # all moves lose
+                return []
             board.push(my_move)
             current_position: Position = self.pgn.load_position_from_book(board=board)
         results = self.pick_variation(board, current_position, depth=depth)
@@ -28,18 +30,25 @@ class Picker:
         moves: List[chess.Move] = current_position.next_moves
         candidates: Dict[chess.Move, Position] = {}
         move_weights = []
+        ratings = []
 
         for move in moves:
             board.push(move)
-            candidates[move] = self.pgn.load_position_from_book(board=board)
+            position = self.pgn.load_position_from_book(board=board)
+            candidates[move] = position
             board.pop()
+            if position.elo > 0:
+                ratings.append(position.elo)
+
+        rating_mean = sum(ratings) / len(ratings) if ratings else 0
 
         for move, position in candidates.items():
-            wins = position.white_wins if board.turn else position.black_wins
+            winning_percentage_weight = position.white_percentage_win if board.turn \
+                else 1 - position.white_percentage_win
             popularity_weight = (1 / math.sqrt(self.popularity)) * (position.total_games / current_position.total_games)
-            winning_percentage_weight = ((wins + 0.5 * position.draws) / position.total_games) * (
-                    1 / math.sqrt(self.risk))
-            weight = popularity_weight * winning_percentage_weight
+            winning_percentage_weight = winning_percentage_weight * (1 / math.sqrt(self.risk))
+            rating_weight = position.elo / rating_mean if position.elo != 0 else 1
+            weight = popularity_weight * winning_percentage_weight * rating_weight
             if weight == 0:  # lost all games
                 moves.remove(move)
             else:
@@ -84,5 +93,6 @@ class Picker:
         for line in lines:
             if not any(isinstance(el, list) for el in line):
                 line[:] = [board.variation_san(line)]
+                print(line)
             else:
                 self.print_lines(line, board)

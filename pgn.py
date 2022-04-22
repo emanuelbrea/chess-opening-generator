@@ -6,7 +6,7 @@ from typing import Optional, List
 import chess.pgn
 from chess.polyglot import zobrist_hash
 
-from position import Position
+from position import Position, BookPosition
 
 FOLDER = "data/pgn/"
 VALID_RESULTS = ["1-0", "0-1", "1/2-1/2"]
@@ -46,20 +46,22 @@ class Pgn:
 
             if game is None:
                 break
-            self.total_games += 1
+
             board: chess.Board = game.board()
             result: str = game.headers.get("Result")
             elo_white: int = int(game.headers.get("WhiteElo", 0))
             elo_black: int = int(game.headers.get("BlackElo", 0))
             date: str = game.headers.get("Date")
 
+            if result is None or result not in VALID_RESULTS:
+                continue
+
             try:
                 year: int = int(date.split(".")[0]) if date is not None else None
             except ValueError:
                 year = None
 
-            if result is None or result not in VALID_RESULTS:
-                continue
+            self.total_games += 1
             previous_key = None
 
             for move in game.mainline_moves():
@@ -69,14 +71,13 @@ class Pgn:
                 board.push(move)
                 fen_key: int = zobrist_hash(board=board)
                 if fen_key in self.book:
-                    entry: Position = self.book[fen_key]
+                    entry: BookPosition = self.book[fen_key]
                     if result == "1-0":
                         entry.white_wins += 1
                     elif result == "0-1":
                         entry.black_wins += 1
-                    elif result == "1/2-1/2":
+                    else:
                         entry.draws += 1
-                    entry.total_games += 1
                     if year is not None and year > entry.year:
                         entry.year = year
                     if turn:
@@ -84,16 +85,16 @@ class Pgn:
                     else:
                         entry.elo = elo_black
                 else:
-                    entry: Position = Position(white_wins=1 if result == "1-0" else 0,
-                                               black_wins=1 if result == "0-1" else 0,
-                                               draws=1 if result == "1/2-1/2" else 0,
-                                               elo=elo_white if turn else elo_black,
-                                               year=year
-                                               )
+                    entry: BookPosition = BookPosition(white_wins=1 if result == "1-0" else 0,
+                                                       black_wins=1 if result == "0-1" else 0,
+                                                       draws=1 if result == "1/2-1/2" else 0,
+                                                       elo=elo_white if turn else elo_black,
+                                                       year=year
+                                                       )
                     self.book[fen_key] = entry
 
                 if previous_key is not None:
-                    previous_entry: Position = self.book[previous_key]
+                    previous_entry: BookPosition = self.book[previous_key]
                     previous_entry.add_move(move)
                 previous_key = fen_key
         print(
@@ -106,15 +107,14 @@ class Pgn:
             for key, entry in self.book.items():
                 # if entry.total_games < len(self.book) * 0.001:
                 #     continue
+                position: Position = Position.from_book(book_position=entry)
                 writer.writerow(
                     [key,
-                     entry.total_games,
-                     entry.white_wins,
-                     entry.draws,
-                     entry.black_wins,
-                     entry.year,
-                     entry.final_elo(),
-                     " ".join(move.uci() for move in entry.next_moves)
+                     position.total_games,
+                     position.white_percentage_win,
+                     position.elo,
+                     position.year,
+                     position.next_moves_str
                      ])
 
     def load_book_from_file(self):
@@ -123,17 +123,15 @@ class Pgn:
             csvreader = csv.reader(csvfile)
             for row in csvreader:
                 key = int(row[0])
-                moves: List[chess.Move] = [] if not row[7] or row[7].isspace() else [chess.Move.from_uci(uci) for uci in
-                                                                                     row[7].split(" ")]
+                moves: List[chess.Move] = [] if not row[5] or row[5].isspace() else [chess.Move.from_uci(uci) for uci in
+                                                                                     row[5].split(" ")]
                 entry: Position = Position(
                     total_games=int(row[1]),
-                    white_wins=int(row[2]),
-                    draws=int(row[3]),
-                    black_wins=int(row[4]),
-                    year=int(row[5]),
-                    elo=int(row[6])
+                    white_percentage_win=float(row[2]),
+                    elo=int(row[3]),
+                    year=int(row[4]),
+                    next_moves=moves
                 )
-                entry.next_moves = moves
                 self.book[key] = entry
         print(f"Loaded {len(self.book)} entries in {time.time() - start} seconds.")
 
