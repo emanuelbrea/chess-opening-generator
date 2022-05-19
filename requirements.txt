@@ -1,2 +1,5 @@
 chess~=1.9.0
 Flask~=2.1.1
+setuptools~=60.2.0
+pandas~=1.4.2
+SQLAlchemy~=1.4.36
