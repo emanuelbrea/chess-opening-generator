@@ -5,7 +5,9 @@ import chess
 
 class BookPosition:
 
-    def __init__(self, white_wins: int, black_wins: int, draws: int, elo: int, year: int):
+    def __init__(self, white_wins: int, black_wins: int, draws: int, elo: int, year: int, fen: str, line_id: int):
+        self.fen = fen
+        self.line_id = line_id
         self.white_wins: int = white_wins
         self.black_wins: int = black_wins
         self.draws: int = draws
