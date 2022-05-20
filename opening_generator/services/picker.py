@@ -4,8 +4,8 @@ from typing import List, Dict
 
 import chess
 
-from opening_generator.pgn import Pgn
-from opening_generator.position import Position
+from opening_generator.services.pgn import Pgn
+from opening_generator.services.position import Position
 
 
 class Picker:

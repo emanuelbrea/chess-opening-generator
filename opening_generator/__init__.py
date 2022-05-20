@@ -4,7 +4,7 @@ from opening_generator.api import api_position
 from opening_generator.db import init_db, db_session
 from opening_generator.db.eco_code_dao import add_eco_codes
 from opening_generator.db.user_dao import create_user
-from opening_generator.pgn import Pgn
+from opening_generator.services.pgn import Pgn
 
 
 def create_app(test_config=None):
@@ -20,8 +20,7 @@ def create_app(test_config=None):
 
     app.register_blueprint(api_position.pos)
 
-    # Pgn()
-
+    Pgn()
     # add_eco_codes()
     return app
 
