@@ -3,9 +3,9 @@ from typing import List
 import chess
 from flask import request, abort, jsonify, Blueprint
 
-from opening_generator.pgn import Pgn
-from opening_generator.picker import Picker
-from opening_generator.position import Position
+from opening_generator.services.pgn import Pgn
+from opening_generator.services.picker import Picker
+from opening_generator.services.position import Position
 
 pos = Blueprint('position', __name__, url_prefix='/position')
 
