@@ -3,8 +3,7 @@ import random
 from typing import List, Dict
 
 import chess
-
-from opening_generator.services.pgn import Pgn
+from opening_generator.db.pgn import Pgn
 from opening_generator.services.position import Position
 
 
