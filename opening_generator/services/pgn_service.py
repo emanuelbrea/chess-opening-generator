@@ -2,10 +2,10 @@ import logging
 import os
 import time
 from typing import Optional, List
+
 import chess.pgn
 from chess.polyglot import zobrist_hash
 
-from opening_generator.db.line_dao import save_lines
 from opening_generator.models.game_pgn import GamePgn
 from opening_generator.models.line import Line
 
@@ -14,31 +14,22 @@ VALID_RESULTS = ["1-0", "0-1", "1/2-1/2"]
 MAX_MOVES = 30
 
 
-class Pgn:
-    __instance = None
+class PgnService:
 
     def __init__(self, max_moves: Optional[int] = MAX_MOVES, folder: Optional[str] = FOLDER):
-
-        if Pgn.__instance is not None:
-            self.logger.error("Can't create another PGN.")
-            raise AssertionError("Can't create another PGN.")
-
         self.logger = logging.getLogger(__name__)
         self.max_moves = max_moves
-        self.book = {}
         self.folder = folder
         self.current_move = 0
         self.games: List[GamePgn] = []
-        self.load_games()
-        self.load_positions()
-        self.save_book_to_database()
-        Pgn.__instance = self
 
     def load_games(self):
         for filename in os.listdir(os.path.dirname(__file__) + self.folder):
             if os.path.splitext(filename)[1] == '.pgn':
                 file = os.path.dirname(__file__) + os.path.join(self.folder, filename)
                 self.load_file(file)
+        book = self.load_positions()
+        return book
 
     def load_file(self, filename: str):
         start = time.time()
@@ -73,6 +64,7 @@ class Pgn:
             f"Loaded {filename} in {time.time() - start} seconds.")
 
     def load_positions(self):
+        book = {}
         while self.current_move < self.max_moves:
             for game in list(self.games):
                 previous_entry: Line = None
@@ -85,20 +77,21 @@ class Pgn:
                         board.push(move)
                         if board.ply() == self.current_move:
                             previous_key: int = zobrist_hash(board=board)
-                            previous_entry = self.book[previous_key]
+                            previous_entry = book[previous_key]
                         continue
 
                     if board.ply() > 0:
                         fen_key: int = zobrist_hash(board=board)
-                        if self.book[fen_key].total_games < 10:
+                        if book[fen_key].total_games < 10:
                             self.games.remove(game)
                             break
 
                     turn = board.turn
+                    move_san = board.san(move)
                     board.push(move)
                     fen_key: int = zobrist_hash(board=board)
-                    if fen_key in self.book:
-                        entry: Line = self.book[fen_key]
+                    if fen_key in book:
+                        entry: Line = book[fen_key]
                         entry.total_games += 1
                         if game.result == "1-0":
                             entry.white_wins += 1
@@ -122,22 +115,15 @@ class Pgn:
                                            fen=board.fen(),
                                            line_id=str(fen_key)
                                            )
-                        self.book[fen_key] = entry
+                        book[fen_key] = entry
                     if previous_entry:
-                        previous_entry.add_next_line(entry)
+                        previous_entry.add_next_move(move_san)
 
             self.current_move += 1
             self.logger.warning(f"Next move number: {self.current_move}")
             self.logger.warning(f"Games in memory: {len(self.games)}")
-        self.games = []
+        del self.games
+        return book
 
 
-    def save_book_to_database(self):
-        save_lines(self.book)
-        self.book = {}
-
-    @staticmethod
-    def get_instance():
-        if Pgn.__instance is None:
-            Pgn()
-        return Pgn.__instance
+pgn_service = PgnService()

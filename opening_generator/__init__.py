@@ -2,16 +2,13 @@ from flask import Flask
 
 from opening_generator.api import api_position
 from opening_generator.db import init_db, db_session
-from opening_generator.db.eco_code_dao import add_eco_codes
-from opening_generator.db.user_dao import create_user
-from opening_generator.services.pgn import Pgn
 
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     if test_config is None:
-        app.config.from_object('config.Config')
+        app.config.from_object('config.DevConfig')
     else:
         app.config.from_mapping(test_config)
 
@@ -20,8 +17,6 @@ def create_app(test_config=None):
 
     app.register_blueprint(api_position.pos)
 
-    Pgn()
-    # add_eco_codes()
     return app
 
     @app.teardown_appcontext

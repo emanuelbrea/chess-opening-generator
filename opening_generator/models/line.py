@@ -1,13 +1,8 @@
-from sqlalchemy import Integer, Column, String, Table, ForeignKey
+from sqlalchemy import Integer, Column, String
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
-
-NextLineRelationship = Table(
-    'next_line', Base.metadata,
-    Column('line_id', ForeignKey('line.line_id')),
-    Column('next_line_id', ForeignKey('line.line_id'))
-)
+from opening_generator.models.next_line import NextLine
 
 
 class Line(Base):
@@ -22,11 +17,7 @@ class Line(Base):
     last_year = Column(Integer)
     average_elo = Column(Integer)
 
-    next_lines = relationship("Line",
-                              secondary=NextLineRelationship,
-                              primaryjoin=NextLineRelationship.c.line_id == line_id,
-                              secondaryjoin=NextLineRelationship.c.next_line_id == line_id,
-                              backref="children")
+    next_moves = relationship("NextLine")
 
     eco_code = relationship("EcoCode", back_populates="line", uselist=False)
 
@@ -49,6 +40,6 @@ class Line(Base):
     def set_final_elo(self):
         self.average_elo = self.average_elo // self._total_ranked_games if self._total_ranked_games > 0 else 0
 
-    def add_next_line(self, line):
-        if line not in self.next_lines:
-            self.next_lines.append(line)
+    def add_next_move(self, move: str):
+        if move not in [next_move.move for next_move in self.next_moves]:
+            self.next_moves.append(NextLine(line_id=self.line_id, move=move))
