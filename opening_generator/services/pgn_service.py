@@ -87,7 +87,7 @@ class PgnService:
                             break
 
                     turn = board.turn
-                    move_san = board.san(move)
+                    move_uci = board.uci(move)
                     board.push(move)
                     fen_key: int = zobrist_hash(board=board)
                     if fen_key in book:
@@ -117,7 +117,7 @@ class PgnService:
                                            )
                         book[fen_key] = entry
                     if previous_entry:
-                        previous_entry.add_next_move(move_san)
+                        previous_entry.add_next_move(move_uci)
 
             self.current_move += 1
             self.logger.warning(f"Next move number: {self.current_move}")

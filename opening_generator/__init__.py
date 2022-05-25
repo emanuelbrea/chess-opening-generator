@@ -1,8 +1,5 @@
 from flask import Flask
 
-from opening_generator.api import api_position
-from opening_generator.db import init_db, db_session
-
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -12,10 +9,13 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
+    from opening_generator.db import init_db, db_session
+    from opening_generator.api.api_position import pos
+
     with app.app_context():
         init_db()
 
-    app.register_blueprint(api_position.pos)
+    app.register_blueprint(pos)
 
     return app
 
