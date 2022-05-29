@@ -1,7 +1,10 @@
+import logging
+
 from flask import Flask
 
 
 def create_app(test_config=None):
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s %(asctime)s %(message)s',)
     app = Flask(__name__, instance_relative_config=True)
 
     if test_config is None:

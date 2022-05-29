@@ -32,6 +32,7 @@ class PgnService:
         return book
 
     def load_file(self, filename: str):
+        self.logger.info("About to read %s", filename)
         start = time.time()
         with open(filename) as pgn:
             while True:
@@ -63,7 +64,7 @@ class PgnService:
                 self.games.append(GamePgn(line=line, result=result, elo_black=elo_black,
                                           elo_white=elo_white, year=year))
 
-        self.logger.warning(
+        self.logger.info(
             f"Loaded {filename} in {time.time() - start} seconds.")
 
     def load_positions(self):
@@ -121,8 +122,8 @@ class PgnService:
                         previous_entry.add_next_move(move)
 
             self.current_move += 1
-            self.logger.warning(f"Next move number: {self.current_move}")
-            self.logger.warning(f"Games in memory: {len(self.games)}")
+            self.logger.info(f"Next move number: {self.current_move}")
+            self.logger.info(f"Games in memory: {len(self.games)}")
         del self.games
         self.games = []
         return book
