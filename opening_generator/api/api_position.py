@@ -3,8 +3,6 @@ from typing import List
 import chess
 from flask import request, abort, jsonify, Blueprint
 
-from opening_generator.db.eco_code_dao import eco_code_dao
-from opening_generator.db.line_dao import line_dao
 from opening_generator.models.line import Line
 from opening_generator.services.eco_code_service import eco_service
 from opening_generator.services.line_service import line_service
@@ -23,13 +21,13 @@ def get_variations():
         abort(400, description="Fen not provided")
 
     try:
-        board = chess.Board(fen)
+        board: chess.Board = chess.Board(fen)
     except ValueError:
         abort(400, description="Invalid FEN provided")
 
     color = args.get("color", "WHITE").upper() == "WHITE"
 
-    position: Line = line_dao.get_line_by_position(fen=fen)
+    position: Line = line_service.get_line(board=board)
     if not position:
         abort(404, description="Position not found in database")
 
@@ -46,11 +44,11 @@ def get_stats():
         abort(400, description="Fen not provided")
 
     try:
-        chess.Board(fen)
+        board: chess.Board = chess.Board(fen)
     except ValueError:
         abort(400, description="Invalid FEN provided")
 
-    position: Line = line_dao.get_line_by_position(fen=fen)
+    position: Line = line_service.get_line(board=board)
     if not position:
         abort(404, description="Position not found in database")
 
@@ -73,16 +71,16 @@ def get_moves():
         abort(400, description="Fen not provided")
 
     try:
-        chess.Board(fen=fen)
+        board: chess.Board = chess.Board(fen=fen)
     except ValueError:
         abort(400, description="Invalid FEN provided")
 
-    position: Line = line_dao.get_line_by_position(fen=fen)
+    position: Line = line_service.get_line(board=board)
 
     if not position:
         abort(404, description="Position not found in database")
 
-    next_moves: List[str] = line_service.get_next_moves_as_san(line=position)
+    next_moves: List[str] = line_service.get_next_moves_as_san(line=position, board=board)
 
     return jsonify(message="Next moves retrieved correctly.", data=next_moves, success=True), 200
 
@@ -100,7 +98,7 @@ def get_next_moves_stats():
     except ValueError:
         abort(400, description="Invalid FEN provided")
 
-    position: Line = line_dao.get_line_by_position(fen=fen)
+    position: Line = line_service.get_line(board=board)
 
     if not position:
         abort(404, description="Position not found in database")
@@ -111,7 +109,7 @@ def get_next_moves_stats():
 
     for move in next_moves:
         board.push_uci(uci=move)
-        position: Line = line_dao.get_line_by_position(fen=board.fen())
+        position: Line = line_service.get_line(board=board)
         moves_stats[move] = dict(total_games=position.total_games,
                                  white_wins=position.white_wins,
                                  black_wins=position.black_wins,
@@ -127,12 +125,11 @@ def get_next_moves_stats():
 @pos.route('/games', methods=["POST"])
 def load_games():
     games = pgn_service.load_games()
-    line_dao.save_lines(games)
-    return jsonify(message=f"Loaded {len(games)} positions correctly.", data={}, success=True), 200
+    lines = line_service.save_lines(games)
+    return jsonify(message=f"Loaded positions correctly.", data=dict(total=len(lines)), success=True), 200
 
 
 @pos.route('/eco', methods=["POST"])
 def load_eco_codes():
     eco_codes = eco_service.load_eco_codes()
-    eco_code_dao.add_eco_codes(ecos=eco_codes)
-    return jsonify(message=f"Loaded {len(eco_codes)} eco codes correctly.", data={}, success=True), 200
+    return jsonify(message=f"Loaded eco codes correctly.", data=dict(total=len(eco_codes)), success=True), 200

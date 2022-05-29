@@ -1,5 +1,3 @@
-
-
 class GamePgn:
 
     def __init__(self, line, result, elo_white, elo_black, year):

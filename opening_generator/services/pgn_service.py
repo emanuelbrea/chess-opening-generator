@@ -40,13 +40,6 @@ class PgnService:
                 if not game:
                     break
 
-                board: chess.Board = game.board()
-                if board.fen() != chess.STARTING_FEN:
-                    self.logger.warning(
-                        f"Invalid initial position for game {game.headers.get('White')} vs {game.headers.get('Black')} "
-                        f"on {game.headers.get('Date')} ")
-                    continue
-
                 result: str = game.headers.get("Result")
                 elo_white: int = int(game.headers.get("WhiteElo", 0))
                 elo_black: int = int(game.headers.get("BlackElo", 0))
@@ -57,7 +50,17 @@ class PgnService:
                 except ValueError:
                     year = 0
 
-                self.games.append(GamePgn(line=game.mainline_moves(), result=result, elo_black=elo_black,
+                line: List[str] = []
+                moves = game.mainline_moves()
+                board: chess.Board = chess.Board()
+                for move in moves:
+                    if board.ply() > self.max_moves:
+                        break
+                    move_uci = board.uci(move)
+                    line.append(move_uci)
+                    board.push(move)
+
+                self.games.append(GamePgn(line=line, result=result, elo_black=elo_black,
                                           elo_white=elo_white, year=year))
 
         self.logger.warning(
@@ -74,7 +77,7 @@ class PgnService:
                         break
 
                     if board.ply() < self.current_move:
-                        board.push(move)
+                        board.push_uci(move)
                         if board.ply() == self.current_move:
                             previous_key: int = zobrist_hash(board=board)
                             previous_entry = book[previous_key]
@@ -87,8 +90,7 @@ class PgnService:
                             break
 
                     turn = board.turn
-                    move_uci = board.uci(move)
-                    board.push(move)
+                    board.push_uci(move)
                     fen_key: int = zobrist_hash(board=board)
                     if fen_key in book:
                         entry: Line = book[fen_key]
@@ -112,17 +114,17 @@ class PgnService:
                                            total_games=1,
                                            average_elo=game.elo_white if turn else game.elo_black,
                                            last_year=game.year,
-                                           fen=board.fen(),
                                            line_id=str(fen_key)
                                            )
                         book[fen_key] = entry
                     if previous_entry:
-                        previous_entry.add_next_move(move_uci)
+                        previous_entry.add_next_move(move)
 
             self.current_move += 1
             self.logger.warning(f"Next move number: {self.current_move}")
             self.logger.warning(f"Games in memory: {len(self.games)}")
         del self.games
+        self.games = []
         return book
 
 
