@@ -9,8 +9,8 @@ class LineDao:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def get_line_by_position(self, fen: str):
-        return db_session.query(Line).filter(Line.fen == fen).first()
+    def get_line_by_position(self, line_id: str):
+        return db_session.query(Line).filter(Line.line_id == line_id).first()
 
     def save_lines(self, book: {}):
         self.logger.info("About to insert %d lines.", len(book))
@@ -22,6 +22,7 @@ class LineDao:
         db_session.close()
 
         self.logger.info("Finished inserting lines.")
+        return book
 
 
 line_dao = LineDao()

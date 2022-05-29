@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String
+from sqlalchemy import Integer, Column, String, Index
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -9,7 +9,6 @@ class Line(Base):
     __tablename__ = "line"
 
     line_id = Column(String, primary_key=True)
-    fen = Column(String)
     total_games = Column(Integer)
     white_wins = Column(Integer)
     draws = Column(Integer)
@@ -21,9 +20,10 @@ class Line(Base):
 
     eco_code = relationship("EcoCode", back_populates="line", uselist=False)
 
-    def __init__(self, line_id, fen, total_games, white_wins, draws, black_wins, average_elo, last_year):
+    line_index = Index('line_index', line_id)
+
+    def __init__(self, line_id, total_games, white_wins, draws, black_wins, average_elo, last_year):
         self.line_id = line_id
-        self.fen = fen
         self.total_games = total_games
         self.white_wins = white_wins
         self.draws = draws

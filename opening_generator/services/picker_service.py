@@ -3,7 +3,6 @@ from typing import List, Dict
 
 import chess
 
-from opening_generator.db.line_dao import line_dao
 from opening_generator.models.line import Line
 from opening_generator.services.line_service import line_service
 
@@ -16,7 +15,7 @@ class PickerService:
             if not my_move:  # all moves lose
                 return []
             board.push_uci(my_move)
-            current_position: Line = line_dao.get_line_by_position(fen=board.fen())
+            current_position: Line = line_service.get_line(board=board)
         results = self.pick_variation(board, current_position)
         results = self.format_results(results, board)
         return results
@@ -29,7 +28,7 @@ class PickerService:
 
         for move in list(moves):
             board.push_uci(move)
-            position: Line = line_dao.get_line_by_position(fen=board.fen())
+            position: Line = line_service.get_line(board=board)
             board.pop()
             if not position:
                 moves.remove(move)
@@ -74,7 +73,7 @@ class PickerService:
         for move in rival_moves:
             new_board = board.copy()
             new_board.push_uci(move)
-            current_position: Line = line_dao.get_line_by_position(fen=new_board.fen())
+            current_position: Line = line_service.get_line(board=new_board)
             if current_position is None:
                 return new_board.move_stack
 
@@ -83,7 +82,7 @@ class PickerService:
                 return new_board.move_stack
 
             new_board.push_uci(my_move)
-            current_position: Line = line_dao.get_line_by_position(fen=new_board.fen())
+            current_position: Line = line_service.get_line(board=new_board)
             if current_position is None:
                 return new_board.move_stack
 

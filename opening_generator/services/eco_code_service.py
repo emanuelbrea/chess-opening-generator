@@ -7,6 +7,7 @@ import chess
 from chess.polyglot import zobrist_hash
 
 from opening_generator.db import db_session
+from opening_generator.db.eco_code_dao import eco_code_dao
 from opening_generator.models.eco_code import EcoCode
 from opening_generator.models.line import Line
 
@@ -41,6 +42,8 @@ class EcoCodeService:
                         if line_db:
                             eco = EcoCode(eco_code=eco_code, line_id=str(fen_key), main_line=line, name=name)
                             ecos.append(eco)
+
+        eco_code_dao.add_eco_codes(ecos=ecos)
         return ecos
 
 

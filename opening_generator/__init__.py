@@ -10,11 +10,10 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
 
     from opening_generator.db import init_db, db_session
-    from opening_generator.api.api_position import pos
-
     with app.app_context():
         init_db()
 
+    from opening_generator.api.api_position import pos
     app.register_blueprint(pos)
 
     return app
