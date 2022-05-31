@@ -4,7 +4,6 @@ import chess
 from flask import request, abort, jsonify, Blueprint
 
 from opening_generator.models.line import Line
-from opening_generator.services.eco_code_service import eco_service
 from opening_generator.services.line_service import line_service
 from opening_generator.services.pgn_service import pgn_service
 from opening_generator.services.picker_service import picker_service
@@ -127,9 +126,3 @@ def load_games():
     games = pgn_service.load_games()
     lines = line_service.save_lines(games)
     return jsonify(message=f"Loaded positions correctly.", data=dict(total=len(lines)), success=True), 200
-
-
-@pos.route('/eco', methods=["POST"])
-def load_eco_codes():
-    eco_codes = eco_service.load_eco_codes()
-    return jsonify(message=f"Loaded eco codes correctly.", data=dict(total=len(eco_codes)), success=True), 200

@@ -17,7 +17,9 @@ def create_app(test_config=None):
         init_db()
 
     from opening_generator.api.api_position import pos
+    from opening_generator.api.api_eco import eco
     app.register_blueprint(pos)
+    app.register_blueprint(eco)
 
     return app
 
