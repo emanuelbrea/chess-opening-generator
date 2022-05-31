@@ -18,5 +18,9 @@ class EcoCodeDao:
         db_session.commit()
         db_session.close()
 
+    def get_eco_codes(self):
+        ecos = db_session.query(EcoCode).all()
+        return ecos
+
 
 eco_code_dao = EcoCodeDao()
