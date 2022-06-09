@@ -1,4 +1,7 @@
 import logging
+from typing import List
+
+import pandas as pd
 
 from opening_generator.db import db_session
 from opening_generator.models.line import Line
@@ -13,9 +16,7 @@ class LineDao:
         return db_session.query(Line).filter(Line.line_id == line_id).first()
 
     def save_lines(self, book: {}):
-        self.logger.info("About to insert %d lines.", len(book))
-        for line in book.values():
-            line.set_final_elo()
+        self.logger.info("About to insert %i lines.", len(book))
 
         db_session.add_all(book.values())
         db_session.commit()
@@ -23,6 +24,10 @@ class LineDao:
 
         self.logger.info("Finished inserting lines.")
         return book
+
+    def get_next_positions_as_df(self, lines: List[str]):
+        query = db_session.query(Line).filter(Line.line_id.in_(lines))
+        return pd.read_sql(query.statement, db_session.engine)
 
 
 line_dao = LineDao()

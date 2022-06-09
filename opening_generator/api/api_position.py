@@ -3,12 +3,15 @@ from typing import List
 import chess
 from flask import request, abort, jsonify, Blueprint
 
+from opening_generator.models import User
 from opening_generator.models.line import Line
 from opening_generator.services.line_service import line_service
 from opening_generator.services.pgn_service import pgn_service
 from opening_generator.services.picker_service import picker_service
 
 pos = Blueprint('position', __name__, url_prefix='/position')
+
+user = User(user_id=1, first_name='Emanuel', email='a')
 
 
 @pos.route('/lines', methods=["GET"])
@@ -30,7 +33,7 @@ def get_variations():
     if not position:
         abort(404, description="Position not found in database")
 
-    variations = picker_service.pick_variations(board=board, current_position=position, color=color, popularity=1)
+    variations = picker_service.pick_variations(board=board, current_position=position, color=color, user=user)
     return jsonify(message="Variations calculated correctly.", data=variations, success=True), 200
 
 
@@ -55,7 +58,7 @@ def get_stats():
                  white_wins=position.white_wins,
                  black_wins=position.black_wins,
                  draws=position.draws,
-                 year=position.last_year,
+                 year=position.average_year,
                  average_elo=position.average_elo)
 
     return jsonify(message="Stats retrieved correctly.", data=stats, success=True), 200
@@ -113,7 +116,7 @@ def get_next_moves_stats():
                                  white_wins=position.white_wins,
                                  black_wins=position.black_wins,
                                  draws=position.draws,
-                                 year=position.last_year,
+                                 year=position.average_year,
                                  average_elo=position.average_elo)
 
         board.pop()

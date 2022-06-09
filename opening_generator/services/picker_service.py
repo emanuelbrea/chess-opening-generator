@@ -1,73 +1,63 @@
 import random
-from typing import List, Dict
+from typing import List
 
 import chess
+import pandas as pd
 
+from opening_generator.models import User
 from opening_generator.models.line import Line
 from opening_generator.services.line_service import line_service
 
 
 class PickerService:
 
-    def pick_variations(self, board: chess.Board, current_position: Line, color: bool, popularity: int = 1):
+    def pick_variations(self, board: chess.Board, current_position: Line, color: bool, user: User):
         if board.turn == color:
-            my_move: chess.Move = self.pick_moves(board, current_position, popularity)
-            if not my_move:  # all moves lose
-                return []
+            my_move: chess.Move = self.pick_moves(board=board, current_position=current_position, count=1,
+                                                  popularity=user.style.popularity,
+                                                  fashion=user.style.fashion,
+                                                  risk=user.style.risk)
             board.push_uci(my_move)
             current_position: Line = line_service.get_line(board=board)
-        results = self.pick_variation(board, current_position)
+        results = self.pick_variation(board=board, current_position=current_position, user=user)
         results = self.format_results(results, board)
         return results
 
-    def pick_moves(self, board: chess.Board, current_position: Line, count: int = 1, popularity: float = 1):
-        moves: List[str] = line_service.get_next_moves(line=current_position)
-        candidates: Dict[str, Line] = {}
-        move_weights = []
-        max_rating = 0
+    def pick_moves(self, board: chess.Board, current_position: Line, count: int = 1, popularity: float = 0,
+                   risk: float = 0,
+                   fashion: float = 0):
 
-        for move in list(moves):
-            board.push_uci(move)
-            position: Line = line_service.get_line(board=board)
-            board.pop()
-            if not position:
-                moves.remove(move)
+        position_stats: pd.DataFrame = line_service.get_next_positions_as_df(current_position)
 
-            candidates[move] = position
-            if position.average_elo > max_rating:
-                max_rating = position.average_elo
-
-        for move, position in candidates.items():
-            if board.turn:
-                winning_percentage_weight = (position.white_wins + 0.5 * position.draws) / position.total_games
-            else:
-                winning_percentage_weight = (position.black_wins + 0.5 * position.draws) / position.total_games
-
-            popularity_weight = (position.total_games / current_position.total_games) * (0.5 * popularity + 1)
-
-            # style_weight = (position.total_games / current_position.total_games) * (0.5 * popularity + 1)
-
-            rating_weight = position.average_elo / max_rating
-
-            weight = popularity_weight * winning_percentage_weight * rating_weight
-
-            if weight == 0:  # lost all games
-                moves.remove(move)
-            else:
-                move_weights.append(weight)
-
-        if len(moves) == 0:
+        if len(position_stats) == 0:
             return None
 
-        choices = random.choices(moves, move_weights, k=count)
+        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
+
+        position_stats['line_id'] = position_stats['line_id'].map(lines_id)
+
+        position_stats = self.calculate_popularity(position_stats, popularity)
+
+        position_stats = self.calculate_fashion(position_stats, fashion)
+
+        position_stats = self.calculate_rating(position_stats)
+
+        position_stats = self.calculate_winning_rate(position_stats, risk, board.turn)
+
+        position_stats = self.calculate_total_weight(position_stats)
+
+        choices = random.choices(position_stats['line_id'].tolist(), position_stats['weight'].tolist(), k=count)
 
         return list(set(choices)) if count > 1 else choices[0]
 
-    def pick_variation(self, board: chess.Board, current_position: Line, popularity: float = 1):
+    def pick_variation(self, board: chess.Board, current_position: Line, user: User):
         results = []
         if not current_position.eco_code and board.fullmove_number > 6:
             return board.move_stack
-        rival_moves: List[str] = self.pick_moves(board, current_position, 5, popularity)
+        rival_moves: List[str] = self.pick_moves(board=board, current_position=current_position, count=5,
+                                                 popularity=user.style.popularity,
+                                                 fashion=user.style.fashion,
+                                                 risk=user.style.risk)
         if rival_moves is None:
             return board.move_stack
         for move in rival_moves:
@@ -77,7 +67,10 @@ class PickerService:
             if current_position is None:
                 return new_board.move_stack
 
-            my_move: str = self.pick_moves(new_board, current_position, popularity=popularity)
+            my_move: str = self.pick_moves(board=new_board, current_position=current_position, count=5,
+                                           popularity=user.style.popularity,
+                                           fashion=user.style.fashion,
+                                           risk=user.style.risk)
             if my_move is None:
                 return new_board.move_stack
 
@@ -99,6 +92,47 @@ class PickerService:
             else:
                 self.format_results(line, board)
         return lines
+
+    def calculate_popularity(self, position_stats, popularity):
+        """
+        :param position_stats:
+        :param popularity: -1 if side line, 0 neutral, 1 popular moves
+        :return:
+        """
+        position_stats['popularity_weight'] = (0.5 * popularity + 1) * \
+                                              position_stats['total_games'] / position_stats['total_games'].sum()
+        return position_stats
+
+    def calculate_fashion(self, position_stats, fashion):
+        min_year = 1970
+        position_stats['average_year'] = position_stats['average_year'] - min_year
+        position_stats['fashion_weight'] = (0.5 * fashion + 1) * \
+                                           position_stats['average_year'] / position_stats['average_year'].sum()
+        return position_stats
+
+    def calculate_rating(self, position_stats):
+        min_rating = 2300
+        position_stats['average_elo'] = position_stats['average_elo'] - min_rating
+        position_stats['rating_weight'] = position_stats['average_elo'] / position_stats['average_elo'].sum()
+        return position_stats
+
+    def calculate_winning_rate(self, position_stats, risk, turn):
+        """
+        :param position_stats:
+        :param risk: -1 if aggressive, 0 neutral, 1 solid
+        :param turn: true if white to move, false if black to move
+        :return:
+        """
+        color = 'white_wins' if turn else 'black_wins'
+        position_stats['winning_rate'] = (position_stats[color] + (0.5 * position_stats['draws'] * (0.5 * risk + 1))) \
+                                         / position_stats['total_games']
+        position_stats['winning_weight'] = position_stats['winning_rate'] / position_stats['winning_rate'].sum()
+        return position_stats
+
+    def calculate_total_weight(self, position_stats):
+        position_stats['weight'] = position_stats['popularity_weight'] + position_stats['fashion_weight'] + \
+                                   position_stats['rating_weight'] + position_stats['winning_weight']
+        return position_stats
 
 
 picker_service = PickerService()
