@@ -12,6 +12,7 @@ from opening_generator.models.line import Line
 FOLDER = "/../../data/pgn/"
 VALID_RESULTS = ["1-0", "0-1", "1/2-1/2"]
 MAX_MOVES = 30
+MIN_GAMES = 10
 
 
 class PgnService:
@@ -45,11 +46,7 @@ class PgnService:
                 elo_white: int = int(game.headers.get("WhiteElo", 0))
                 elo_black: int = int(game.headers.get("BlackElo", 0))
                 date: str = game.headers.get("Date")
-
-                try:
-                    year: int = int(date.split(".")[0]) if date is not None else None
-                except ValueError:
-                    year = 0
+                year: int = int(date.split(".")[0])
 
                 line: List[str] = []
                 moves = game.mainline_moves()
@@ -64,8 +61,7 @@ class PgnService:
                 self.games.append(GamePgn(line=line, result=result, elo_black=elo_black,
                                           elo_white=elo_white, year=year))
 
-        self.logger.info(
-            f"Loaded {filename} in {time.time() - start} seconds.")
+        self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
 
     def load_positions(self):
         book = {}
@@ -86,7 +82,7 @@ class PgnService:
 
                     if board.ply() > 0:
                         fen_key: int = zobrist_hash(board=board)
-                        if book[fen_key].total_games < 10:
+                        if book[fen_key].total_games < MIN_GAMES:
                             self.games.remove(game)
                             break
 
@@ -102,30 +98,33 @@ class PgnService:
                             entry.black_wins += 1
                         else:
                             entry.draws += 1
-                        if game.year > entry.last_year:
-                            entry.last_year = game.year
+                        entry.average_year += game.year
                         if turn:
-                            entry.add_elo(game.elo_white)
+                            entry.average_elo += game.elo_white
                         else:
-                            entry.add_elo(game.elo_black)
+                            entry.average_elo += game.elo_black
                     else:
                         entry: Line = Line(white_wins=1 if game.result == "1-0" else 0,
                                            black_wins=1 if game.result == "0-1" else 0,
                                            draws=1 if game.result == "1/2-1/2" else 0,
                                            total_games=1,
                                            average_elo=game.elo_white if turn else game.elo_black,
-                                           last_year=game.year,
+                                           average_year=game.year,
                                            line_id=str(fen_key)
                                            )
                         book[fen_key] = entry
                     if previous_entry:
-                        previous_entry.add_next_move(move)
+                        previous_entry.add_next_move(move, str(fen_key))
 
             self.current_move += 1
-            self.logger.info(f"Next move number: {self.current_move}")
-            self.logger.info(f"Games in memory: {len(self.games)}")
+            self.logger.info("Next move number: %i", self.current_move)
+            self.logger.info("Games in memory: %i", len(self.games))
+            self.logger.info("Positions in memory: %i", len(book))
         del self.games
         self.games = []
+        for line in book.values():
+            line.set_final_elo()
+            line.set_final_year()
         return book
 
 

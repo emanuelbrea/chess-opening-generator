@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import chess
 from chess.polyglot import zobrist_hash
@@ -29,6 +30,11 @@ class LineService:
 
     def save_lines(self, games: {}):
         return line_dao.save_lines(games)
+
+    def get_next_positions_as_df(self, line: Line):
+        lines: List[str] = [nl.next_line_id for nl in line.next_moves]
+        positions = line_dao.get_next_positions_as_df(lines)
+        return positions
 
 
 line_service = LineService()
