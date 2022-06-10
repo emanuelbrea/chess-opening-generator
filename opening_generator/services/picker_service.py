@@ -1,5 +1,5 @@
 import random
-from typing import List
+from typing import List, Dict
 
 import chess
 import pandas as pd
@@ -13,13 +13,14 @@ class PickerService:
 
     def pick_variations(self, board: chess.Board, current_position: Line, color: bool, user: User):
         if board.turn == color:
-            my_move: chess.Move = self.pick_moves(board=board, current_position=current_position, count=1,
-                                                  popularity=user.style.popularity,
-                                                  fashion=user.style.fashion,
-                                                  risk=user.style.risk)
-            board.push_uci(my_move)
-            current_position: Line = line_service.get_line(board=board)
-        results = self.pick_variation(board=board, current_position=current_position, user=user)
+            my_move: Dict[str, str] = self.pick_moves(board=board, current_position=current_position, count=1,
+                                                      popularity=user.style.popularity,
+                                                      fashion=user.style.fashion,
+                                                      risk=user.style.risk)
+            board.push_uci(list(my_move.values())[0])
+            current_position: Line = line_service.get_line_by_id(line_id=list(my_move.keys())[0])
+        results = self.pick_variation(board=board, current_position=current_position, user=user,
+                                      depth=self.get_depth(user))
         results = self.format_results(results, board)
         return results
 
@@ -32,9 +33,9 @@ class PickerService:
         if len(position_stats) == 0:
             return None
 
-        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
+        position_stats = position_stats.nlargest(5, 'total_games')
 
-        position_stats['line_id'] = position_stats['line_id'].map(lines_id)
+        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
 
         position_stats = self.calculate_popularity(position_stats, popularity)
 
@@ -48,38 +49,41 @@ class PickerService:
 
         choices = random.choices(position_stats['line_id'].tolist(), position_stats['weight'].tolist(), k=count)
 
-        return list(set(choices)) if count > 1 else choices[0]
+        results = {move: lines_id[move] for move in set(choices)}
 
-    def pick_variation(self, board: chess.Board, current_position: Line, user: User):
+        return results
+
+    def pick_variation(self, board: chess.Board, current_position: Line, user: User, depth: int):
         results = []
-        if not current_position.eco_code and board.fullmove_number > 6:
+        if not current_position.eco_code and board.fullmove_number > depth:
             return board.move_stack
-        rival_moves: List[str] = self.pick_moves(board=board, current_position=current_position, count=5,
-                                                 popularity=user.style.popularity,
-                                                 fashion=user.style.fashion,
-                                                 risk=user.style.risk)
+        rival_moves: Dict[str, str] = self.pick_moves(board=board, current_position=current_position, count=5,
+                                                      popularity=user.style.popularity,
+                                                      fashion=user.style.fashion,
+                                                      risk=user.style.risk)
         if rival_moves is None:
             return board.move_stack
-        for move in rival_moves:
+        for line_id, move in rival_moves.items():
+
             new_board = board.copy()
             new_board.push_uci(move)
-            current_position: Line = line_service.get_line(board=new_board)
+            current_position: Line = line_service.get_line_by_id(line_id=line_id)
+
             if current_position is None:
                 return new_board.move_stack
-
-            my_move: str = self.pick_moves(board=new_board, current_position=current_position, count=5,
-                                           popularity=user.style.popularity,
-                                           fashion=user.style.fashion,
-                                           risk=user.style.risk)
+            my_move: Dict[str, str] = self.pick_moves(board=new_board, current_position=current_position, count=1,
+                                                      popularity=user.style.popularity,
+                                                      fashion=user.style.fashion,
+                                                      risk=user.style.risk)
             if my_move is None:
                 return new_board.move_stack
 
-            new_board.push_uci(my_move)
-            current_position: Line = line_service.get_line(board=new_board)
+            new_board.push_uci(list(my_move.values())[0])
+            current_position: Line = line_service.get_line_by_id(line_id=list(my_move.keys())[0])
             if current_position is None:
                 return new_board.move_stack
 
-            results.append(self.pick_variation(new_board, current_position))
+            results.append(self.pick_variation(new_board, current_position, user, depth))
         return results
 
     def format_results(self, lines: List, board: chess.Board):
@@ -99,7 +103,7 @@ class PickerService:
         :param popularity: -1 if side line, 0 neutral, 1 popular moves
         :return:
         """
-        position_stats['popularity_weight'] = (0.5 * popularity + 1) * \
+        position_stats['popularity_weight'] = (0.5 * popularity + 1.5) * \
                                               position_stats['total_games'] / position_stats['total_games'].sum()
         return position_stats
 
@@ -130,9 +134,23 @@ class PickerService:
         return position_stats
 
     def calculate_total_weight(self, position_stats):
-        position_stats['weight'] = position_stats['popularity_weight'] + position_stats['fashion_weight'] + \
-                                   position_stats['rating_weight'] + position_stats['winning_weight']
+        position_stats['weight'] = position_stats['popularity_weight'] * 1.5 * position_stats['fashion_weight'] * \
+                                   position_stats['rating_weight'] * position_stats['winning_weight']
+
+        position_stats['weight'] = position_stats['weight'] / position_stats['weight'].sum()
         return position_stats
+
+    def get_depth(self, user):
+        rating = user.rating
+        if not rating or rating < 1500:
+            return 5
+        if rating < 1700:
+            return 6
+        if rating < 1900:
+            return 7
+        if rating < 2100:
+            return 8
+        return 9
 
 
 picker_service = PickerService()
