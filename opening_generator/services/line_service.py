@@ -28,6 +28,10 @@ class LineService:
         line: Line = line_dao.get_line_by_position(line_id)
         return line
 
+    def get_line_by_id(self, line_id: str):
+        line: Line = line_dao.get_line_by_position(line_id)
+        return line
+
     def save_lines(self, games: {}):
         return line_dao.save_lines(games)
 

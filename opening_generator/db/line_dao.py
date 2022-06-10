@@ -27,7 +27,7 @@ class LineDao:
 
     def get_next_positions_as_df(self, lines: List[str]):
         query = db_session.query(Line).filter(Line.line_id.in_(lines))
-        return pd.read_sql(query.statement, db_session.engine)
+        return pd.read_sql(query.statement, db_session.bind)
 
 
 line_dao = LineDao()

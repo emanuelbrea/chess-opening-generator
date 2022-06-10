@@ -3,7 +3,7 @@ from typing import List
 import chess
 from flask import request, abort, jsonify, Blueprint
 
-from opening_generator.models import User
+from opening_generator.models import User, Style
 from opening_generator.models.line import Line
 from opening_generator.services.line_service import line_service
 from opening_generator.services.pgn_service import pgn_service
@@ -11,8 +11,9 @@ from opening_generator.services.picker_service import picker_service
 
 pos = Blueprint('position', __name__, url_prefix='/position')
 
-user = User(user_id=1, first_name='Emanuel', email='a')
-
+user = User(user_id=1, first_name='Emanuel', email='a', rating=1800)
+style = Style(user_id=1, popularity=1, fashion=1, risk=1)
+user.style = style
 
 @pos.route('/lines', methods=["GET"])
 def get_variations():
