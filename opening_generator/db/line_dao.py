@@ -1,7 +1,4 @@
 import logging
-from typing import List
-
-import pandas as pd
 
 from opening_generator.db import db_session
 from opening_generator.models.line import Line
@@ -25,9 +22,8 @@ class LineDao:
         self.logger.info("Finished inserting lines.")
         return book
 
-    def get_next_positions_as_df(self, lines: List[str]):
-        query = db_session.query(Line).filter(Line.line_id.in_(lines))
-        return pd.read_sql(query.statement, db_session.bind)
+    def get_lines(self):
+        return db_session.query(Line).all()
 
 
 line_dao = LineDao()

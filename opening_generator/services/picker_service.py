@@ -1,3 +1,4 @@
+import logging
 import random
 from typing import List, Dict
 
@@ -11,27 +12,38 @@ from opening_generator.services.line_service import line_service
 
 class PickerService:
 
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
     def pick_variations(self, board: chess.Board, current_position: Line, color: bool, user: User):
         if board.turn == color:
-            my_move: Dict[str, str] = self.pick_moves(board=board, current_position=current_position, count=1,
-                                                      popularity=user.style.popularity,
-                                                      fashion=user.style.fashion,
-                                                      risk=user.style.risk)
-            board.push_uci(list(my_move.values())[0])
-            current_position: Line = line_service.get_line_by_id(line_id=list(my_move.keys())[0])
-        results = self.pick_variation(board=board, current_position=current_position, user=user,
-                                      depth=self.get_depth(user))
+            my_move = self.pick_moves(turn=board.turn,
+                                      current_position=current_position,
+                                      popularity=user.style.popularity,
+                                      fashion=user.style.fashion,
+                                      risk=user.style.risk)
+            board.push_uci(my_move[0])
+            current_position: Line = line_service.get_line_by_id(my_move[1])
+
+        results = self.pick_variation(board=board,
+                                      current_position=current_position,
+                                      user=user,
+                                      depth=self.get_depth(user) + board.fullmove_number)
         results = self.format_results(results, board)
         return results
 
-    def pick_moves(self, board: chess.Board, current_position: Line, count: int = 1, popularity: float = 0,
+    def pick_moves(self, turn: bool, current_position: Line, popularity: float = 0,
                    risk: float = 0,
                    fashion: float = 0):
 
-        position_stats: pd.DataFrame = line_service.get_next_positions_as_df(current_position)
+        position_stats: pd.DataFrame = line_service.get_lines_as_df(current_position)
 
         if len(position_stats) == 0:
             return None
+
+        position_stats = self.calculate_popularity(position_stats, 0)
+
+        position_stats = position_stats.loc[position_stats['popularity_weight'] > 0.2, :]
 
         position_stats = position_stats.nlargest(5, 'total_games')
 
@@ -43,13 +55,36 @@ class PickerService:
 
         position_stats = self.calculate_rating(position_stats)
 
-        position_stats = self.calculate_winning_rate(position_stats, risk, board.turn)
+        position_stats = self.calculate_winning_rate(position_stats, risk, turn)
 
         position_stats = self.calculate_total_weight(position_stats)
 
-        choices = random.choices(position_stats['line_id'].tolist(), position_stats['weight'].tolist(), k=count)
+        choices = random.choices(position_stats['line_id'].tolist(), position_stats['weight'].tolist(), k=1)
 
-        results = {move: lines_id[move] for move in set(choices)}
+        line_id = choices[0]
+
+        return lines_id[line_id], line_id
+
+    def calculate_floor(self, board: chess.Board, user: User):
+        depth = self.get_depth(user)
+        floor = board.fullmove_number * 0.05 - depth / 100
+        return floor if floor < 0.2 else 0.2
+
+    def pick_oponent_moves(self, current_position: Line, board: chess.Board, user: User):
+        position_stats: pd.DataFrame = line_service.get_lines_as_df(current_position)
+
+        if len(position_stats) == 0:
+            return None
+
+        floor: float = self.calculate_floor(board, user)
+
+        position_stats = self.calculate_popularity(position_stats, 0)
+
+        position_stats = position_stats.loc[position_stats['popularity_weight'] > floor, :]
+
+        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
+
+        results = pd.Series(position_stats.line_id.values, index=position_stats.move).to_dict()
 
         return results
 
@@ -57,29 +92,31 @@ class PickerService:
         results = []
         if not current_position.eco_code and board.fullmove_number > depth:
             return board.move_stack
-        rival_moves: Dict[str, str] = self.pick_moves(board=board, current_position=current_position, count=5,
-                                                      popularity=user.style.popularity,
-                                                      fashion=user.style.fashion,
-                                                      risk=user.style.risk)
+
+        rival_moves: Dict[str, str] = self.pick_oponent_moves(current_position=current_position, board=board,
+                                                              user=user)
+
         if rival_moves is None:
             return board.move_stack
-        for line_id, move in rival_moves.items():
 
+        for line_id, move in rival_moves.items():
             new_board = board.copy()
             new_board.push_uci(move)
-            current_position: Line = line_service.get_line_by_id(line_id=line_id)
+            current_position: Line = line_service.get_line_by_id(line_id)
 
             if current_position is None:
                 return new_board.move_stack
-            my_move: Dict[str, str] = self.pick_moves(board=new_board, current_position=current_position, count=1,
-                                                      popularity=user.style.popularity,
-                                                      fashion=user.style.fashion,
-                                                      risk=user.style.risk)
+
+            my_move = self.pick_moves(turn=new_board.turn,
+                                      current_position=current_position,
+                                      popularity=user.style.popularity,
+                                      fashion=user.style.fashion,
+                                      risk=user.style.risk)
             if my_move is None:
                 return new_board.move_stack
 
-            new_board.push_uci(list(my_move.values())[0])
-            current_position: Line = line_service.get_line_by_id(line_id=list(my_move.keys())[0])
+            new_board.push_uci(my_move[0])
+            current_position: Line = line_service.get_line_by_id(my_move[1])
             if current_position is None:
                 return new_board.move_stack
 
@@ -103,7 +140,7 @@ class PickerService:
         :param popularity: -1 if side line, 0 neutral, 1 popular moves
         :return:
         """
-        position_stats['popularity_weight'] = (0.5 * popularity + 1.5) * \
+        position_stats['popularity_weight'] = (0.5 * popularity + 1) * \
                                               position_stats['total_games'] / position_stats['total_games'].sum()
         return position_stats
 
@@ -143,14 +180,14 @@ class PickerService:
     def get_depth(self, user):
         rating = user.rating
         if not rating or rating < 1500:
-            return 5
+            return 4
         if rating < 1700:
-            return 6
+            return 5
         if rating < 1900:
-            return 7
+            return 6
         if rating < 2100:
-            return 8
-        return 9
+            return 7
+        return 8
 
 
 picker_service = PickerService()
