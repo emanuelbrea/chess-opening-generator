@@ -22,12 +22,12 @@ class TreeLoader:
             if os.path.splitext(filename)[1] == '.pgn':
                 file = os.path.dirname(__file__) + os.path.join(self.folder, filename)
                 self.load_file(file)
+        self.opening_tree.save_moves()
         return self.opening_tree
 
     def load_file(self, filename: str):
         self.logger.info("About to read %s", filename)
         start = time.time()
-        i = 0
         with open(filename) as pgn:
             while True:
                 game: chess.pgn.Game = chess.pgn.read_game(pgn)
@@ -53,7 +53,4 @@ class TreeLoader:
 
                 self.opening_tree.add_variant(GamePgn(line=line, result=result, elo_black=elo_black,
                                                       elo_white=elo_white, year=year))
-                i += 1
-                if i % 5000 == 0:
-                    self.logger.info("%d ", i)
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
