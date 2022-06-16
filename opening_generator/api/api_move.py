@@ -1,7 +1,7 @@
-from flask import jsonify, Blueprint
+from flask import jsonify, Blueprint, request
 
 from opening_generator.models import User, Style
-from opening_generator.tree.loader import TreeLoader
+from opening_generator.services.opening_tree_service import OpeningTreeService
 
 move_bp = Blueprint('move', __name__, url_prefix='/move')
 
@@ -10,8 +10,21 @@ style = Style(user_id=1, popularity=0, fashion=0, risk=0)
 user.style = style
 
 
-@move_bp.route('/games', methods=["POST"])
-def load_games():
-    tree_loader = TreeLoader()
-    tree_loader.load_games()
-    return jsonify(message=f"Loaded positions correctly.", success=True), 200
+@move_bp.route('/', methods=["GET"])
+def get_variant():
+    args = request.args
+
+    moves = args.get('moves')
+
+    moves = moves.split(",")
+    opening_tree = OpeningTreeService()
+    position = opening_tree.get_variation(moves)
+
+    stats = dict(total_games=position.total_games,
+                 white_wins=position.white_wins,
+                 black_wins=position.black_wins,
+                 draws=position.draws,
+                 year=position.average_year,
+                 average_elo=position.average_elo)
+
+    return jsonify(message=f"Loaded positions correctly.", data=stats, success=True), 200

@@ -21,10 +21,6 @@ def create_app(test_config=None):
     app.register_blueprint(move_bp)
     app.register_blueprint(eco)
 
-    from opening_generator.tree.opening_tree import OpeningTree
-    opening_tree = OpeningTree()
-    opening_tree.retrieve_initial_position()
-
     return app
 
     @app.teardown_appcontext

@@ -1,7 +1,7 @@
 from typing import List
 
 from opening_generator.db import db_session
-from opening_generator.models import Move, NextMove
+from opening_generator.models import Move
 from opening_generator.models.game_pgn import GamePgn
 
 
@@ -26,10 +26,10 @@ class OpeningMove:
 
     def add_next_move(self, move_str):
         if not self.has_next_move(move_str):
-            if self.move is None:  # root
-                move = OpeningMove(move_str, True)
-            else:
+            if self.move:
                 move = OpeningMove(move_str, not self.color)
+            else:  # root
+                move = OpeningMove(move_str, True)
             self.next_moves.append(move)
 
     def get_next_move(self, move_str):
@@ -37,12 +37,6 @@ class OpeningMove:
             if move.move == move_str:
                 return move
         return None
-
-    def get_variation(self, moves: List[str]):
-        if len(moves) == 0:
-            return self
-        next_move = self.get_next_move(moves.pop(0))
-        return next_move.get_variation(moves)
 
     def add_variant(self, line: GamePgn):
         self.total_games += 1
@@ -53,11 +47,7 @@ class OpeningMove:
         else:
             self.draws += 1
 
-        if self.color is None:
-            self.average_elo += line.elo_white
-            self.average_elo += line.elo_black
-
-        elif self.color:
+        if self.color:
             self.average_elo += line.elo_white
         else:
             self.average_elo += line.elo_black
@@ -96,21 +86,7 @@ class OpeningMove:
                        average_elo=self.average_elo,
                        average_year=self.average_year)
         db_session.add(move_db)
-        next_moves = [NextMove(move_id=move_db.move_id, next_move_id=next_id) for next_id in next_moves_ids]
-        move_db.next_moves = next_moves
+        move_db.next_moves = next_moves_ids
         db_session.commit()
 
-        return move_db.move_id
-
-    def set_move(self, move: Move):
-        self.total_games = move.total_games
-        self.white_wins = move.white_wins
-        self.black_wins = move.black_wins
-        self.draws = move.draws
-        self.average_year = move.average_year
-        self.average_elo = move.average_elo
-        next_moves = move.next_moves
-        for next_move in next_moves:
-            opening_move = OpeningMove(next_move.move, next_move.color)
-            self.next_moves.append(opening_move.set_move(next_move))
-        return self
+        return move_db

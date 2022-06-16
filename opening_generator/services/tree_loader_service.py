@@ -6,24 +6,24 @@ from typing import List
 import chess.pgn
 
 from opening_generator.models.game_pgn import GamePgn
-from opening_generator.tree.opening_tree import OpeningTree
+from opening_generator.models.opening_move import OpeningMove
 
 
-class TreeLoader:
+class TreeLoaderService:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.folder = "/../../data/pgn/"
-        self.opening_tree = OpeningTree()
         self.max_moves = 30
+        self.total_games = 0
+        self.root = OpeningMove(None, None)
 
     def load_games(self):
         for filename in os.listdir(os.path.dirname(__file__) + self.folder):
             if os.path.splitext(filename)[1] == '.pgn':
                 file = os.path.dirname(__file__) + os.path.join(self.folder, filename)
                 self.load_file(file)
-        self.opening_tree.save_moves()
-        return self.opening_tree
+        self.root.save_moves()
 
     def load_file(self, filename: str):
         self.logger.info("About to read %s", filename)
@@ -51,6 +51,9 @@ class TreeLoader:
                     line.append(move_uci)
                     board.push(move)
 
-                self.opening_tree.add_variant(GamePgn(line=line, result=result, elo_black=elo_black,
-                                                      elo_white=elo_white, year=year))
+                self.root.add_variant(GamePgn(line=line, result=result, elo_black=elo_black,
+                                              elo_white=elo_white, year=year))
+                self.total_games += 1
+                if self.total_games % 10000 == 0:
+                    self.logger.info("%d ", self.total_games)
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
