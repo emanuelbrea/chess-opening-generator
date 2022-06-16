@@ -6,10 +6,8 @@ from typing import List
 
 import chess
 import chess.svg
-from chess.polyglot import zobrist_hash
 
 from opening_generator.db.eco_code_dao import eco_code_dao
-from opening_generator.db.line_dao import line_dao
 from opening_generator.models.eco_code import EcoCode
 
 
@@ -33,13 +31,8 @@ class EcoCodeService:
                         line = row[3]
                         pgn = io.StringIO(line)
                         game = chess.pgn.read_game(pgn)
-                        fen_key: int = zobrist_hash(board=game.end().board())
-
-                        line_db = line_dao.get_line_by_position(str(fen_key))
-
-                        if line_db:
-                            eco = EcoCode(eco_code=eco_code, line_id=str(fen_key), main_line=line, name=name)
-                            ecos.append(eco)
+                        eco = EcoCode(eco_code=eco_code, main_line=line, name=name)
+                        ecos.append(eco)
 
         eco_code_dao.add_eco_codes(ecos=ecos)
         return ecos
