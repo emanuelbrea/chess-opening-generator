@@ -16,10 +16,14 @@ def create_app(test_config=None):
     with app.app_context():
         init_db()
 
-    from opening_generator.api.api_position import pos
+    from opening_generator.api.api_move import move_bp
     from opening_generator.api.api_eco import eco
-    app.register_blueprint(pos)
+    app.register_blueprint(move_bp)
     app.register_blueprint(eco)
+
+    from opening_generator.tree.opening_tree import OpeningTree
+    opening_tree = OpeningTree()
+    opening_tree.retrieve_initial_position()
 
     return app
 

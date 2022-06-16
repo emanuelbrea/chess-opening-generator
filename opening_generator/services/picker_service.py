@@ -6,8 +6,6 @@ import chess
 import pandas as pd
 
 from opening_generator.models import User
-from opening_generator.models.line import Line
-from opening_generator.services.line_service import line_service
 
 
 class PickerService:
