@@ -11,7 +11,7 @@ class Move(Base):
 
     move_id = Column(Integer, primary_key=True)
     parent_id = Column(Integer, ForeignKey(move_id))
-    move = Column(String)
+    move = Column(String(15))
     color = Column(Boolean)
     total_games = Column(Integer)
     white_wins = Column(Integer)
@@ -32,9 +32,9 @@ class Move(Base):
         self.average_elo = average_elo
         self.average_year = average_year
 
-    def get_next_move(self, move_uci):
+    def get_next_move(self, move_san):
         for move in self.next_moves:
-            if move.move == move_uci:
+            if move.move == move_san:
                 return move
         return None
 

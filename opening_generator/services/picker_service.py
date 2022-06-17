@@ -1,11 +1,11 @@
 import logging
 import random
-from typing import List, Dict
+from typing import List
 
-import chess
 import pandas as pd
 
-from opening_generator.models import User
+from opening_generator.models import User, Move
+from opening_generator.services.opening_tree_service import opening_tree_service
 
 
 class PickerService:
@@ -13,28 +13,11 @@ class PickerService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def pick_variations(self, board: chess.Board, current_position: Line, color: bool, user: User):
-        if board.turn == color:
-            my_move = self.pick_moves(turn=board.turn,
-                                      current_position=current_position,
-                                      popularity=user.style.popularity,
-                                      fashion=user.style.fashion,
-                                      risk=user.style.risk)
-            board.push_uci(my_move[0])
-            current_position: Line = line_service.get_line_by_id(my_move[1])
+    def pick_move(self, turn: bool, current_position: Move, popularity: float = 0,
+                  risk: float = 0,
+                  fashion: float = 0) -> Move:
 
-        results = self.pick_variation(board=board,
-                                      current_position=current_position,
-                                      user=user,
-                                      depth=self.get_depth(user) + board.fullmove_number)
-        results = self.format_results(results, board)
-        return results
-
-    def pick_moves(self, turn: bool, current_position: Line, popularity: float = 0,
-                   risk: float = 0,
-                   fashion: float = 0):
-
-        position_stats: pd.DataFrame = line_service.get_lines_as_df(current_position)
+        position_stats: pd.DataFrame = opening_tree_service.get_stats_as_df(current_position)
 
         if len(position_stats) == 0:
             return None
@@ -44,8 +27,6 @@ class PickerService:
         position_stats = position_stats.loc[position_stats['popularity_weight'] > 0.2, :]
 
         position_stats = position_stats.nlargest(5, 'total_games')
-
-        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
 
         position_stats = self.calculate_popularity(position_stats, popularity)
 
@@ -57,79 +38,66 @@ class PickerService:
 
         position_stats = self.calculate_total_weight(position_stats)
 
-        choices = random.choices(position_stats['line_id'].tolist(), position_stats['weight'].tolist(), k=1)
+        choices = random.choices(position_stats['move'].tolist(), position_stats['weight'].tolist(), k=1)
 
-        line_id = choices[0]
+        move = choices[0]
 
-        return lines_id[line_id], line_id
+        variation: Move = current_position.get_next_move(move)
 
-    def calculate_floor(self, board: chess.Board, user: User):
+        return variation
+
+    def calculate_floor(self, current_depth, user: User):
+
         depth = self.get_depth(user)
-        floor = board.fullmove_number * 0.05 - depth / 100
-        return floor if floor < 0.2 else 0.2
+        floor = current_depth // 2 + 1 * 0.05 - depth / 100
 
-    def pick_oponent_moves(self, current_position: Line, board: chess.Board, user: User):
-        position_stats: pd.DataFrame = line_service.get_lines_as_df(current_position)
+        return floor if 0 < floor < 0.2 else 0.2
+
+    def pick_oponent_moves(self, current_position: Move, current_depth, user: User):
+
+        position_stats: pd.DataFrame = opening_tree_service.get_stats_as_df(current_position)
 
         if len(position_stats) == 0:
-            return None
+            return []
 
-        floor: float = self.calculate_floor(board, user)
+        floor: float = self.calculate_floor(current_depth, user)
 
         position_stats = self.calculate_popularity(position_stats, 0)
 
         position_stats = position_stats.loc[position_stats['popularity_weight'] > floor, :]
 
-        lines_id = {line.next_line_id: line.move for line in current_position.next_moves}
+        moves = opening_tree_service.get_next_moves(current_position, position_stats['move'].tolist())
 
-        results = pd.Series(position_stats.line_id.values, index=position_stats.move).to_dict()
+        return moves
 
-        return results
+    def pick_variation(self, current_position: Move, color: bool, user: User, depth: int, current_depth: int = 0):
+        moves = []
+        if current_depth > depth:
+            if current_position.color == color:
+                return []
+            return [current_position]
+        if current_position.color == color:
+            rival_moves: List[Move] = self.pick_oponent_moves(current_position=current_position, user=user,
+                                                              current_depth=current_depth)
+            for move in rival_moves:
+                moves.append(move)
+                moves += self.pick_variation(move, color, user, depth, current_depth)
+        else:
+            current_depth += 1
+            my_move = self.pick_move(color, current_position, user.style.popularity, user.style.risk,
+                                     user.style.fashion)
+            if my_move is not None:
+                moves.append(my_move)
+                moves += self.pick_variation(my_move, color, user, depth, current_depth)
+        return moves
 
-    def pick_variation(self, board: chess.Board, current_position: Line, user: User, depth: int):
-        results = []
-        if not current_position.eco_code and board.fullmove_number > depth:
-            return board.move_stack
-
-        rival_moves: Dict[str, str] = self.pick_oponent_moves(current_position=current_position, board=board,
-                                                              user=user)
-
-        if rival_moves is None:
-            return board.move_stack
-
-        for line_id, move in rival_moves.items():
-            new_board = board.copy()
-            new_board.push_uci(move)
-            current_position: Line = line_service.get_line_by_id(line_id)
-
-            if current_position is None:
-                return new_board.move_stack
-
-            my_move = self.pick_moves(turn=new_board.turn,
-                                      current_position=current_position,
-                                      popularity=user.style.popularity,
-                                      fashion=user.style.fashion,
-                                      risk=user.style.risk)
-            if my_move is None:
-                return new_board.move_stack
-
-            new_board.push_uci(my_move[0])
-            current_position: Line = line_service.get_line_by_id(my_move[1])
-            if current_position is None:
-                return new_board.move_stack
-
-            results.append(self.pick_variation(new_board, current_position, user, depth))
-        return results
-
-    def format_results(self, lines: List, board: chess.Board):
-        if board.move_stack:
-            board.pop()
+    def format_results(self, lines: List):
         for line in lines:
             if not any(isinstance(el, list) for el in line):
-                line[:] = [board.variation_san(line)]
+                line[:] = [line]
                 print(line)
             else:
-                self.format_results(line, board)
+                self.format_results(line)
         return lines
 
     def calculate_popularity(self, position_stats, popularity):

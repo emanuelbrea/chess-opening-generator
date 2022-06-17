@@ -18,8 +18,10 @@ def create_app(test_config=None):
 
     from opening_generator.api.api_move import move_bp
     from opening_generator.api.api_eco import eco
+    from opening_generator.api.api_repertoire import repertoire_bp
     app.register_blueprint(move_bp)
     app.register_blueprint(eco)
+    app.register_blueprint(repertoire_bp)
 
     return app
 

@@ -2,7 +2,6 @@ from typing import List
 
 from opening_generator.db import db_session
 from opening_generator.models import Move
-from opening_generator.models.game_pgn import GamePgn
 
 
 class OpeningMove:
@@ -38,27 +37,26 @@ class OpeningMove:
                 return move
         return None
 
-    def add_variant(self, line: GamePgn):
+    def add_variant(self, line, result, elo_black, elo_white, year):
         self.total_games += 1
-        if line.result == "1-0":
+        if result == "1-0":
             self.white_wins += 1
-        elif line.result == "0-1":
+        elif result == "0-1":
             self.black_wins += 1
         else:
             self.draws += 1
 
         if self.color:
-            self.average_elo += line.elo_white
+            self.average_elo += elo_white
         else:
-            self.average_elo += line.elo_black
-        self.average_year += line.year
+            self.average_elo += elo_black
+        self.average_year += year
 
-        moves = line.line
-        if len(moves) == 0:
+        if len(line) == 0:
             return
-        self.add_next_move(moves[0])
-        next_move = self.get_next_move(moves.pop(0))
-        next_move.add_variant(line)
+        self.add_next_move(line[0])
+        next_move = self.get_next_move(line.pop(0))
+        next_move.add_variant(line, result, elo_black, elo_white, year)
 
     def set_final_elo(self):
         self.average_elo = self.average_elo // self.total_games
