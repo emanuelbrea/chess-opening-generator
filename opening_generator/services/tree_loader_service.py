@@ -5,7 +5,6 @@ from typing import List
 
 import chess.pgn
 
-from opening_generator.models.game_pgn import GamePgn
 from opening_generator.models.opening_move import OpeningMove
 
 
@@ -47,12 +46,11 @@ class TreeLoaderService:
                 for move in moves:
                     if board.ply() > self.max_moves:
                         break
-                    move_uci = board.uci(move)
-                    line.append(move_uci)
+                    move_san = board.san(move)
+                    line.append(move_san)
                     board.push(move)
 
-                self.root.add_variant(GamePgn(line=line, result=result, elo_black=elo_black,
-                                              elo_white=elo_white, year=year))
+                self.root.add_variant(line=line, result=result, elo_black=elo_black, elo_white=elo_white, year=year)
                 self.total_games += 1
                 if self.total_games % 10000 == 0:
                     self.logger.info("%d ", self.total_games)
