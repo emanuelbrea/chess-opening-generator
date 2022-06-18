@@ -49,7 +49,7 @@ class PositionLoaderService:
 
                 prev_pos_id: str = str(zobrist_hash(board=board))
 
-                self.set_position(prev_pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, True)
+                self.set_position(prev_pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, True, board)
 
                 for move in moves:
                     if board.ply() > self.max_moves:
@@ -64,7 +64,7 @@ class PositionLoaderService:
 
                     pos_id: str = str(zobrist_hash(board=board))
 
-                    self.set_position(pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, turn)
+                    self.set_position(pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, turn, board)
 
                     move.next_position = self.positions[pos_id]
 
@@ -75,7 +75,7 @@ class PositionLoaderService:
                     self.logger.info("%d ", self.total_games)
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
 
-    def set_position(self, pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, turn):
+    def set_position(self, pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, turn, board):
         if pos_id in self.positions:
             position = self.positions[pos_id]
             position.total_games += 1
@@ -96,5 +96,6 @@ class PositionLoaderService:
                 black_wins=black_wins,
                 average_elo=elo_white if turn else elo_black,
                 average_year=year,
-                turn=turn
+                turn=turn,
+                fen=board.fen()
             )

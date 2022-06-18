@@ -24,10 +24,11 @@ class Position(Base):
     average_year = Column(Integer)
     average_elo = Column(Integer)
     turn = Column(Boolean)
+    fen = Column(String)
 
     next_moves = relationship("Move", secondary=association_table)
 
-    def __init__(self, pos_id, total_games, white_wins, draws, black_wins, average_year, average_elo, turn):
+    def __init__(self, pos_id, total_games, white_wins, draws, black_wins, average_year, average_elo, turn, fen):
         self.pos_id = pos_id
         self.total_games = total_games
         self.white_wins = white_wins
@@ -36,6 +37,7 @@ class Position(Base):
         self.average_elo = average_elo
         self.average_year = average_year
         self.turn = turn
+        self.fen = fen
         self.next_moves = []
 
     def set_final_elo(self):
