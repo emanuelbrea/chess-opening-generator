@@ -1,11 +1,12 @@
 import logging
 import random
-from typing import List
+from typing import Dict
 
-import pandas as pd
+from opening_generator import Position
+from opening_generator.models import Move
 
-from opening_generator.models import User, Move
-from opening_generator.services.opening_tree_service import opening_tree_service
+MIN_YEAR = 1970
+MIN_RATING = 2300
 
 
 class PickerService:
@@ -13,135 +14,100 @@ class PickerService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def pick_move(self, turn: bool, current_position: Move, popularity: float = 0,
-                  risk: float = 0,
-                  fashion: float = 0) -> Move:
+    def pick_variations(self, position, user, color):
+        depth = self.get_depth(user)
+        moves = self.pick_variation(position, user, color, depth, 0)
+        moves = list(set(moves))
+        return moves
 
-        position_stats: pd.DataFrame = opening_tree_service.get_stats_as_df(current_position)
+    def pick_variation(self, position, user, color, depth, current_depth):
+        if current_depth == depth:
+            return []
+        moves = []
+        if position.turn == color:
+            current_depth += 1
+            my_move: Move = self.pick_move(position, user, color)
+            if my_move is not None:
+                moves.append(my_move)
+                moves += self.pick_variation(my_move.next_position, user, color, depth, current_depth)
+        else:
+            rival_moves = self.pick_rival_moves(position, depth, current_depth)
+            for move in rival_moves:
+                moves.append(move)
+                moves += self.pick_variation(move.next_position, user, color, depth, current_depth)
+        return moves
 
-        if len(position_stats) == 0:
+    def pick_move(self, position: Position, user, color):
+        popularity = user.style.popularity
+        fashion = user.style.fashion
+        risk = user.style.risk
+
+        year_sum = 0
+        rating_sum = 0
+        winning_rate_sum = 0
+
+        next_moves = position.next_moves
+
+        candidates = {}
+
+        for move in next_moves:
+            played = move.played
+            popularity_weight = (0.5 * popularity + 1) * played / position.total_games
+            if popularity_weight < 0.2:
+                continue
+            next_position: Position = move.next_position
+
+            if color:
+                winning_rate = next_position.white_wins + (0.5 * next_position.draws * (0.5 * risk + 1)) \
+                               / next_position.total_games
+            else:
+                winning_rate = next_position.black_wins + (0.5 * next_position.draws * (0.5 * risk + 1)) \
+                               / next_position.total_games
+            if winning_rate == 0:
+                continue
+            rating_sum += next_position.average_elo - MIN_RATING
+            year_sum += next_position.average_year - MIN_YEAR
+            winning_rate_sum += winning_rate
+            candidates[move] = (popularity_weight, winning_rate)
+
+        if len(candidates) == 0:
             return None
 
-        position_stats = self.calculate_popularity(position_stats, 0)
+        move_weights: Dict[Move, (float, float)] = {}
 
-        position_stats = position_stats.loc[position_stats['popularity_weight'] > 0.2, :]
+        for move, (popularity_weight, winning_rate) in candidates.items():
+            next_position: Position = move.next_position
+            fashion_weight = (0.5 * fashion + 1) * (next_position.average_year - MIN_YEAR) / year_sum
+            rating_weight = (next_position.average_elo - MIN_RATING) / rating_sum
+            winning_rate_weight = winning_rate / winning_rate_sum
 
-        position_stats = position_stats.nlargest(5, 'total_games')
+            move_weights[move] = popularity_weight * fashion_weight * rating_weight * winning_rate_weight
 
-        position_stats = self.calculate_popularity(position_stats, popularity)
-
-        position_stats = self.calculate_fashion(position_stats, fashion)
-
-        position_stats = self.calculate_rating(position_stats)
-
-        position_stats = self.calculate_winning_rate(position_stats, risk, turn)
-
-        position_stats = self.calculate_total_weight(position_stats)
-
-        choices = random.choices(position_stats['move'].tolist(), position_stats['weight'].tolist(), k=1)
+        choices = random.choices(list(move_weights.keys()), move_weights.values(), k=1)
 
         move = choices[0]
 
-        variation: Move = current_position.get_next_move(move)
+        return move
 
-        return variation
+    def pick_rival_moves(self, position: Position, depth: int, current_depth: int):
+        floor = self.calculate_floor(depth, current_depth)
+        next_moves = position.next_moves
 
-    def calculate_floor(self, current_depth, user: User):
-
-        depth = self.get_depth(user)
-        floor = current_depth // 2 + 1 * 0.05 - depth / 100
-
-        return floor if 0 < floor < 0.2 else 0.2
-
-    def pick_oponent_moves(self, current_position: Move, current_depth, user: User):
-
-        position_stats: pd.DataFrame = opening_tree_service.get_stats_as_df(current_position)
-
-        if len(position_stats) == 0:
-            return []
-
-        floor: float = self.calculate_floor(current_depth, user)
-
-        position_stats = self.calculate_popularity(position_stats, 0)
-
-        position_stats = position_stats.loc[position_stats['popularity_weight'] > floor, :]
-
-        moves = opening_tree_service.get_next_moves(current_position, position_stats['move'].tolist())
-
-        return moves
-
-    def pick_variation(self, current_position: Move, color: bool, user: User, depth: int, current_depth: int = 0):
         moves = []
-        if current_depth > depth:
-            if current_position.color == color:
-                return []
-            return [current_position]
-        if current_position.color == color:
-            rival_moves: List[Move] = self.pick_oponent_moves(current_position=current_position, user=user,
-                                                              current_depth=current_depth)
-            for move in rival_moves:
+        for move in next_moves:
+            played = move.played
+            popularity_weight = played / position.total_games
+            if popularity_weight >= floor:
                 moves.append(move)
-                moves += self.pick_variation(move, color, user, depth, current_depth)
-        else:
-            current_depth += 1
-            my_move = self.pick_move(color, current_position, user.style.popularity, user.style.risk,
-                                     user.style.fashion)
-            if my_move is not None:
-                moves.append(my_move)
-                moves += self.pick_variation(my_move, color, user, depth, current_depth)
         return moves
 
-    def format_results(self, lines: List):
-        for line in lines:
-            if not any(isinstance(el, list) for el in line):
-                line[:] = [line]
-                print(line)
-            else:
-                self.format_results(line)
-        return lines
-
-    def calculate_popularity(self, position_stats, popularity):
-        """
-        :param position_stats:
-        :param popularity: -1 if side line, 0 neutral, 1 popular moves
-        :return:
-        """
-        position_stats['popularity_weight'] = (0.5 * popularity + 1) * \
-                                              position_stats['total_games'] / position_stats['total_games'].sum()
-        return position_stats
-
-    def calculate_fashion(self, position_stats, fashion):
-        min_year = 1970
-        position_stats['average_year'] = position_stats['average_year'] - min_year
-        position_stats['fashion_weight'] = (0.5 * fashion + 1) * \
-                                           position_stats['average_year'] / position_stats['average_year'].sum()
-        return position_stats
-
-    def calculate_rating(self, position_stats):
-        min_rating = 2300
-        position_stats['average_elo'] = position_stats['average_elo'] - min_rating
-        position_stats['rating_weight'] = position_stats['average_elo'] / position_stats['average_elo'].sum()
-        return position_stats
-
-    def calculate_winning_rate(self, position_stats, risk, turn):
-        """
-        :param position_stats:
-        :param risk: -1 if aggressive, 0 neutral, 1 solid
-        :param turn: true if white to move, false if black to move
-        :return:
-        """
-        color = 'white_wins' if turn else 'black_wins'
-        position_stats['winning_rate'] = (position_stats[color] + (0.5 * position_stats['draws'] * (0.5 * risk + 1))) \
-                                         / position_stats['total_games']
-        position_stats['winning_weight'] = position_stats['winning_rate'] / position_stats['winning_rate'].sum()
-        return position_stats
-
-    def calculate_total_weight(self, position_stats):
-        position_stats['weight'] = position_stats['popularity_weight'] * 1.5 * position_stats['fashion_weight'] * \
-                                   position_stats['rating_weight'] * position_stats['winning_weight']
-
-        position_stats['weight'] = position_stats['weight'] / position_stats['weight'].sum()
-        return position_stats
+    def calculate_floor(self, depth: int, current_depth: int):
+        floor = current_depth * 0.05 - depth / 100
+        if floor < 0.05:
+            return 0.05
+        if floor > 0.2:
+            return 0.2
+        return floor
 
     def get_depth(self, user):
         rating = user.rating

@@ -2,8 +2,10 @@ import logging
 
 from flask import Flask
 
-from opening_generator.models import User, Position
+from opening_generator.models import User, Position, Style
+from opening_generator.services.picker_service import picker_service
 from opening_generator.services.position_loader_service import PositionLoaderService
+from opening_generator.services.position_service import position_service
 
 
 def create_app(test_config=None):
@@ -20,10 +22,10 @@ def create_app(test_config=None):
         init_db()
 
     # from opening_generator.api.api_eco import eco
-    # from opening_generator.api.api_repertoire import repertoire_bp
+    from opening_generator.api.api_repertoire import repertoire_bp
     from opening_generator.api.api_position import pos_bp
     # app.register_blueprint(eco)
-    # app.register_blueprint(repertoire_bp)
+    app.register_blueprint(repertoire_bp)
     app.register_blueprint(pos_bp)
 
     return app
