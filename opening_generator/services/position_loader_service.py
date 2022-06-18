@@ -55,9 +55,9 @@ class PositionLoaderService:
                     if board.ply() > self.max_moves:
                         break
 
-                    turn = board.turn
                     move_san = board.san(move)
                     board.push(move)
+                    turn = board.turn
 
                     prev_position = self.positions[prev_pos_id]
                     move = prev_position.add_move(move_san)

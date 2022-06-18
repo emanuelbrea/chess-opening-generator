@@ -1,23 +1,17 @@
 from flask import Blueprint, jsonify, request
 
-from opening_generator.models import User, Style
-from opening_generator.services.position_loader_service import PositionLoaderService
+from opening_generator.db import db_session
+from opening_generator.db.repertoire_dao import repertoire_dao
+from opening_generator.models import User
 from opening_generator.services.picker_service import picker_service
+from opening_generator.services.position_service import position_service
 
 repertoire_bp = Blueprint('repertoire', __name__, url_prefix='/repertoire')
-
-user = User(user_id=1, first_name='Emanuel', email='a', rating=1800)
-style = Style(user_id=1, popularity=0, fashion=0, risk=0)
-user.style = style
 
 
 @repertoire_bp.route('/', methods=["GET"])
 def get_user_repertoire():
     args = request.args
-
-    moves = args.get('moves')
-
-    moves = moves.split(",")
 
     repertoire = []
     return jsonify(message=f"Repertoire retrieved correctly.", data=repertoire, success=True), 200
@@ -25,7 +19,10 @@ def get_user_repertoire():
 
 @repertoire_bp.route('/', methods=["POST"])
 def create_user_repertoire():
-    # repertoire = Repertoire(color=True, user=user)
-    # db_session.add(repertoire)
-    # db_session.commit()
-    return jsonify(message=f"Repertoire created correctly.", data=len(lines), success=True), 200
+    initial_position = position_service.retrieve_initial_position()
+    user = db_session.query(User).first()
+    moves = picker_service.pick_variations(initial_position, user, True)
+    repertoire_dao.create_repertoire(user=user, color=True, moves=moves)
+    moves = picker_service.pick_variations(initial_position, user, False)
+    repertoire_dao.create_repertoire(user=user, color=False, moves=moves)
+    return jsonify(message=f"Repertoire created correctly.", data=len(moves), success=True), 200
