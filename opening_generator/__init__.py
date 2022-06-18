@@ -2,6 +2,9 @@ import logging
 
 from flask import Flask
 
+from opening_generator.models import User, Position
+from opening_generator.services.position_loader_service import PositionLoaderService
+
 
 def create_app(test_config=None):
     logging.basicConfig(level=logging.INFO, format='%(levelname)s %(asctime)s %(message)s')
@@ -16,12 +19,12 @@ def create_app(test_config=None):
     with app.app_context():
         init_db()
 
-    from opening_generator.api.api_move import move_bp
-    from opening_generator.api.api_eco import eco
-    from opening_generator.api.api_repertoire import repertoire_bp
-    app.register_blueprint(move_bp)
-    app.register_blueprint(eco)
-    app.register_blueprint(repertoire_bp)
+    # from opening_generator.api.api_eco import eco
+    # from opening_generator.api.api_repertoire import repertoire_bp
+    from opening_generator.api.api_position import pos_bp
+    # app.register_blueprint(eco)
+    # app.register_blueprint(repertoire_bp)
+    app.register_blueprint(pos_bp)
 
     return app
 
