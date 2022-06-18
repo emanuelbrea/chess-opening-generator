@@ -3,3 +3,4 @@ from opening_generator.models.move import Move
 from opening_generator.models.repertoire import Repertoire
 from opening_generator.models.style import Style
 from opening_generator.models.user import User
+from opening_generator.models.position import Position
