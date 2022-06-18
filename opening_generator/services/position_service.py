@@ -12,6 +12,7 @@ class PositionService:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+        self.retrieve_initial_position()
 
     def retrieve_initial_position(self) -> Position:
         try:
