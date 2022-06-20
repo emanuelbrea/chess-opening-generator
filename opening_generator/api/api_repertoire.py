@@ -38,7 +38,7 @@ def edit_user_repertoire():
     new_move: str = args.get('new_move')
     old_move: str = args.get('old_move')
 
-    if not new_move or not old_move:
+    if not old_move:
         abort(400, description="Missing move")
 
     board: chess.Board = get_board_by_fen(args)
@@ -48,6 +48,8 @@ def edit_user_repertoire():
     color = args.get("color", "WHITE").upper() == "WHITE"
 
     moves = repertoire_service.update_user_repertoire(position, user, color, new_move, old_move)
-
+    if len(moves) == 0:
+        return jsonify(message=f"Repertoire could not be updated. Try with another move.",
+                       data=len(moves), success=False), 400
     return jsonify(message=f"Repertoire updated correctly after {new_move} instead of {old_move}.",
                    data=len(moves), success=True), 200
