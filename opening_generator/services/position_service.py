@@ -41,6 +41,7 @@ class PositionService:
                                         draws=next_position.draws,
                                         year=next_position.average_year,
                                         average_elo=next_position.average_elo,
+                                        fen=next_position.fen
                                         )
         return stats
 
