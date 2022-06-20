@@ -1,6 +1,8 @@
 import logging
+from typing import List, Dict
 
-from opening_generator import Position, User
+from opening_generator import Position, User, picker_service
+from opening_generator.db.repertoire_dao import repertoire_dao
 from opening_generator.models import Move
 
 
@@ -9,9 +11,9 @@ class RepertoireService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def get_repertoire_moves(self, position: Position, user: User, color: bool):
+    def get_repertoire_moves(self, position: Position, user: User, color: bool) -> Dict:
         next_moves = position.next_moves
-        repertoire = [repertoire for repertoire in user.repertoire if repertoire.color == color][0]
+        repertoire = next(repertoire for repertoire in user.repertoire if repertoire.color == color)
         repertoire_moves = repertoire.moves
         my_move = self.get_my_move(repertoire_moves, next_moves)
         if not my_move:
@@ -45,18 +47,57 @@ class RepertoireService:
 
         return dict(my_move=my_move_stats, rival_moves=rival_moves_stats)
 
-    def get_my_move(self, repertoire_moves, next_moves) -> Move:
-        for move in repertoire_moves:
-            if move in next_moves:
+    def get_my_move(self, repertoire_moves, next_moves) -> Move | None:
+        for move in next_moves:
+            if move in repertoire_moves:
                 return move
         return None
 
-    def get_rival_moves(self, repertoire_moves, next_moves) -> Move:
+    def get_rival_moves(self, repertoire_moves, next_moves) -> List[Move]:
         rival_moves = []
-        for move in repertoire_moves:
-            if move in next_moves:
+        for move in next_moves:
+            if move in repertoire_moves:
                 rival_moves.append(move)
         return rival_moves
+
+    def create_user_repertoire(self, position, user):
+        moves = picker_service.pick_variations(position, user, True)
+        repertoire_dao.create_repertoire(user=user, color=True, moves=moves)
+        moves = picker_service.pick_variations(position, user, False)
+        repertoire_dao.create_repertoire(user=user, color=False, moves=moves)
+
+    def update_user_repertoire(self, position, user, color, new_move, old_move):
+        next_moves = position.next_moves
+        new_move = next((move for move in next_moves if move.move_san == new_move), None)
+        old_move = next((move for move in next_moves if move.move_san == old_move), None)
+        if not new_move or not old_move:
+            return []
+        repertoire = next(repertoire for repertoire in user.repertoire if repertoire.color == color)
+        repertoire_moves = repertoire.moves
+        next_position = new_move.next_position
+        moves = picker_service.pick_variations(next_position, user, color)
+        moves.append(new_move)
+        moves_to_remove = self.get_moves_after_position(repertoire_moves, old_move)
+        repertoire_dao.delete_moves_from_repertoire(repertoire=repertoire, user=user, color=color,
+                                                    moves=moves_to_remove)
+        repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
+                                        moves=moves)
+        return moves
+
+    def get_moves_after_position(self, repertoire_moves, move) -> List[Move]:
+        moves = [move]
+        next_position = move.next_position
+        next_moves = next_position.next_moves
+        rival_moves = self.get_rival_moves(repertoire_moves=repertoire_moves, next_moves=next_moves)
+        moves += rival_moves
+        for move in rival_moves:
+            next_position = move.next_position
+            next_moves = next_position.next_moves
+            my_move = self.get_my_move(repertoire_moves=repertoire_moves, next_moves=next_moves)
+            if my_move:
+                moves += self.get_moves_after_position(repertoire_moves, my_move)
+
+        return moves
 
 
 repertoire_service = RepertoireService()
