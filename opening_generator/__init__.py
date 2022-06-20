@@ -2,11 +2,6 @@ import logging
 
 from flask import Flask
 
-from opening_generator.models import User, Position, Style
-from opening_generator.services.picker_service import picker_service
-from opening_generator.services.position_loader_service import PositionLoaderService
-from opening_generator.services.position_service import position_service
-
 
 def create_app(test_config=None):
     logging.basicConfig(level=logging.INFO, format='%(levelname)s %(asctime)s %(message)s')

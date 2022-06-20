@@ -1,9 +1,9 @@
 import logging
 from typing import List, Dict
 
-from opening_generator import Position, User, picker_service
 from opening_generator.db.repertoire_dao import repertoire_dao
-from opening_generator.models import Move
+from opening_generator.models import Move, Position, User
+from opening_generator.services.picker_service import picker_service
 
 
 class RepertoireService:
@@ -73,9 +73,10 @@ class RepertoireService:
             return []
         if not new_move:
             tries = 0
-            new_move = picker_service.pick_move(position, user, color)
+            depth = picker_service.get_depth(user)
+            new_move = picker_service.pick_move(position, user, color, depth)
             while new_move is old_move:
-                new_move = picker_service.pick_move(position, user, color)
+                new_move = picker_service.pick_move(position, user, color, depth)
                 tries += 1
                 if tries == 10:
                     return []

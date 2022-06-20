@@ -1,9 +1,8 @@
 import logging
 from typing import List
 
-from opening_generator import User
 from opening_generator.db import db_session
-from opening_generator.models import Repertoire, Move
+from opening_generator.models import Repertoire, Move, User
 
 
 class RepertoireDao:

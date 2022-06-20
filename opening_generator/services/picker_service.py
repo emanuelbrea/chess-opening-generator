@@ -2,8 +2,7 @@ import logging
 import random
 from typing import Dict
 
-from opening_generator import Position
-from opening_generator.models import Move
+from opening_generator.models import Move, Position
 
 MIN_YEAR = 1970
 MIN_RATING = 2300
@@ -26,7 +25,7 @@ class PickerService:
         moves = []
         if position.turn == color:
             current_depth += 1
-            my_move: Move = self.pick_move(position, user, color)
+            my_move: Move = self.pick_move(position, user, color, depth, current_depth)
             if my_move is not None:
                 moves.append(my_move)
                 moves += self.pick_variation(my_move.next_position, user, color, depth, current_depth)
@@ -37,7 +36,7 @@ class PickerService:
                 moves += self.pick_variation(move.next_position, user, color, depth, current_depth)
         return moves
 
-    def pick_move(self, position: Position, user, color):
+    def pick_move(self, position: Position, user, color, depth, current_depth=5):
         popularity = user.style.popularity
         fashion = user.style.fashion
         risk = user.style.risk
@@ -50,10 +49,12 @@ class PickerService:
 
         candidates = {}
 
+        floor = self.calculate_floor(depth, current_depth)
+
+        floor = (0.5 * popularity + 1) * floor
+
         for move in next_moves:
-            played = move.played
-            popularity_weight = (0.5 * popularity + 1) * played / position.total_games
-            if popularity_weight < 0.2:
+            if move.popularity_weight < floor:
                 continue
             next_position: Position = move.next_position
 
@@ -68,20 +69,20 @@ class PickerService:
             rating_sum += next_position.average_elo - MIN_RATING
             year_sum += next_position.average_year - MIN_YEAR
             winning_rate_sum += winning_rate
-            candidates[move] = (popularity_weight, winning_rate)
+            candidates[move] = winning_rate
 
         if len(candidates) == 0:
             return None
 
         move_weights: Dict[Move, (float, float)] = {}
 
-        for move, (popularity_weight, winning_rate) in candidates.items():
+        for move, winning_rate in candidates.items():
             next_position: Position = move.next_position
             fashion_weight = (0.5 * fashion + 1) * (next_position.average_year - MIN_YEAR) / year_sum
             rating_weight = (next_position.average_elo - MIN_RATING) / rating_sum
             winning_rate_weight = winning_rate / winning_rate_sum
 
-            move_weights[move] = popularity_weight * fashion_weight * rating_weight * winning_rate_weight
+            move_weights[move] = move.popularity_weight * fashion_weight * rating_weight * winning_rate_weight
 
         choices = random.choices(list(move_weights.keys()), move_weights.values(), k=1)
 
@@ -95,9 +96,7 @@ class PickerService:
 
         moves = []
         for move in next_moves:
-            played = move.played
-            popularity_weight = played / position.total_games
-            if popularity_weight >= floor:
+            if move.popularity_weight >= floor:
                 moves.append(move)
         return moves
 

@@ -3,15 +3,10 @@ from typing import List
 import chess
 from flask import request, abort, jsonify, Blueprint
 
-from opening_generator import User, Position
-from opening_generator.models import Style
+from opening_generator.models import Position
 from opening_generator.services.position_service import position_service
 
 pos_bp = Blueprint('position', __name__, url_prefix='/position')
-
-user = User(user_id=1, first_name='Emanuel', email='a', rating=1800)
-style = Style(user_id=1, popularity=0, fashion=0, risk=0)
-user.style = style
 
 
 def get_board_by_fen(args):
