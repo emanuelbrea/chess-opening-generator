@@ -1,10 +1,9 @@
 import chess
 from flask import Blueprint, jsonify, request, abort
 
-from opening_generator import Position
 from opening_generator.api.api_position import get_board_by_fen, get_position_by_board
 from opening_generator.db import db_session
-from opening_generator.models import User
+from opening_generator.models import User, Position
 from opening_generator.services.position_service import position_service
 from opening_generator.services.repertoire_service import repertoire_service
 

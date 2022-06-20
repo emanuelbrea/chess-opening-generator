@@ -46,6 +46,16 @@ class Position(Base):
     def set_final_year(self):
         self.average_year = self.average_year // self.total_games
 
+    def set_popularity_weight(self):
+        for move in self.next_moves:
+            if move.popularity_weight == 0:
+                move.popularity_weight = move.played / self.total_games
+
+    def set_final_values(self):
+        self.set_final_year()
+        self.set_final_elo()
+        self.set_popularity_weight()
+
     def add_move(self, move_san):
         for next_move in self.next_moves:
             if next_move.move_san == move_san:

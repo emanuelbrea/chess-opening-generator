@@ -4,8 +4,9 @@ import chess
 from chess.polyglot import zobrist_hash
 from sqlalchemy.exc import NoResultFound
 
-from opening_generator import Position, PositionLoaderService
 from opening_generator.db.position_dao import position_dao
+from opening_generator.models import Position
+from opening_generator.services.position_loader_service import PositionLoaderService
 
 
 class PositionService:
@@ -19,9 +20,8 @@ class PositionService:
             initial_position = position_dao.get_initial_position()
         except NoResultFound:
             position_loader = PositionLoaderService()
-            positions = position_loader.load_games()
-            position_dao.save_positions(positions)
-            initial_position = position_dao.get_initial_position()
+            initial_position = position_loader.load_games()
+            position_dao.save_positions(initial_position)
         return initial_position
 
     def get_position(self, board: chess.Board):

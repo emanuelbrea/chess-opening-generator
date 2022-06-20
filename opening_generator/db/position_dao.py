@@ -3,8 +3,8 @@ import logging
 import chess
 from chess.polyglot import zobrist_hash
 
-from opening_generator import Position
 from opening_generator.db import db_session
+from opening_generator.models import Position
 
 
 class PositionDao:
@@ -20,12 +20,8 @@ class PositionDao:
     def get_position(self, pos_id):
         return db_session.query(Position).filter(Position.pos_id == pos_id).first()
 
-    def save_positions(self, positions):
-        for position in positions:
-            if position.total_games > 10:
-                position.set_final_elo()
-                position.set_final_year()
-                db_session.add(position)
+    def save_positions(self, position):
+        db_session.add(position)
         db_session.commit()
 
 
