@@ -1,8 +1,9 @@
 from typing import List
 
 import chess
-from flask import request, abort, jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 
+from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import Position
 from opening_generator.services.position_service import position_service
 
@@ -12,19 +13,26 @@ pos_bp = Blueprint('position', __name__, url_prefix='/position')
 def get_board_by_fen(args):
     fen: str = args.get("fen")
     if not fen:
-        abort(400, description="Fen not provided")
+        raise InvalidRequestException(description="FEN not provided")
     try:
         board: chess.Board = chess.Board(fen)
         return board
     except ValueError:
-        abort(400, description="Invalid FEN provided")
+        raise InvalidRequestException(description="Invalid FEN provided")
 
 
 def get_position_by_board(board: chess.Board):
     position: Position = position_service.get_position(board=board)
     if not position:
-        abort(404, description="Position not found in database")
+        raise InvalidRequestException(description="Position not found in database")
     return position
+
+
+def get_color(args):
+    color = args.get("color", "WHITE").upper()
+    if color not in ("WHITE", "BLACK"):
+        raise InvalidRequestException(description="Invalid color provided")
+    return color == "WHITE"
 
 
 @pos_bp.route('/stats', methods=["GET"])

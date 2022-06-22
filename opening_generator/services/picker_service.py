@@ -84,7 +84,7 @@ class PickerService:
 
             move_weights[move] = move.popularity_weight * fashion_weight * rating_weight * winning_rate_weight
 
-        choices = random.choices(list(move_weights.keys()), move_weights.values(), k=1)
+        choices = random.choices(list(move_weights.keys()), list(move_weights.values()), k=1)
 
         move = choices[0]
 
