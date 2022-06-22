@@ -33,7 +33,6 @@ class PositionLoaderService:
             turn=True,
             fen=board.fen()
         )
-        self.positions[initial_pos_id] = initial_position
         return initial_position
 
     def load_games(self):
@@ -46,6 +45,7 @@ class PositionLoaderService:
 
     def load_file(self, filename: str):
         self.logger.info("About to read %s", filename)
+        board: chess.Board = chess.Board()
         start = time.time()
         with open(filename) as pgn:
             while True:
@@ -64,8 +64,6 @@ class PositionLoaderService:
                 draws = 1 if result == "1/2-1/2" else 0
                 black_wins = 1 if result == "0-1" else 0
 
-                board: chess.Board = chess.Board()
-
                 prev_position = self.initial_pos
 
                 self.update_initial_position(white_wins, draws, black_wins, elo_white, year)
@@ -80,47 +78,49 @@ class PositionLoaderService:
 
                     move = prev_position.add_move(move_san)
 
-                    pos_id: str = str(zobrist_hash(board=board))
+                    next_position = move.next_position
 
-                    position = self.set_position(pos_id, white_wins, draws, black_wins, elo_white, elo_black, year,
-                                                 turn, board)
+                    if next_position is not None:  # move has next position
+                        next_position.total_games += 1
+                        next_position.white_wins += white_wins
+                        next_position.draws += draws
+                        next_position.black_wins += black_wins
+                        if turn:
+                            next_position.average_elo += elo_white
+                        else:
+                            next_position.average_elo += elo_black
+                        next_position.average_year += year
+                        prev_position = next_position
 
-                    move.next_position = position
 
-                    prev_position = position
+                    else:  # move does not have next position yet
+                        pos_id: str = str(zobrist_hash(board=board))
 
+                        if pos_id in self.positions:  # position was already reached by another move order
+                            position = self.positions[pos_id]
+                        else:
+                            position = Position(
+                                pos_id=pos_id,
+                                total_games=1,
+                                white_wins=white_wins,
+                                draws=draws,
+                                black_wins=black_wins,
+                                average_elo=elo_white if turn else elo_black,
+                                average_year=year,
+                                turn=turn,
+                                fen=board.fen()
+                            )
+                            self.positions[pos_id] = position
+
+                        move.next_position = position
+                        prev_position = position
+
+                board.reset()
                 self.total_games += 1
                 if self.total_games % 10000 == 0:
-                    self.logger.info("%d ", self.total_games)
+                    self.logger.info("Games: %d ", self.total_games)
+                    self.logger.info("Positions: %d ", len(self.positions))
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
-
-    def set_position(self, pos_id, white_wins, draws, black_wins, elo_white, elo_black, year, turn, board):
-        if pos_id in self.positions:
-            position = self.positions[pos_id]
-            position.total_games += 1
-            position.white_wins += white_wins
-            position.draws += draws
-            position.black_wins += black_wins
-            if turn:
-                position.average_elo += elo_white
-            else:
-                position.average_elo += elo_black
-            position.average_year += year
-            return position
-        else:
-            position = Position(
-                pos_id=pos_id,
-                total_games=1,
-                white_wins=white_wins,
-                draws=draws,
-                black_wins=black_wins,
-                average_elo=elo_white if turn else elo_black,
-                average_year=year,
-                turn=turn,
-                fen=board.fen()
-            )
-            self.positions[pos_id] = position
-            return position
 
     def update_initial_position(self, white_wins, draws, black_wins, elo_white, year):
         self.initial_pos.total_games += 1
@@ -134,6 +134,8 @@ class PositionLoaderService:
         self.remove_least_played_moves(self.initial_pos)
 
         self.visited = {}
+
+        self.positions = {}
 
         self.set_final_position_values(self.initial_pos)
 

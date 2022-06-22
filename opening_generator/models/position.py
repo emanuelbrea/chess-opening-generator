@@ -7,8 +7,8 @@ from opening_generator.models import Move
 association_table = Table(
     "next_moves",
     Base.metadata,
-    Column("pos_id", ForeignKey("position.pos_id")),
-    Column("move_id", ForeignKey("move.move_id")),
+    Column("pos_id", ForeignKey("position.pos_id"), primary_key=True),
+    Column("move_id", ForeignKey("move.move_id"), primary_key=True),
 )
 
 
