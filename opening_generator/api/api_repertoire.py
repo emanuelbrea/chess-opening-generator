@@ -1,7 +1,7 @@
 import chess
-from flask import Blueprint, jsonify, request, abort
+from flask import Blueprint, jsonify, request
 
-from opening_generator.api.api_position import get_board_by_fen, get_position_by_board
+from opening_generator.api.api_position import get_board_by_fen, get_position_by_board, get_color
 from opening_generator.db import db_session
 from opening_generator.models import User, Position
 from opening_generator.services.position_service import position_service
@@ -14,10 +14,10 @@ repertoire_bp = Blueprint('repertoire', __name__, url_prefix='/repertoire')
 def get_user_repertoire():
     args = request.args
     board: chess.Board = get_board_by_fen(args)
+    color = get_color(args)
+
     user = db_session.query(User).first()
     position: Position = get_position_by_board(board)
-
-    color = args.get("color", "WHITE").upper() == "WHITE"
 
     moves = repertoire_service.get_repertoire_moves(position, user, color)
     return jsonify(message=f"Repertoire retrieved correctly.", data=moves, success=True), 200
@@ -35,20 +35,16 @@ def create_user_repertoire():
 def edit_user_repertoire():
     args = request.args
     new_move: str = args.get('new_move')
-    old_move: str = args.get('old_move')
-
-    if not old_move:
-        abort(400, description="Missing move")
 
     board: chess.Board = get_board_by_fen(args)
     user = db_session.query(User).first()
     position: Position = get_position_by_board(board)
 
-    color = args.get("color", "WHITE").upper() == "WHITE"
+    color = get_color(args=args)
 
-    moves = repertoire_service.update_user_repertoire(position, user, color, new_move, old_move)
+    moves = repertoire_service.update_user_repertoire(position, user, color, new_move)
     if len(moves) == 0:
         return jsonify(message=f"Repertoire could not be updated. Try with another move.",
-                       data=len(moves), success=False), 400
-    return jsonify(message=f"Repertoire updated correctly after {new_move} instead of {old_move}.",
+                       data={}, success=False), 400
+    return jsonify(message=f"Repertoire updated correctly after {position.fen}.",
                    data=len(moves), success=True), 200

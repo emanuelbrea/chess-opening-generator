@@ -13,3 +13,8 @@ class Style(Base):
     risk = Column(Float)
 
     user = relationship("User", back_populates="style")
+
+    def __init__(self, popularity: int = 0, fashion: int = 0, risk: int = 0):
+        self.popularity = popularity
+        self.fashion = fashion
+        self.risk = risk
