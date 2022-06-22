@@ -48,8 +48,7 @@ class Position(Base):
 
     def set_popularity_weight(self):
         for move in self.next_moves:
-            if move.popularity_weight == 0:
-                move.popularity_weight = move.played / self.total_games
+            move.set_popularity_weight()
 
     def set_final_values(self):
         self.set_final_year()
