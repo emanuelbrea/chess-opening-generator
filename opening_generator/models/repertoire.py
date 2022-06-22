@@ -15,8 +15,8 @@ class Repertoire(Base):
     __tablename__ = "repertoire"
 
     repertoire_id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey('user.user_id'))
-    color = Column(Boolean)
+    user_id = Column(ForeignKey('user.user_id'), nullable=False)
+    color = Column(Boolean, nullable=False)
 
     user = relationship("User", back_populates="repertoire")
 

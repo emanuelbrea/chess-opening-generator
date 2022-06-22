@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey
+from sqlalchemy import Column, Float, ForeignKey, Integer, CheckConstraint
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -7,14 +7,12 @@ from opening_generator.db import Base
 class Style(Base):
     __tablename__ = "style"
 
-    user_id = Column(ForeignKey('user.user_id'), primary_key=True)
-    popularity = Column(Float)
-    fashion = Column(Float)
-    risk = Column(Float)
+    style_id = Column(Integer, primary_key=True)
+    user_id = Column(ForeignKey('user.user_id'), unique=True, nullable=False)
+    popularity = Column(Float, CheckConstraint('style.popularity >= -1 and style.popularity <= 1'), nullable=False,
+                        default=0)
+    fashion = Column(Float, CheckConstraint('style.fashion >= -1 and style.fashion <= 1'), nullable=False, default=0)
+    risk = Column(Float, CheckConstraint('style.risk >= -1 and style.risk <= 1'), nullable=False, default=0)
+    rating = Column(Integer, CheckConstraint('style.rating >= 0'), nullable=False, default=0)
 
     user = relationship("User", back_populates="style")
-
-    def __init__(self, popularity: int = 0, fashion: int = 0, risk: int = 0):
-        self.popularity = popularity
-        self.fashion = fashion
-        self.risk = risk

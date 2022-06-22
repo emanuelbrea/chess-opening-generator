@@ -8,10 +8,10 @@ class Move(Base):
     __tablename__ = "move"
 
     move_id = Column(Integer, primary_key=True)
-    next_pos_id = Column(ForeignKey('position.pos_id'))
-    move_san = Column(String(15))
-    played = Column(Integer)
-    popularity_weight = Column(Float)
+    next_pos_id = Column(ForeignKey('position.pos_id'), nullable=False)
+    move_san = Column(String(15), nullable=False)
+    played = Column(Integer, nullable=False)
+    popularity_weight = Column(Float, nullable=False)
 
     next_position = relationship("Position")
 
@@ -21,4 +21,5 @@ class Move(Base):
         self.popularity_weight = 0
 
     def set_popularity_weight(self):
-        self.popularity_weight = self.played / self.next_position.total_games
+        if self.popularity_weight == 0:
+            self.popularity_weight = self.played / self.next_position.total_games

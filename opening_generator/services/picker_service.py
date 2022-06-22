@@ -109,8 +109,8 @@ class PickerService:
         return floor
 
     def get_depth(self, user):
-        rating = user.rating
-        if not rating or rating < 1500:
+        rating = user.style.rating
+        if rating < 1500:
             return 4
         if rating < 1700:
             return 5
