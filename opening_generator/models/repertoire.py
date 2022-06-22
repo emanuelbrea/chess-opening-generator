@@ -6,8 +6,8 @@ from opening_generator.db import Base
 association_table = Table(
     "repertoire_moves",
     Base.metadata,
-    Column("repertoire_id", ForeignKey("repertoire.repertoire_id")),
-    Column("move_id", ForeignKey("move.move_id")),
+    Column("repertoire_id", ForeignKey("repertoire.repertoire_id"), primary_key=True),
+    Column("move_id", ForeignKey("move.move_id"), primary_key=True),
 )
 
 
