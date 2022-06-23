@@ -15,6 +15,7 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     DATABASE_URI = environ.get('PROD_DATABASE_URI')
+    JSON_SORT_KEYS = False
 
 
 class DevConfig(Config):
@@ -22,3 +23,4 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
     DATABASE_URI = environ.get('DATABASE_URL')
+    JSON_SORT_KEYS = False
