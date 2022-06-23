@@ -32,17 +32,29 @@ class PositionService:
         return [move.move_san for move in position.next_moves]
 
     def get_next_moves_stats(self, position):
-        stats = {}
+        stats = {'position': dict(total_games=position.total_games,
+                                  white_wins=position.white_wins,
+                                  black_wins=position.black_wins,
+                                  draws=position.draws,
+                                  winning_rate=position.winning_rate,
+                                  year=position.average_year,
+                                  average_elo=position.average_elo,
+                                  performance=position.performance,
+                                  fen=position.fen
+                                  ), 'moves': {}}
         for move in position.next_moves:
             next_position = move.next_position
-            stats[move.move_san] = dict(total_games=next_position.total_games,
-                                        white_wins=next_position.white_wins,
-                                        black_wins=next_position.black_wins,
-                                        draws=next_position.draws,
-                                        year=next_position.average_year,
-                                        average_elo=next_position.average_elo,
-                                        fen=next_position.fen
-                                        )
+            stats['moves'][move.move_san] = dict(played=move.played,
+                                                 frequency=move.played / position.total_games,
+                                                 white_wins=next_position.white_wins,
+                                                 black_wins=next_position.black_wins,
+                                                 draws=next_position.draws,
+                                                 winning_rate=next_position.winning_rate,
+                                                 year=next_position.average_year,
+                                                 average_elo=next_position.average_elo,
+                                                 performance=position.performance,
+                                                 fen=next_position.fen
+                                                 )
         return stats
 
 

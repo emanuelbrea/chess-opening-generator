@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String, Boolean, Table, ForeignKey
+from sqlalchemy import Integer, Column, String, Boolean, Table, ForeignKey, CheckConstraint, Float
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -17,34 +17,33 @@ class Position(Base):
 
     pos_id = Column(String, primary_key=True)
 
-    total_games = Column(Integer)
-    white_wins = Column(Integer)
-    draws = Column(Integer)
-    black_wins = Column(Integer)
-    average_year = Column(Integer)
-    average_elo = Column(Integer)
+    total_games = Column(Integer,
+                         CheckConstraint(
+                             'position.white_wins + position.draws + position.black_wins = position.total_games'),
+                         nullable=False)
+    white_wins = Column(Integer, CheckConstraint('position.white_wins >= 0'), nullable=False)
+    draws = Column(Integer, CheckConstraint('position.draws >= 0'), nullable=False)
+    black_wins = Column(Integer, CheckConstraint('position.black_wins >= 0'), nullable=False)
+    average_year = Column(Integer, CheckConstraint('position.average_year > 0'), nullable=False)
+    average_elo = Column(Integer, CheckConstraint('position.average_elo > 0'), nullable=False)
+    performance = Column(Integer, CheckConstraint('position.performance > 0'), nullable=False)
+    winning_rate = Column(Float, nullable=False)
     turn = Column(Boolean)
     fen = Column(String)
 
     next_moves = relationship("Move", secondary=association_table)
 
-    def __init__(self, pos_id, total_games, white_wins, draws, black_wins, average_year, average_elo, turn, fen):
-        self.pos_id = pos_id
-        self.total_games = total_games
-        self.white_wins = white_wins
-        self.draws = draws
-        self.black_wins = black_wins
-        self.average_elo = average_elo
-        self.average_year = average_year
-        self.turn = turn
-        self.fen = fen
-        self.next_moves = []
-
     def set_final_elo(self):
         self.average_elo = self.average_elo // self.total_games
 
+    def set_final_performance(self):
+        self.performance = self.performance // self.total_games
+
     def set_final_year(self):
         self.average_year = self.average_year // self.total_games
+
+    def set_winning_rate(self):
+        self.winning_rate = (self.white_wins + 0.5 * self.draws) / self.total_games
 
     def set_popularity_weight(self):
         for move in self.next_moves:
@@ -54,6 +53,8 @@ class Position(Base):
         self.set_final_year()
         self.set_final_elo()
         self.set_popularity_weight()
+        self.set_final_performance()
+        self.set_winning_rate()
 
     def add_move(self, move_san):
         for next_move in self.next_moves:

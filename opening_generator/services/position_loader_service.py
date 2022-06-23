@@ -30,6 +30,7 @@ class PositionLoaderService:
             black_wins=0,
             average_elo=0,
             average_year=0,
+            performance=0,
             turn=True,
             fen=board.fen()
         )
@@ -66,7 +67,7 @@ class PositionLoaderService:
 
                 prev_position = self.initial_pos
 
-                self.update_initial_position(white_wins, draws, black_wins, elo_white, year)
+                self.update_initial_position(white_wins, draws, black_wins, elo_white, elo_black, year)
 
                 for move in game.mainline_moves():
                     if board.ply() > self.max_moves:
@@ -85,10 +86,12 @@ class PositionLoaderService:
                         next_position.white_wins += white_wins
                         next_position.draws += draws
                         next_position.black_wins += black_wins
-                        if turn:
+                        if not turn:
                             next_position.average_elo += elo_white
+                            next_position.performance += elo_black
                         else:
                             next_position.average_elo += elo_black
+                            next_position.performance += elo_white
                         next_position.average_year += year
                         prev_position = next_position
 
@@ -105,7 +108,8 @@ class PositionLoaderService:
                                 white_wins=white_wins,
                                 draws=draws,
                                 black_wins=black_wins,
-                                average_elo=elo_white if turn else elo_black,
+                                average_elo=elo_white if not turn else elo_black,
+                                performance=elo_white if turn else elo_black,
                                 average_year=year,
                                 turn=turn,
                                 fen=board.fen()
@@ -122,12 +126,13 @@ class PositionLoaderService:
                     self.logger.info("Positions: %d ", len(self.positions))
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
 
-    def update_initial_position(self, white_wins, draws, black_wins, elo_white, year):
+    def update_initial_position(self, white_wins, draws, black_wins, elo_white, elo_black, year):
         self.initial_pos.total_games += 1
         self.initial_pos.white_wins += white_wins
         self.initial_pos.draws += draws
         self.initial_pos.black_wins += black_wins
         self.initial_pos.average_elo += elo_white
+        self.initial_pos.performance += elo_black
         self.initial_pos.average_year += year
 
     def set_final_positions(self):
