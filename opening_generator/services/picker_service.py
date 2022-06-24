@@ -2,7 +2,7 @@ import logging
 import random
 from typing import Dict
 
-from opening_generator.models import Move, Position
+from opening_generator.models import Move, Position, User
 
 MIN_YEAR = 1970
 MIN_RATING = 2300
@@ -36,7 +36,7 @@ class PickerService:
                 moves += self.pick_variation(move.next_position, user, color, depth, current_depth)
         return moves
 
-    def pick_move(self, position: Position, user, color, depth, current_depth=5):
+    def pick_move(self, position: Position, user: User, color: bool, depth: int, current_depth: int = 5):
         popularity = user.style.popularity
         fashion = user.style.fashion
         risk = user.style.risk

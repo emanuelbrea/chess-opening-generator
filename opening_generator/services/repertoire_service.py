@@ -5,6 +5,7 @@ from opening_generator.db.repertoire_dao import repertoire_dao
 from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import Move, Position, User, Repertoire
 from opening_generator.services.picker_service import picker_service
+from opening_generator.services.position_service import position_service
 
 
 class RepertoireService:
@@ -12,51 +13,34 @@ class RepertoireService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def get_user_repertoire(self, user: User, color: bool) -> Repertoire | None:
+    def get_user_repertoire(self, user: User, color: bool) -> Repertoire | InvalidRequestException:
         repertoire = next((repertoire for repertoire in user.repertoire if repertoire.color == color), None)
         if repertoire is None:
             color = "white" if color else "black"
             raise InvalidRequestException(description=f"User {user.email} does not have a {color} repertoire")
         return repertoire
 
-    def get_repertoire_moves(self, position: Position, user: User, color: bool) -> InvalidRequestException | Dict:
+    def get_repertoire_moves(self, position: Position, user: User, color: bool) -> Dict | InvalidRequestException:
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
         next_moves = position.next_moves
-        my_move = self.get_my_move(repertoire_moves, next_moves)
+        my_move: Move = self.get_my_move(repertoire_moves, next_moves)
         if not my_move:
             return InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
                                                        f"{user.email} repertoire.")
 
+        my_move_stats: Dict = position_service.get_move_stats(move=my_move)
+        position_stats: Dict = position_service.get_position_stats(position=position)
         next_position: Position = my_move.next_position
-        my_move_stats = dict(move=my_move.move_san,
-                             played=my_move.played,
-                             total_games=next_position.total_games,
-                             white_wins=next_position.white_wins,
-                             draws=next_position.draws,
-                             black_wins=next_position.black_wins,
-                             average_rating=next_position.average_elo,
-                             average_year=next_position.average_year,
-                             fen=position.fen
-                             )
-        rival_moves = self.get_rival_moves(repertoire_moves, next_position.next_moves)
-        rival_moves_stats = {}
+        rival_moves: List[Move] = self.get_rival_moves(repertoire_moves, next_position.next_moves)
+        rival_moves_stats = []
         for move in rival_moves:
-            next_position = move.next_position
-            rival_moves_stats[move.move_san] = dict(move=move.move_san,
-                                                    played=move.played,
-                                                    total_games=next_position.total_games,
-                                                    white_wins=next_position.white_wins,
-                                                    draws=next_position.draws,
-                                                    black_wins=next_position.black_wins,
-                                                    average_rating=next_position.average_elo,
-                                                    average_year=next_position.average_year,
-                                                    fen=next_position.fen
-                                                    )
+            rival_moves_stats.append(position_service.get_move_stats(move=move))
+        rival_moves_stats = sorted(rival_moves_stats, key=lambda d: d['played'], reverse=True)
 
-        return dict(my_move=my_move_stats, rival_moves=rival_moves_stats)
+        return dict(position=position_stats, my_move=my_move_stats, rival_moves=rival_moves_stats)
 
-    def get_my_move(self, repertoire_moves, next_moves) -> Move | None:
+    def get_my_move(self, repertoire_moves: List[Move], next_moves: List[Move]) -> Move | None:
         for move in next_moves:
             if move in repertoire_moves:
                 return move
@@ -69,15 +53,15 @@ class RepertoireService:
                 rival_moves.append(move)
         return rival_moves
 
-    def create_user_repertoire(self, position, user):
+    def create_user_repertoire(self, position: Position, user: User):
         self.logger.info("About to create both repertoires for user %s", user.email)
-        moves = picker_service.pick_variations(position, user, True)
+        moves: List[Move] = picker_service.pick_variations(position=position, user=user, color=True)
         repertoire_dao.create_repertoire(user=user, color=True, moves=moves)
-        moves = picker_service.pick_variations(position, user, False)
+        moves: List[Move] = picker_service.pick_variations(position=position, user=user, color=False)
         repertoire_dao.create_repertoire(user=user, color=False, moves=moves)
         self.logger.info("Created both repertoires for user %s", user.email)
 
-    def update_user_repertoire(self, position, user, color, new_move):
+    def update_user_repertoire(self, position: Position, user: User, color: bool, new_move: str):
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
         next_moves = position.next_moves
@@ -89,9 +73,9 @@ class RepertoireService:
         if not new_move:
             tries = 0
             depth = picker_service.get_depth(user)
-            new_move = picker_service.pick_move(position, user, color, depth)
+            new_move = picker_service.pick_move(position=position, user=user, color=color, depth=depth)
             while new_move is move_to_remove:
-                new_move = picker_service.pick_move(position, user, color, depth)
+                new_move = picker_service.pick_move(position=position, user=user, color=color, depth=depth)
                 tries += 1
                 if tries == 10:
                     raise InvalidRequestException(
@@ -100,20 +84,18 @@ class RepertoireService:
         else:
             new_move = next((move for move in next_moves if move.move_san == new_move), None)
             if not new_move:
-                raise InvalidRequestException(description=f"Suggested moved is not available in this position. Choose"
+                raise InvalidRequestException(description=f"Suggested move is not available in this position. Choose"
                                                           f" a different one.")
         next_position = new_move.next_position
-        moves = picker_service.pick_variations(next_position, user, color)
+        moves = picker_service.pick_variations(position=next_position, user=user, color=color)
         moves.append(new_move)
 
         moves_to_remove = self.get_moves_after_position(repertoire_moves, move_to_remove)
-        repertoire_dao.delete_moves_from_repertoire(repertoire=repertoire, user=user, color=color,
-                                                    moves=moves_to_remove)
         repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
-                                        moves=moves)
+                                        moves=moves, old_moves=moves_to_remove)
         return moves
 
-    def get_moves_after_position(self, repertoire_moves, move) -> List[Move]:
+    def get_moves_after_position(self, repertoire_moves: List[Move], move: Move) -> List[Move]:
         moves = [move]
         next_position = move.next_position
         next_moves = next_position.next_moves

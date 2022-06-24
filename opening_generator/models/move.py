@@ -19,7 +19,3 @@ class Move(Base):
         self.move_san = move_san
         self.played = 1
         self.popularity_weight = 0
-
-    def set_popularity_weight(self):
-        if self.popularity_weight == 0:
-            self.popularity_weight = self.played / self.next_position.total_games
