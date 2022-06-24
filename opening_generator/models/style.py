@@ -7,8 +7,8 @@ from opening_generator.db import Base
 class Style(Base):
     __tablename__ = "style"
 
-    style_id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey('user.user_id'), unique=True, nullable=False)
+    style_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(ForeignKey('user.user_id'), primary_key=True)
     popularity = Column(Float, CheckConstraint('style.popularity >= -1 and style.popularity <= 1'), nullable=False,
                         default=0)
     fashion = Column(Float, CheckConstraint('style.fashion >= -1 and style.fashion <= 1'), nullable=False, default=0)

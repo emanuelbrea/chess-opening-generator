@@ -43,12 +43,7 @@ def get_stats():
 
     position: Position = get_position_by_board(board)
 
-    stats = dict(total_games=position.total_games,
-                 white_wins=position.white_wins,
-                 black_wins=position.black_wins,
-                 draws=position.draws,
-                 year=position.average_year,
-                 average_elo=position.average_elo)
+    stats = position_service.get_position_stats(position=position)
     return jsonify(message="Stats retrieved correctly.", data=stats, success=True), 200
 
 
