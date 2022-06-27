@@ -14,8 +14,3 @@ class Move(Base):
     popularity_weight = Column(Float, nullable=False)
 
     next_position = relationship("Position")
-
-    def __init__(self, move_san):
-        self.move_san = move_san
-        self.played = 1
-        self.popularity_weight = 0

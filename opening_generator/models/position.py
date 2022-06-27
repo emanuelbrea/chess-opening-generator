@@ -29,7 +29,7 @@ class Position(Base):
     performance = Column(Integer, CheckConstraint('position.performance > 0'), nullable=False)
     winning_rate = Column(Float, nullable=False)
     turn = Column(Boolean)
-    fen = Column(String)
+    fen = Column(String(100))
 
     next_moves = relationship("Move", secondary=association_table)
 
@@ -47,7 +47,7 @@ class Position(Base):
 
     def set_popularity_weight(self):
         for move in self.next_moves:
-            if move.popularity_weight == 0:
+            if move.popularity_weight is None:
                 move.popularity_weight = move.played / self.total_games
 
     def set_final_values(self):
