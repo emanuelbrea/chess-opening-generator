@@ -20,8 +20,8 @@ class PositionDao:
     def get_position(self, pos_id):
         return db_session.query(Position).filter(Position.pos_id == pos_id).first()
 
-    def save_positions(self, position):
-        db_session.add(position)
+    def save_positions(self, positions):
+        db_session.add_all(positions.values())
         db_session.commit()
 
 
