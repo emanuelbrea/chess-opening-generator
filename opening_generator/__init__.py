@@ -15,11 +15,11 @@ def create_app(test_config=None):
     from opening_generator.db import init_db, db_session
     init_db()
 
-    from opening_generator.api.api_eco import eco
+    from opening_generator.api.api_eco import eco_bp
     from opening_generator.api.api_repertoire import repertoire_bp
     from opening_generator.api.api_position import pos_bp
     from opening_generator.api.api_user import user_bp
-    app.register_blueprint(eco)
+    app.register_blueprint(eco_bp)
     app.register_blueprint(repertoire_bp)
     app.register_blueprint(pos_bp)
     app.register_blueprint(user_bp)
@@ -31,5 +31,11 @@ def create_app(test_config=None):
     @app.teardown_appcontext
     def shutdown_session(exception=None):
         db_session.remove()
+
+    @app.after_request
+    def after_request(response):
+        header = response.headers
+        header['Access-Control-Allow-Origin'] = '*'
+        return response
 
     return app

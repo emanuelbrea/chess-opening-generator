@@ -1,7 +1,7 @@
 from typing import List
 
 import chess
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, Response
 
 from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import Position
@@ -71,3 +71,22 @@ def get_next_moves_stats():
     moves_stats = position_service.get_next_moves_stats(position=position)
 
     return jsonify(message="Next moves stats retrieved correctly.", data=moves_stats, success=True), 200
+
+
+@pos_bp.route('/svg', methods=["GET"])
+def get_position_svg():
+    args = request.args
+
+    move_san = args.get('move')
+
+    board: chess.Board = get_board_by_fen(args)
+
+    position: Position = get_position_by_board(board)
+
+    position_svg = position_service.get_position_svg(position=position, move=move_san)
+
+    if not position_svg:
+        return jsonify(message=f"Move {move_san} is not valid in this position.", data={}, success=False), 400
+
+    return Response(position_svg, mimetype='image/svg+xml'), 200
+
