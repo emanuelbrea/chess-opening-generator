@@ -1,6 +1,7 @@
 import logging
 
 import chess
+from chess import svg
 from chess.polyglot import zobrist_hash
 from sqlalchemy.exc import NoResultFound
 
@@ -65,6 +66,19 @@ class PositionService:
                     performance=position.performance,
                     fen=position.fen
                     )
+
+    def get_position_svg(self, position: Position, move: str):
+        fen = position.fen
+        board = chess.Board(fen=fen)
+        if move:
+            try:
+                last_move = board.push_san(move)
+                position_svg = str(svg.board(board=board, lastmove=last_move))
+            except ValueError:
+                return None
+        else:
+            position_svg = str(svg.board(board=board))
+        return position_svg
 
 
 position_service = PositionService()

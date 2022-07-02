@@ -1,18 +1,27 @@
-from flask import Blueprint, jsonify
+import chess
+from flask import Blueprint, jsonify, request
 
+from opening_generator.api.api_position import get_board_by_fen, get_position_by_board
+from opening_generator.models import Position, EcoCode
 from opening_generator.services.eco_code_service import eco_service
 
-eco = Blueprint('eco_code', __name__, url_prefix='/eco')
+eco_bp = Blueprint('eco_code', __name__, url_prefix='/eco')
 
 
-@eco.route('/', methods=["POST"])
-def load_eco_codes():
-    eco_codes = eco_service.load_eco_codes()
-    return jsonify(message=f"Loaded eco codes correctly.", data=dict(total=len(eco_codes)), success=True), 200
+@eco_bp.route('/', methods=["GET"])
+def get_eco_code():
+    args = request.args
 
+    board: chess.Board = get_board_by_fen(args)
 
-@eco.route('/svg', methods=["POST"])
-def save_svg():
-    boards = eco_service.get_eco_codes_boards()
-    eco_service.save_board_as_svg(boards=boards)
-    return jsonify(message=f"Save svg eco positions correctly.", data=dict(total=len(boards)), success=True), 200
+    position: Position = get_position_by_board(board)
+
+    eco_code: EcoCode = eco_service.get_eco_code(position=position)
+
+    if not eco_code:
+        return jsonify(message="Eco code not found for position.", data={}, success=True), 200
+
+    eco_code_desc = dict(eco_code=eco_code.eco_code,
+                         main_line=eco_code.main_line,
+                         name=eco_code.name)
+    return jsonify(message="Eco code found for position.", data=eco_code_desc, success=True), 200
