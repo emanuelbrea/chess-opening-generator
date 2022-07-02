@@ -32,6 +32,7 @@ class Position(Base):
     fen = Column(String(100))
 
     next_moves = relationship("Move", secondary=association_table)
+    eco_code = relationship("EcoCode", back_populates="position", uselist=False)
 
     def set_final_elo(self):
         self.average_elo = self.average_elo // self.total_games

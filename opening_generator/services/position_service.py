@@ -52,7 +52,8 @@ class PositionService:
                     average_elo=next_position.average_elo,
                     performance=next_position.performance,
                     fen=next_position.fen,
-                    move=move.move_san
+                    move=move.move_san,
+                    eco_code=next_position.eco_code.eco_code if next_position.eco_code else None
                     )
 
     def get_position_stats(self, position: Position):
@@ -64,7 +65,8 @@ class PositionService:
                     year=position.average_year,
                     average_elo=position.average_elo,
                     performance=position.performance,
-                    fen=position.fen
+                    fen=position.fen,
+                    eco_code=position.eco_code.eco_code if position.eco_code else None
                     )
 
     def get_position_svg(self, position: Position, move: str):
