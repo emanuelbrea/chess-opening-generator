@@ -22,13 +22,13 @@ class PickerService:
         return moves
 
     def pick_variation(self, position, user, color, depth, current_depth):
-        if current_depth == depth:
-            return []
         if position.pos_id in self.visited:
             return []
         self.visited[position.pos_id] = True
         moves = []
         if position.turn == color:
+            if current_depth == depth:
+                return []
             current_depth += 1
             my_move: Move = self.pick_move(position, user, color, depth, current_depth)
             if my_move is not None:

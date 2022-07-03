@@ -90,25 +90,53 @@ class RepertoireService:
         moves = picker_service.pick_variations(position=next_position, user=user, color=color, current_depth=1)
         moves.append(new_move)
 
-        moves_to_remove = self.get_moves_after_position(repertoire_moves, move_to_remove)
+        moves_to_remove = self.get_moves_after_position(repertoire=repertoire, move=move_to_remove)
         repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
                                         moves=moves, old_moves=moves_to_remove)
         return moves
 
-    def get_moves_after_position(self, repertoire_moves: List[Move], move: Move) -> List[Move]:
+    def get_moves_after_position(self, repertoire: Repertoire, move: Move) -> List[Move]:
         moves = [move]
-        next_position = move.next_position
+        next_position: Position = move.next_position
         next_moves = next_position.next_moves
-        rival_moves = self.get_rival_moves(repertoire_moves=repertoire_moves, next_moves=next_moves)
-        moves += rival_moves
-        for move in rival_moves:
-            next_position = move.next_position
-            next_moves = next_position.next_moves
-            my_move = self.get_my_move(repertoire_moves=repertoire_moves, next_moves=next_moves)
+        if next_position.turn == repertoire.color:
+            my_move = self.get_my_move(repertoire_moves=repertoire.moves, next_moves=next_moves)
             if my_move:
-                moves += self.get_moves_after_position(repertoire_moves, my_move)
-
+                moves += self.get_moves_after_position(repertoire, my_move)
+        else:
+            rival_moves = self.get_rival_moves(repertoire_moves=repertoire.moves, next_moves=next_moves)
+            for move in rival_moves:
+                moves += self.get_moves_after_position(repertoire, move)
         return moves
+
+    def add_rival_move_to_repertoire(self, position: Position, user: User, color: bool, move_san: str):
+        repertoire = self.get_user_repertoire(user=user, color=color)
+        rival_moves = position.next_moves
+        new_move = next((move for move in rival_moves if move.move_san == move_san), None)
+        if not new_move:
+            raise InvalidRequestException(description=f"Suggested move is not available in this position. Choose"
+                                                      f" a different one.")
+        if new_move in self.get_rival_moves(repertoire_moves=repertoire.moves, next_moves=rival_moves):
+            raise InvalidRequestException(description=f"Suggested move is already in repertoire.")
+        next_position = new_move.next_position
+        moves = picker_service.pick_variations(position=next_position, user=user, color=color, current_depth=1)
+        moves.append(new_move)
+        repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
+                                        moves=moves, old_moves=[])
+        return moves
+
+    def remove_rival_move_from_repertoire(self, position: Position, user: User, color: bool, move_san: str):
+        repertoire = self.get_user_repertoire(user=user, color=color)
+        repertoire_moves = repertoire.moves
+        rival_moves: List[Move] = self.get_rival_moves(repertoire_moves, position.next_moves)
+        move_to_remove = next((move for move in rival_moves if move.move_san == move_san), None)
+        if not move_to_remove:
+            raise InvalidRequestException(description=f"Suggested move is not available in this position. Choose"
+                                                      f" a different one.")
+        moves_to_remove = set(self.get_moves_after_position(repertoire=repertoire, move=move_to_remove))
+        repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
+                                        moves=[], old_moves=moves_to_remove)
+        return moves_to_remove
 
 
 repertoire_service = RepertoireService()
