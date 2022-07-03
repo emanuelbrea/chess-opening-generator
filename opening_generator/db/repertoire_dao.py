@@ -24,11 +24,12 @@ class RepertoireDao:
     def insert_new_moves(self, repertoire: Repertoire, moves: List[Move], user: User, color: bool,
                          old_moves: List[Move]):
         repertoire.moves = list(set(repertoire.moves) - set(old_moves))
-        self.logger.info("Deleted %d moves from %s repertoire for user %s.", len(old_moves),
-                         "white" if color else "black", user.email)
         repertoire.moves += moves
         db_session.commit()
-        self.logger.info("Inserted %d moves from %s repertoire for user %s.", len(moves), "white" if color else "black",
+        self.logger.info("Deleted %d moves from %s repertoire for user %s.", len(set(old_moves)),
+                         "white" if color else "black", user.email)
+        self.logger.info("Inserted %d moves from %s repertoire for user %s.", len(set(moves)),
+                         "white" if color else "black",
                          user.email)
 
 
