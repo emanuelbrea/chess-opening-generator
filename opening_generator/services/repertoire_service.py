@@ -26,8 +26,8 @@ class RepertoireService:
         next_moves = position.next_moves
         my_move: Move = self.get_my_move(repertoire_moves, next_moves)
         if not my_move:
-            return InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
-                                                       f"{user.email} repertoire.")
+            raise InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
+                                                      f"{user.email} repertoire.")
 
         my_move_stats: Dict = position_service.get_move_stats(move=my_move)
         position_stats: Dict = position_service.get_position_stats(position=position)
@@ -87,7 +87,7 @@ class RepertoireService:
                 raise InvalidRequestException(description=f"Suggested move is not available in this position. Choose"
                                                           f" a different one.")
         next_position = new_move.next_position
-        moves = picker_service.pick_variations(position=next_position, user=user, color=color)
+        moves = picker_service.pick_variations(position=next_position, user=user, color=color, current_depth=1)
         moves.append(new_move)
 
         moves_to_remove = self.get_moves_after_position(repertoire_moves, move_to_remove)

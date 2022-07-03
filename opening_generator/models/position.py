@@ -2,7 +2,6 @@ from sqlalchemy import Integer, Column, String, Boolean, Table, ForeignKey, Chec
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
-from opening_generator.models import Move
 
 association_table = Table(
     "next_moves",
@@ -57,12 +56,3 @@ class Position(Base):
         self.set_popularity_weight()
         self.set_final_performance()
         self.set_winning_rate()
-
-    def add_move(self, move_san):
-        for next_move in self.next_moves:
-            if next_move.move_san == move_san:
-                next_move.played += 1
-                return next_move
-        move = Move(move_san)
-        self.next_moves.append(move)
-        return move

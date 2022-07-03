@@ -12,16 +12,21 @@ class PickerService:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+        self.visited = {}
 
-    def pick_variations(self, position, user, color):
+    def pick_variations(self, position, user, color, current_depth: int = 0):
         depth = self.get_depth(user)
-        moves = self.pick_variation(position, user, color, depth, 0)
+        moves = self.pick_variation(position, user, color, depth, current_depth)
         moves = list(set(moves))
+        self.visited = {}
         return moves
 
     def pick_variation(self, position, user, color, depth, current_depth):
         if current_depth == depth:
             return []
+        if position.pos_id in self.visited:
+            return []
+        self.visited[position.pos_id] = True
         moves = []
         if position.turn == color:
             current_depth += 1
@@ -59,10 +64,10 @@ class PickerService:
             next_position: Position = move.next_position
 
             if color:
-                winning_rate = next_position.white_wins + (0.5 * next_position.draws * (0.5 * risk + 1)) \
+                winning_rate = (next_position.white_wins + (0.5 * next_position.draws * (0.5 * risk + 1))) \
                                / next_position.total_games
             else:
-                winning_rate = next_position.black_wins + (0.5 * next_position.draws * (0.5 * risk + 1)) \
+                winning_rate = (next_position.black_wins + (0.5 * next_position.draws * (0.5 * risk + 1))) \
                                / next_position.total_games
             if winning_rate == 0:
                 continue
