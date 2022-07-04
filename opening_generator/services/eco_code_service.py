@@ -3,6 +3,7 @@ import io
 import logging
 import os
 
+import chess
 from chess import pgn
 
 from opening_generator.db.eco_code_dao import eco_code_dao
@@ -16,6 +17,7 @@ class EcoCodeService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.folder = "/../../data/eco/"
+        self.link = "https://en.wikibooks.org/wiki/Chess_Opening_Theory"
         self.load_eco_codes()
 
     def load_eco_codes(self):
@@ -31,11 +33,20 @@ class EcoCodeService:
                             eco_code = row[1]
                             name = row[2]
                             line = row[3]
+                            link = self.link
                             game_pgn = io.StringIO(line)
                             game = pgn.read_game(game_pgn)
-                            position = position_service.get_position(board=game.end().board())
+                            board: chess.Board = game.board()
+                            for move in game.mainline_moves():
+                                if board.turn:
+                                    link = link + '/' + str(board.fullmove_number) + '._' + board.san(move)
+                                else:
+                                    link = link + '/' + str(board.fullmove_number) + '...' + board.san(move)
+                                board.push(move)
+                            position = position_service.get_position(board=board)
                             if position:
-                                eco = EcoCode(eco_code=eco_code, name=name, main_line=line, position=position)
+                                eco = EcoCode(eco_code=eco_code, name=name, main_line=line, position=position,
+                                              description=link)
                                 eco_codes.append(eco)
 
             eco_code_dao.add_eco_codes(ecos=eco_codes)
