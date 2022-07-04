@@ -24,11 +24,13 @@ class RepertoireService:
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
         next_moves = position.next_moves
-        my_move: Move = self.get_my_move(repertoire_moves, next_moves)
+        if position.turn == color:
+            my_move: Move = self.get_my_move(repertoire_moves, next_moves)
+        else:
+            my_move: Move = next((move for move in repertoire_moves if move.next_pos_id == position.pos_id), None)
         if not my_move:
             raise InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
                                                       f"{user.email} repertoire.")
-
         my_move_stats: Dict = position_service.get_move_stats(move=my_move)
         position_stats: Dict = position_service.get_position_stats(position=position)
         next_position: Position = my_move.next_position
@@ -137,6 +139,25 @@ class RepertoireService:
         repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
                                         moves=[], old_moves=moves_to_remove)
         return moves_to_remove
+
+    def add_variant_to_repertoire(self, position: Position, user: User, color: bool):
+        if position.turn != color:
+            raise InvalidRequestException(description=f"Invalid position for repertoire.")
+        repertoire = self.get_user_repertoire(user=user, color=color)
+        previous_move = next((move for move in repertoire.moves if move.next_pos_id == position.pos_id), None)
+        if not previous_move:
+            raise InvalidRequestException(description=f"Position not available in user {user.email} repertoire.")
+
+        move = self.get_my_move(repertoire_moves=repertoire.moves, next_moves=position.next_moves)
+        if move:
+            raise InvalidRequestException(
+                description=f"Position with FEN {position.fen} is already in user {user.email} "
+                            f"repertoire.")
+
+        moves = picker_service.pick_variations(position=position, user=user, color=color, current_depth=1)
+        repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
+                                        moves=moves, old_moves=[])
+        return moves
 
 
 repertoire_service = RepertoireService()

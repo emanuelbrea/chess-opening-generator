@@ -1,7 +1,5 @@
-chess~=1.9.1
+chess~=1.9.2
 psycopg2-binary~=2.9.3
 Flask~=2.1.2
-setuptools~=62.3.2
-pandas~=1.4.2
-SQLAlchemy~=1.4.36
+SQLAlchemy~=1.4.39
 python-dotenv~=0.20.0
