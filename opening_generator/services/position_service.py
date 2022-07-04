@@ -53,7 +53,8 @@ class PositionService:
                     performance=next_position.performance,
                     fen=next_position.fen,
                     move=move.move_san,
-                    eco_code=next_position.eco_code.eco_code if next_position.eco_code else None
+                    eco_code=next_position.eco_code.eco_code if next_position.eco_code else None,
+                    name=next_position.eco_code.name if next_position.eco_code else None
                     )
 
     def get_position_stats(self, position: Position):

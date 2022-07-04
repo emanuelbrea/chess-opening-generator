@@ -20,8 +20,8 @@ class UserDao:
     def add_style_to_user(self, user: User, style: Style):
         user.style = style
         db_session.commit()
-        self.logger.info("Updated style for user %s. Popularity: %d , Fashion: %d ,"
-                         " Risk %d", user.email, style.popularity, style.fashion, style.risk)
+        self.logger.info("Updated style for user %s. Popularity: %f , Fashion: %f ,"
+                         " Risk %f, Rating %d", user.email, style.popularity, style.fashion, style.risk, style.rating)
 
 
 user_dao = UserDao()
