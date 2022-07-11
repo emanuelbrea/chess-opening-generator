@@ -33,6 +33,13 @@ class RepertoireService:
                                                       f"{user.email} repertoire.")
         my_move_stats: Dict = position_service.get_move_stats(move=my_move)
         position_stats: Dict = position_service.get_position_stats(position=position)
+
+        moves = []
+        for move in next_moves:
+            if move.popularity_weight > 0.05:
+                moves.append(position_service.get_move_stats(move=move))
+        my_moves_stats = sorted(moves, key=lambda d: d['played'], reverse=True)
+
         next_position: Position = my_move.next_position
         rival_moves: List[Move] = self.get_rival_moves(repertoire_moves, next_position.next_moves)
         rival_moves_stats = []
@@ -40,7 +47,8 @@ class RepertoireService:
             rival_moves_stats.append(position_service.get_move_stats(move=move))
         rival_moves_stats = sorted(rival_moves_stats, key=lambda d: d['played'], reverse=True)
 
-        return dict(position=position_stats, my_move=my_move_stats, rival_moves=rival_moves_stats)
+        return dict(position=position_stats, my_move=my_move_stats, my_moves=my_moves_stats,
+                    rival_moves=rival_moves_stats)
 
     def get_my_move(self, repertoire_moves: List[Move], next_moves: List[Move]) -> Move | None:
         for move in next_moves:
