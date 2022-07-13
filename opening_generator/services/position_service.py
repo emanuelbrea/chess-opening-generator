@@ -44,9 +44,9 @@ class PositionService:
         next_position: Position = move.next_position
         return dict(played=move.played,
                     frequency=move.popularity_weight,
-                    white_wins=next_position.white_wins,
-                    black_wins=next_position.black_wins,
-                    draws=next_position.draws,
+                    white_wins=round(next_position.white_wins / next_position.total_games, 2),
+                    black_wins=round(next_position.black_wins / next_position.total_games, 2),
+                    draws=round(next_position.draws / next_position.total_games, 2),
                     winning_rate=next_position.winning_rate,
                     year=next_position.average_year,
                     average_elo=next_position.average_elo,
@@ -68,16 +68,19 @@ class PositionService:
                     average_elo=position.average_elo,
                     performance=position.performance,
                     fen=position.fen,
-                    eco_code=position.eco_code.eco_code if position.eco_code else None
+                    eco_code=position.eco_code.eco_code if position.eco_code else None,
+                    turn=position.turn
                     )
 
-    def get_position_svg(self, position: Position, move: str):
+    def get_position_svg(self, position: Position, move: str, color: bool = True):
         fen = position.fen
         board = chess.Board(fen=fen)
         if move:
             try:
                 last_move = board.push_san(move)
-                position_svg = str(svg.board(board=board, lastmove=last_move))
+                position_svg = str(
+                    svg.board(board=board, lastmove=last_move, orientation=chess.WHITE if color else chess.BLACK))
+
             except ValueError:
                 return None
         else:

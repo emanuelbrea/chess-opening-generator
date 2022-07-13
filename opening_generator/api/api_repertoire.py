@@ -27,8 +27,7 @@ def get_request_arguments(args):
 def get_user_repertoire():
     args = get_request_arguments(request.args)
 
-    moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'])
-    moves['depth'] = args['depth']
+    moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'], args['depth'])
     return jsonify(message=f"Repertoire retrieved correctly.", data=moves, success=True), 200
 
 
@@ -48,8 +47,7 @@ def edit_user_repertoire():
     if len(moves) == 0:
         return jsonify(message=f"Repertoire could not be updated. Try with another move.",
                        data={}, success=False), 400
-    moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'])
-    moves['depth'] = args['depth']
+    moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'], args['depth'])
     return jsonify(message=f"Repertoire updated correctly after {args['position'].fen}.",
                    data=moves, success=True), 200
 
