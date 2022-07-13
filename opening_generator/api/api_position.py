@@ -83,7 +83,9 @@ def get_position_svg():
 
     position: Position = get_position_by_board(board)
 
-    position_svg = position_service.get_position_svg(position=position, move=move_san)
+    color = get_color(args=args)
+
+    position_svg = position_service.get_position_svg(position=position, move=move_san, color=color)
 
     if not position_svg:
         return jsonify(message=f"Move {move_san} is not valid in this position.", data={}, success=False), 400

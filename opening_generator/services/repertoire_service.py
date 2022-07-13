@@ -20,27 +20,33 @@ class RepertoireService:
             raise InvalidRequestException(description=f"User {user.email} does not have a {color} repertoire")
         return repertoire
 
-    def get_repertoire_moves(self, position: Position, user: User, color: bool) -> Dict | InvalidRequestException:
+    def get_repertoire_moves(self, position: Position, user: User, color: bool,
+                             depth: int) -> Dict | InvalidRequestException:
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
-        next_moves = position.next_moves
+
         if position.turn == color:
+            next_moves = position.next_moves
             my_move: Move = self.get_my_move(repertoire_moves, next_moves)
+            if not my_move:
+                raise InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
+                                                          f"{user.email} repertoire.")
+
+            my_move_stats: Dict = position_service.get_move_stats(move=my_move)
+            moves = []
+            floor: float = picker_service.calculate_floor(current_depth=depth, depth=picker_service.get_depth(user))
+            for move in next_moves:
+                if move.popularity_weight >= floor:
+                    moves.append(position_service.get_move_stats(move=move))
+            my_moves_stats = sorted(moves, key=lambda d: d['played'], reverse=True)
+            next_position: Position = my_move.next_position
         else:
-            my_move: Move = next((move for move in repertoire_moves if move.next_pos_id == position.pos_id), None)
-        if not my_move:
-            raise InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
-                                                      f"{user.email} repertoire.")
-        my_move_stats: Dict = position_service.get_move_stats(move=my_move)
+            next_position: Position = position
+            my_move_stats = {}
+            my_moves_stats = {}
+
         position_stats: Dict = position_service.get_position_stats(position=position)
 
-        moves = []
-        for move in next_moves:
-            if move.popularity_weight > 0.05:
-                moves.append(position_service.get_move_stats(move=move))
-        my_moves_stats = sorted(moves, key=lambda d: d['played'], reverse=True)
-
-        next_position: Position = my_move.next_position
         rival_moves: List[Move] = self.get_rival_moves(repertoire_moves, next_position.next_moves)
         rival_moves_stats = []
         for move in rival_moves:
@@ -48,7 +54,7 @@ class RepertoireService:
         rival_moves_stats = sorted(rival_moves_stats, key=lambda d: d['played'], reverse=True)
 
         return dict(position=position_stats, my_move=my_move_stats, my_moves=my_moves_stats,
-                    rival_moves=rival_moves_stats)
+                    rival_moves=rival_moves_stats, depth=depth)
 
     def get_my_move(self, repertoire_moves: List[Move], next_moves: List[Move]) -> Move | None:
         for move in next_moves:
