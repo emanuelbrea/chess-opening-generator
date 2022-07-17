@@ -82,6 +82,7 @@ def remove_rival_move():
 @repertoire_bp.route('/', methods=["PATCH"])
 def add_variant_to_repertoire():
     args = get_request_arguments(request.args)
-    moves = repertoire_service.add_variant_to_repertoire(args['position'], args['user'], args['color'])
+    repertoire_service.add_variant_to_repertoire(args['position'], args['user'], args['color'])
+    moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'], args['depth'])
     return jsonify(message=f"Variant added correctly after {args['position'].fen}.",
-                   data=len(moves), success=True), 200
+                   data=moves, success=True), 200
