@@ -36,7 +36,7 @@ class RepertoireService:
             moves = []
             floor: float = picker_service.calculate_floor(current_depth=depth, depth=picker_service.get_depth(user))
             for move in next_moves:
-                if move.popularity_weight >= floor:
+                if move.popularity_weight + move.played / 1000 / 100 >= floor:
                     moves.append(position_service.get_move_stats(move=move))
             my_moves_stats = sorted(moves, key=lambda d: d['played'], reverse=True)
             next_position: Position = my_move.next_position
@@ -106,23 +106,27 @@ class RepertoireService:
         moves = picker_service.pick_variations(position=next_position, user=user, color=color, current_depth=1)
         moves.append(new_move)
 
-        moves_to_remove = self.get_moves_after_position(repertoire=repertoire, move=move_to_remove)
+        moves_to_remove = self.get_moves_after_position(repertoire=repertoire, move=move_to_remove, visited={})
         repertoire_dao.insert_new_moves(repertoire=repertoire, user=user, color=color,
                                         moves=moves, old_moves=moves_to_remove)
         return moves
 
-    def get_moves_after_position(self, repertoire: Repertoire, move: Move) -> List[Move]:
+    def get_moves_after_position(self, repertoire: Repertoire, move: Move, visited: Dict) -> List[Move]:
+        if move in visited:
+            return []
+        visited[move] = True
         moves = [move]
         next_position: Position = move.next_position
         next_moves = next_position.next_moves
         if next_position.turn == repertoire.color:
             my_move = self.get_my_move(repertoire_moves=repertoire.moves, next_moves=next_moves)
-            if my_move:
-                moves += self.get_moves_after_position(repertoire, my_move)
+            if my_move and my_move not in moves:
+                moves += self.get_moves_after_position(repertoire, my_move, visited)
         else:
             rival_moves = self.get_rival_moves(repertoire_moves=repertoire.moves, next_moves=next_moves)
             for move in rival_moves:
-                moves += self.get_moves_after_position(repertoire, move)
+                if move not in moves:
+                    moves += self.get_moves_after_position(repertoire, move, visited)
         return moves
 
     def add_rival_move_to_repertoire(self, position: Position, user: User, color: bool, move_san: str):
