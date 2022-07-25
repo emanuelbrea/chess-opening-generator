@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from typing import List, Dict
 
@@ -29,8 +31,8 @@ class RepertoireService:
             next_moves = position.next_moves
             my_move: Move = self.get_my_move(repertoire_moves, next_moves)
             if not my_move:
-                raise InvalidRequestException(description=f"Position with FEN {position.fen} is not in user "
-                                                          f"{user.email} repertoire.")
+                self.logger.warning("Position with FEN %s is not in user %s repertoire.", position.fen, user.email)
+                return {}
 
             my_move_stats: Dict = position_service.get_move_stats(move=my_move)
             moves = []
