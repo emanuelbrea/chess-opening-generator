@@ -7,7 +7,7 @@ from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import Position
 from opening_generator.services.position_service import position_service
 
-pos_bp = Blueprint('position', __name__, url_prefix='/api/position')
+pos_bp = Blueprint('position', __name__, url_prefix='/position')
 
 
 def get_board_by_fen(args):

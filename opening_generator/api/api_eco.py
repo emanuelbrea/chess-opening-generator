@@ -5,7 +5,7 @@ from opening_generator.api.api_position import get_board_by_fen, get_position_by
 from opening_generator.models import Position, EcoCode
 from opening_generator.services.eco_code_service import eco_service
 
-eco_bp = Blueprint('eco_code', __name__, url_prefix='/api/eco')
+eco_bp = Blueprint('eco_code', __name__, url_prefix='/eco')
 
 
 @eco_bp.route('/', methods=["GET"])
