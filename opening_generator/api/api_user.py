@@ -5,7 +5,7 @@ from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import User
 from opening_generator.services.user_service import user_service
 
-user_bp = Blueprint('user', __name__, url_prefix='/api/user')
+user_bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @user_bp.route('/', methods=["POST"])
