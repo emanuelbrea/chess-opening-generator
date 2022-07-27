@@ -8,7 +8,7 @@ from opening_generator.models import User, Position
 from opening_generator.services.position_service import position_service
 from opening_generator.services.repertoire_service import repertoire_service
 
-repertoire_bp = Blueprint('repertoire', __name__, url_prefix='/repertoire')
+repertoire_bp = Blueprint('repertoire', __name__, url_prefix='/api/repertoire')
 
 
 def get_request_arguments(args):
