@@ -55,7 +55,7 @@ class PositionService:
                     move=move.move_san,
                     eco_code=next_position.eco_code.eco_code if next_position.eco_code else None,
                     name=next_position.eco_code.name if next_position.eco_code else None,
-                    link=next_position.eco_code.description if next_position.eco_code else None
+                    link=move.description
                     )
 
     def get_position_stats(self, position: Position):
