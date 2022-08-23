@@ -12,5 +12,6 @@ class Move(Base):
     move_san = Column(String(15), nullable=False)
     played = Column(Integer, nullable=False)
     popularity_weight = Column(Float, nullable=False)
+    description = Column(String, nullable=True)
 
     next_position = relationship("Position")
