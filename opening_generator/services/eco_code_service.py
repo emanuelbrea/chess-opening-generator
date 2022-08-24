@@ -63,6 +63,7 @@ class EcoCodeService:
         self.positions_loaded.clear()
         db_session.commit()
         db_session.close()
+        self.logger.info("Added moves descriptions")
 
     def add_move_description(self, move, depth, color, description):
         if not move.description:
