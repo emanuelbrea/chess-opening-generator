@@ -7,6 +7,7 @@ from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import User, Position
 from opening_generator.services.position_service import position_service
 from opening_generator.services.repertoire_service import repertoire_service
+from opening_generator.services.auth_service import auth_service
 
 repertoire_bp = Blueprint('repertoire', __name__, url_prefix='/api/repertoire')
 
@@ -25,6 +26,7 @@ def get_request_arguments(args):
 
 @repertoire_bp.route('/', methods=["GET"])
 def get_user_repertoire():
+    claims = auth_service.get_user_claims(request.headers.get('Authorization'))
     args = get_request_arguments(request.args)
 
     moves = repertoire_service.get_repertoire_moves(args['position'], args['user'], args['color'], args['depth'])
