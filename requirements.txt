@@ -1,6 +1,5 @@
 chess~=1.9.2
 psycopg2-binary~=2.9.3
-psycopg2~=2.9.3
 Flask~=2.1.2
 SQLAlchemy~=1.4.39
 python-dotenv~=0.20.0
