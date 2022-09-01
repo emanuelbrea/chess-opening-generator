@@ -18,7 +18,9 @@ class AuthService:
 
     def get_user_claims(self, token):
         token = token.replace("Bearer ", "")
+        self.logger.info(token)
         signing_key = self.jwks_client.get_signing_key_from_jwt(token)
+        self.logger.info(signing_key)
         data = jwt.decode(
             token,
             signing_key.key,
