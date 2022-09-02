@@ -1,4 +1,13 @@
-from sqlalchemy import Integer, Column, String, Boolean, Table, ForeignKey, CheckConstraint, Float
+from sqlalchemy import (
+    Integer,
+    Column,
+    String,
+    Boolean,
+    Table,
+    ForeignKey,
+    CheckConstraint,
+    Float,
+)
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -16,16 +25,29 @@ class Position(Base):
 
     pos_id = Column(String, primary_key=True)
 
-    total_games = Column(Integer,
-                         CheckConstraint(
-                             'position.white_wins + position.draws + position.black_wins = position.total_games'),
-                         nullable=False)
-    white_wins = Column(Integer, CheckConstraint('position.white_wins >= 0'), nullable=False)
-    draws = Column(Integer, CheckConstraint('position.draws >= 0'), nullable=False)
-    black_wins = Column(Integer, CheckConstraint('position.black_wins >= 0'), nullable=False)
-    average_year = Column(Integer, CheckConstraint('position.average_year > 0'), nullable=False)
-    average_elo = Column(Integer, CheckConstraint('position.average_elo > 0'), nullable=False)
-    performance = Column(Integer, CheckConstraint('position.performance > 0'), nullable=False)
+    total_games = Column(
+        Integer,
+        CheckConstraint(
+            "position.white_wins + position.draws + position.black_wins = position.total_games"
+        ),
+        nullable=False,
+    )
+    white_wins = Column(
+        Integer, CheckConstraint("position.white_wins >= 0"), nullable=False
+    )
+    draws = Column(Integer, CheckConstraint("position.draws >= 0"), nullable=False)
+    black_wins = Column(
+        Integer, CheckConstraint("position.black_wins >= 0"), nullable=False
+    )
+    average_year = Column(
+        Integer, CheckConstraint("position.average_year > 0"), nullable=False
+    )
+    average_elo = Column(
+        Integer, CheckConstraint("position.average_elo > 0"), nullable=False
+    )
+    performance = Column(
+        Integer, CheckConstraint("position.performance > 0"), nullable=False
+    )
     winning_rate = Column(Float, nullable=False)
     turn = Column(Boolean)
     fen = Column(String(100))

@@ -12,6 +12,6 @@ class EcoCode(Base):
     name = Column(String, nullable=False)
     main_line = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    pos_id = Column(ForeignKey('position.pos_id'), nullable=True, unique=True)
+    pos_id = Column(ForeignKey("position.pos_id"), nullable=True, unique=True)
 
     position = relationship("Position", back_populates="eco_code")

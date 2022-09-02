@@ -8,7 +8,7 @@ class Move(Base):
     __tablename__ = "move"
 
     move_id = Column(Integer, primary_key=True)
-    next_pos_id = Column(ForeignKey('position.pos_id'), nullable=False)
+    next_pos_id = Column(ForeignKey("position.pos_id"), nullable=False)
     move_san = Column(String(15), nullable=False)
     played = Column(Integer, nullable=False)
     popularity_weight = Column(Float, nullable=False)

@@ -9,7 +9,6 @@ MIN_RATING = 2300
 
 
 class PickerService:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.visited = {}
@@ -33,15 +32,26 @@ class PickerService:
             my_move: Move = self.pick_move(position, user, color, depth, current_depth)
             if my_move is not None:
                 moves.append(my_move)
-                moves += self.pick_variation(my_move.next_position, user, color, depth, current_depth)
+                moves += self.pick_variation(
+                    my_move.next_position, user, color, depth, current_depth
+                )
         else:
             rival_moves = self.pick_rival_moves(position, depth, current_depth)
             for move in rival_moves:
                 moves.append(move)
-                moves += self.pick_variation(move.next_position, user, color, depth, current_depth)
+                moves += self.pick_variation(
+                    move.next_position, user, color, depth, current_depth
+                )
         return moves
 
-    def pick_move(self, position: Position, user: User, color: bool, depth: int, current_depth: int = 5):
+    def pick_move(
+        self,
+        position: Position,
+        user: User,
+        color: bool,
+        depth: int,
+        current_depth: int = 5,
+    ):
         popularity = user.style.popularity
         fashion = user.style.fashion
         risk = user.style.risk
@@ -64,11 +74,15 @@ class PickerService:
             next_position: Position = move.next_position
 
             if color:
-                winning_rate = (next_position.white_wins + (0.5 * next_position.draws * (0.5 * risk + 1))) \
-                               / next_position.total_games
+                winning_rate = (
+                    next_position.white_wins
+                    + (0.5 * next_position.draws * (0.5 * risk + 1))
+                ) / next_position.total_games
             else:
-                winning_rate = (next_position.black_wins + (0.5 * next_position.draws * (0.5 * risk + 1))) \
-                               / next_position.total_games
+                winning_rate = (
+                    next_position.black_wins
+                    + (0.5 * next_position.draws * (0.5 * risk + 1))
+                ) / next_position.total_games
             if winning_rate == 0:
                 continue
             rating_sum += next_position.average_elo - MIN_RATING
@@ -83,13 +97,22 @@ class PickerService:
 
         for move, winning_rate in candidates.items():
             next_position: Position = move.next_position
-            fashion_weight = (0.5 * fashion + 1) * (next_position.average_year - MIN_YEAR) / year_sum
+            fashion_weight = (
+                (0.5 * fashion + 1) * (next_position.average_year - MIN_YEAR) / year_sum
+            )
             rating_weight = (next_position.average_elo - MIN_RATING) / rating_sum
             winning_rate_weight = winning_rate / winning_rate_sum
 
-            move_weights[move] = move.popularity_weight * fashion_weight * rating_weight * winning_rate_weight
+            move_weights[move] = (
+                move.popularity_weight
+                * fashion_weight
+                * rating_weight
+                * winning_rate_weight
+            )
 
-        choices = random.choices(list(move_weights.keys()), list(move_weights.values()), k=1)
+        choices = random.choices(
+            list(move_weights.keys()), list(move_weights.values()), k=1
+        )
 
         move = choices[0]
 
