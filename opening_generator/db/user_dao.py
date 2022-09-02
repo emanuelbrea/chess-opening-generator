@@ -9,9 +9,11 @@ class UserDao:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def create_user(self, first_name, email):
+    def create_user(self, first_name, last_name, email):
         style = Style()
-        user = User(first_name=first_name, email=email, style=style)
+        user = User(
+            first_name=first_name, last_name=last_name, email=email, style=style
+        )
         db_session.add(user)
         db_session.commit()
         self.logger.info(
@@ -34,6 +36,14 @@ class UserDao:
     def get_user(self, email: str):
         user = db_session.query(User).filter(User.email == email).one()
         return user
+
+    def update_user(self, user: User, first_name: str, last_name: str):
+        user.first_name = first_name
+        user.last_name = last_name
+        db_session.commit()
+        self.logger.info(
+            "Updated user profile: %s %s for user %s", first_name, last_name, user.email
+        )
 
 
 user_dao = UserDao()
