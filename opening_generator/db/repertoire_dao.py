@@ -6,7 +6,6 @@ from opening_generator.models import Repertoire, Move, User
 
 
 class RepertoireDao:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
@@ -15,22 +14,45 @@ class RepertoireDao:
         repertoire = Repertoire(user=user, color=color, moves=moves)
         db_session.add(repertoire)
         db_session.commit()
-        self.logger.info("Created %s repertoire for user %s.", "white" if color else "black", user.email)
+        self.logger.info(
+            "Created %s repertoire for user %s.",
+            "white" if color else "black",
+            user.email,
+        )
 
     def delete_repertoire(self, user: User, color: bool):
-        user.repertoire = [repertoire for repertoire in user.repertoire if repertoire.color != color]
-        self.logger.info("Deleted %s repertoire for user %s.", "white" if color else "black", user.email)
+        user.repertoire = [
+            repertoire for repertoire in user.repertoire if repertoire.color != color
+        ]
+        self.logger.info(
+            "Deleted %s repertoire for user %s.",
+            "white" if color else "black",
+            user.email,
+        )
 
-    def insert_new_moves(self, repertoire: Repertoire, moves: List[Move], user: User, color: bool,
-                         old_moves: List[Move]):
+    def insert_new_moves(
+        self,
+        repertoire: Repertoire,
+        moves: List[Move],
+        user: User,
+        color: bool,
+        old_moves: List[Move],
+    ):
         repertoire.moves = list(set(repertoire.moves) - set(old_moves))
         repertoire.moves += moves
         db_session.commit()
-        self.logger.info("Deleted %d moves from %s repertoire for user %s.", len(set(old_moves)),
-                         "white" if color else "black", user.email)
-        self.logger.info("Inserted %d moves from %s repertoire for user %s.", len(set(moves)),
-                         "white" if color else "black",
-                         user.email)
+        self.logger.info(
+            "Deleted %d moves from %s repertoire for user %s.",
+            len(set(old_moves)),
+            "white" if color else "black",
+            user.email,
+        )
+        self.logger.info(
+            "Inserted %d moves from %s repertoire for user %s.",
+            len(set(moves)),
+            "white" if color else "black",
+            user.email,
+        )
 
 
 repertoire_dao = RepertoireDao()

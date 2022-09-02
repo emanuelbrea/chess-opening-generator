@@ -8,14 +8,15 @@ from opening_generator.models import Position
 
 
 class PositionDao:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
     def get_initial_position(self):
         board: chess.Board = chess.Board()
         initial_pos_id: str = str(zobrist_hash(board=board))
-        return db_session.query(Position).filter(Position.pos_id == initial_pos_id).one()
+        return (
+            db_session.query(Position).filter(Position.pos_id == initial_pos_id).one()
+        )
 
     def get_position(self, pos_id):
         return db_session.query(Position).filter(Position.pos_id == pos_id).first()

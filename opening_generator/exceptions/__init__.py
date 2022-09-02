@@ -17,4 +17,9 @@ class UserException(InvalidRequestException):
 
 def handle_invalid_request_exception(error: InvalidRequestException):
     logging.getLogger(__name__).exception(error.description)
-    return jsonify(message="Invalid request", description=error.description, success=False), 400
+    return (
+        jsonify(
+            message="Invalid request", description=error.description, success=False
+        ),
+        400,
+    )

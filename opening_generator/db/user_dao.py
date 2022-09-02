@@ -6,7 +6,6 @@ from opening_generator.models.user import User
 
 
 class UserDao:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
@@ -15,13 +14,22 @@ class UserDao:
         user = User(first_name=first_name, email=email, style=style)
         db_session.add(user)
         db_session.commit()
-        self.logger.info("Created new user with name %s and email %s", first_name, email)
+        self.logger.info(
+            "Created new user with name %s and email %s", first_name, email
+        )
 
     def add_style_to_user(self, user: User, style: Style):
         user.style = style
         db_session.commit()
-        self.logger.info("Updated style for user %s. Popularity: %f , Fashion: %f ,"
-                         " Risk %f, Rating %d", user.email, style.popularity, style.fashion, style.risk, style.rating)
+        self.logger.info(
+            "Updated style for user %s. Popularity: %f , Fashion: %f ,"
+            " Risk %f, Rating %d",
+            user.email,
+            style.popularity,
+            style.fashion,
+            style.risk,
+            style.rating,
+        )
 
     def get_user(self, email: str):
         user = db_session.query(User).filter(User.email == email).one()

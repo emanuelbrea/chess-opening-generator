@@ -7,7 +7,6 @@ from opening_generator.models.eco_code import EcoCode
 
 
 class EcoCodeDao:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 

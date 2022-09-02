@@ -9,7 +9,6 @@ from opening_generator.models import Position, Move
 
 
 class PositionLoaderService:
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.folder = "/../../data/pgn/"
@@ -34,7 +33,7 @@ class PositionLoaderService:
             average_year=0,
             performance=0,
             turn=True,
-            fen=board.fen()
+            fen=board.fen(),
         )
         self.positions[initial_pos_id] = initial_position
         self.next_moves[initial_pos_id] = []
@@ -42,7 +41,7 @@ class PositionLoaderService:
 
     def load_games(self):
         for filename in os.listdir(os.path.dirname(__file__) + self.folder):
-            if os.path.splitext(filename)[1] == '.pgn':
+            if os.path.splitext(filename)[1] == ".pgn":
                 file = os.path.dirname(__file__) + os.path.join(self.folder, filename)
                 self.load_file(file)
         self.set_final_positions()
@@ -69,9 +68,11 @@ class PositionLoaderService:
                 draws = 1 if result == "1/2-1/2" else 0
                 black_wins = 1 if result == "0-1" else 0
 
-                prev_position = self.initial_pos['pos_id']
+                prev_position = self.initial_pos["pos_id"]
 
-                self.update_initial_position(white_wins, draws, black_wins, elo_white, elo_black, year)
+                self.update_initial_position(
+                    white_wins, draws, black_wins, elo_white, elo_black, year
+                )
 
                 for move in game.mainline_moves():
                     if board.ply() > self.max_moves:
@@ -82,29 +83,36 @@ class PositionLoaderService:
                     turn = board.turn
 
                     next_moves = self.next_moves[prev_position]
-                    move = next((move_dict for move_dict in next_moves if move_dict['move'] == move_san), None)
+                    move = next(
+                        (
+                            move_dict
+                            for move_dict in next_moves
+                            if move_dict["move"] == move_san
+                        ),
+                        None,
+                    )
 
                     if move is None:
                         move = dict(move=move_san, pos_id=None, played=1)
                         next_moves.append(move)
 
                     else:
-                        move['played'] += 1
+                        move["played"] += 1
 
-                    if move.get('pos_id') is not None:  # move has next position
-                        next_position = self.positions[move['pos_id']]
-                        next_position['total_games'] += 1
-                        next_position['white_wins'] += white_wins
-                        next_position['draws'] += draws
-                        next_position['black_wins'] += black_wins
+                    if move.get("pos_id") is not None:  # move has next position
+                        next_position = self.positions[move["pos_id"]]
+                        next_position["total_games"] += 1
+                        next_position["white_wins"] += white_wins
+                        next_position["draws"] += draws
+                        next_position["black_wins"] += black_wins
                         if not turn:
-                            next_position['average_elo'] += elo_white
-                            next_position['performance'] += elo_black
+                            next_position["average_elo"] += elo_white
+                            next_position["performance"] += elo_black
                         else:
-                            next_position['average_elo'] += elo_black
-                            next_position['performance'] += elo_white
-                        next_position['average_year'] += year
-                        prev_position = next_position['pos_id']
+                            next_position["average_elo"] += elo_black
+                            next_position["performance"] += elo_white
+                        next_position["average_year"] += year
+                        prev_position = next_position["pos_id"]
 
                     else:  # move does not have next position yet
                         pos_id: str = str(zobrist_hash(board=board))
@@ -120,12 +128,12 @@ class PositionLoaderService:
                                 performance=elo_white if turn else elo_black,
                                 average_year=year,
                                 turn=turn,
-                                fen=board.fen()
+                                fen=board.fen(),
                             )
                             self.positions[pos_id] = position
                             self.next_moves[pos_id] = []
 
-                        move['pos_id'] = pos_id
+                        move["pos_id"] = pos_id
                         prev_position = pos_id
 
                 board.reset()
@@ -135,21 +143,23 @@ class PositionLoaderService:
                     self.logger.info("Positions: %d ", len(self.positions))
         self.logger.info("Loaded %s in %f seconds.", filename, time.time() - start)
 
-    def update_initial_position(self, white_wins, draws, black_wins, elo_white, elo_black, year):
-        self.initial_pos['total_games'] += 1
-        self.initial_pos['white_wins'] += white_wins
-        self.initial_pos['draws'] += draws
-        self.initial_pos['black_wins'] += black_wins
-        self.initial_pos['average_elo'] += elo_white
-        self.initial_pos['performance'] += elo_black
-        self.initial_pos['average_year'] += year
+    def update_initial_position(
+        self, white_wins, draws, black_wins, elo_white, elo_black, year
+    ):
+        self.initial_pos["total_games"] += 1
+        self.initial_pos["white_wins"] += white_wins
+        self.initial_pos["draws"] += draws
+        self.initial_pos["black_wins"] += black_wins
+        self.initial_pos["average_elo"] += elo_white
+        self.initial_pos["performance"] += elo_black
+        self.initial_pos["average_year"] += year
 
     def set_final_positions(self):
         self.remove_least_played_moves(self.initial_pos)
 
         self.visited = {}
 
-        self.set_final_position_values(self.initial_pos['pos_id'])
+        self.set_final_position_values(self.initial_pos["pos_id"])
 
         self.visited = {}
 
@@ -159,16 +169,16 @@ class PositionLoaderService:
 
     def convert_position(self, position):
         return Position(
-            pos_id=position['pos_id'],
-            total_games=position['total_games'],
-            white_wins=position['white_wins'],
-            draws=position['draws'],
-            black_wins=position['black_wins'],
-            average_elo=position['average_elo'],
-            average_year=position['average_year'],
-            performance=position['performance'],
-            turn=position['turn'],
-            fen=position['fen']
+            pos_id=position["pos_id"],
+            total_games=position["total_games"],
+            white_wins=position["white_wins"],
+            draws=position["draws"],
+            black_wins=position["black_wins"],
+            average_elo=position["average_elo"],
+            average_year=position["average_year"],
+            performance=position["performance"],
+            turn=position["turn"],
+            fen=position["fen"],
         )
 
     def set_final_position_values(self, pos_id):
@@ -178,20 +188,28 @@ class PositionLoaderService:
         position = self.convert_position(self.positions[pos_id])
         self.final_positions[pos_id] = position
         self.positions[pos_id] = {}
-        next_moves = [Move(next_pos_id=move['pos_id'], move_san=move['move'], played=move['played']) for move in
-                      self.next_moves[position.pos_id]]
+        next_moves = [
+            Move(
+                next_pos_id=move["pos_id"], move_san=move["move"], played=move["played"]
+            )
+            for move in self.next_moves[position.pos_id]
+        ]
         position.next_moves = next_moves
         position.set_final_values()
         for move in next_moves:
             self.set_final_position_values(move.next_pos_id)
 
     def remove_least_played_moves(self, position):
-        if position['pos_id'] in self.visited:
+        if position["pos_id"] in self.visited:
             return
-        self.visited[position['pos_id']] = True
-        next_moves = self.next_moves[position['pos_id']]
-        moves = [move for move in next_moves if
-                 move['played'] > 10 and self.positions[move['pos_id']]['total_games'] > 10]
-        self.next_moves[position['pos_id']] = moves
+        self.visited[position["pos_id"]] = True
+        next_moves = self.next_moves[position["pos_id"]]
+        moves = [
+            move
+            for move in next_moves
+            if move["played"] > 10
+            and self.positions[move["pos_id"]]["total_games"] > 10
+        ]
+        self.next_moves[position["pos_id"]] = moves
         for move in moves:
-            self.remove_least_played_moves(self.positions[move['pos_id']])
+            self.remove_least_played_moves(self.positions[move["pos_id"]])
