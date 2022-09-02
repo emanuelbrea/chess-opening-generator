@@ -23,5 +23,9 @@ class UserDao:
         self.logger.info("Updated style for user %s. Popularity: %f , Fashion: %f ,"
                          " Risk %f, Rating %d", user.email, style.popularity, style.fashion, style.risk, style.rating)
 
+    def get_user(self, email: str):
+        user = db_session.query(User).filter(User.email == email).one()
+        return user
+
 
 user_dao = UserDao()
