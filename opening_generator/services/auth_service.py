@@ -37,7 +37,7 @@ class AuthService:
             )
         except DecodeError as err:
             raise InvalidRequestException("Invalid jwt") from err
-        self.logger("Received request from user %s", data.get("email"))
+        self.logger.info("Received request from user %s", data.get("email"))
         return data
 
     def get_token(self):
