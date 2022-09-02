@@ -9,6 +9,7 @@ class User(Base):
 
     user_id = Column(Integer, primary_key=True)
     first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
 
     repertoire = relationship(

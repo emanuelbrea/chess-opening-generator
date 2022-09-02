@@ -12,22 +12,36 @@ class UserService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def create_user(self, first_name: str, email: str):
+    def create_user(self, first_name: str, last_name: str, email: str):
         try:
-            user_dao.create_user(first_name=first_name, email=email)
+            user_dao.create_user(
+                first_name=first_name, last_name=last_name, email=email
+            )
         except IntegrityError as err:
             raise UserException(
-                f"User {first_name} with email {email} already exists."
+                f"User {first_name} {last_name} with email {email} already exists."
             ) from err
 
-    def create_user_style(
+    def update_user_style(
         self, user: User, popularity: float, fashion: float, risk: float, rating: int
     ):
-        style = Style(popularity=popularity, fashion=fashion, risk=risk, rating=rating)
+        style: Style = user.style
+        style.rating = rating
+        style.risk = risk
+        style.fashion = fashion
+        style.popularity = popularity
         try:
             user_dao.add_style_to_user(user=user, style=style)
         except IntegrityError as err:
             raise UserException(f"Invalid style.") from err
+
+    def update_user(self, user: User, first_name: str, last_name: str):
+        try:
+            user_dao.update_user(user=user, first_name=first_name, last_name=last_name)
+        except IntegrityError as err:
+            raise UserException(
+                f"Invalid values for user profile. Name: {first_name}. Last name: {last_name}"
+            ) from err
 
     def get_user(self):
         user_claims = auth_service.get_user_claims()
