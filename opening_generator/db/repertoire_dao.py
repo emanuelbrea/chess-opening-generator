@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import List
 
 from opening_generator.db import db_session
@@ -40,6 +41,7 @@ class RepertoireDao:
     ):
         repertoire.moves = list(set(repertoire.moves) - set(old_moves))
         repertoire.moves += moves
+        repertoire.updated_at = datetime.now()
         db_session.commit()
         self.logger.info(
             "Deleted %d moves from %s repertoire for user %s.",
