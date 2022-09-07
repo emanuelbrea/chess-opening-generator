@@ -40,6 +40,20 @@ def get_user_repertoire():
     )
 
 
+@repertoire_bp.route("/info", methods=["GET"])
+def get_user_repertoire_info():
+    user: User = user_service.get_user()
+
+    info = repertoire_service.get_user_repertoire_info(user=user)
+
+    return (
+        jsonify(
+            message=f"Repertoire info retrieved correctly.", data=info, success=True
+        ),
+        200,
+    )
+
+
 @repertoire_bp.route("/", methods=["POST"])
 def create_user_repertoire():
     user: User = user_service.get_user()

@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, Column, Integer, Table, Boolean
+from sqlalchemy import ForeignKey, Column, Integer, Table, Boolean, DateTime, func
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -17,6 +17,8 @@ class Repertoire(Base):
     repertoire_id = Column(Integer, primary_key=True)
     user_id = Column(ForeignKey("user.user_id"), nullable=False)
     color = Column(Boolean, nullable=False)
+    created_at = Column(DateTime(timezone=False), server_default=func.now())
+    updated_at = Column(DateTime(timezone=False), server_default=func.now())
 
     user = relationship("User", back_populates="repertoire")
 

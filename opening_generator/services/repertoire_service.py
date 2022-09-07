@@ -28,22 +28,37 @@ class RepertoireService:
             )
         return repertoire
 
+    def get_user_repertoire_info(self, user: User):
+        white_repertoire = self.get_repertoire_info(user=user, color=True)
+        black_repertoire = self.get_repertoire_info(user=user, color=False)
+        return dict(white=white_repertoire, black=black_repertoire)
+
+    def get_repertoire_info(self, user: User, color: bool):
+        try:
+            repertoire: Repertoire = self.get_user_repertoire(user=user, color=color)
+            repertoire_moves: List[Move] = repertoire.moves
+            last_updated = repertoire.updated_at
+        except InvalidRequestException:
+            return {}
+        return dict(total=len(repertoire_moves), last_updated=last_updated)
+
     def get_repertoire_moves(
         self, position: Position, user: User, color: bool, depth: int
     ) -> Dict | InvalidRequestException:
-        repertoire = self.get_user_repertoire(user=user, color=color)
+        try:
+            repertoire = self.get_user_repertoire(user=user, color=color)
+        except InvalidRequestException:
+            self.logger.warning("User %s does not have a repertoire", user.email)
+            return {}
         repertoire_moves = repertoire.moves
 
         if position.turn == color:
             next_moves = position.next_moves
             my_move: Move = self.get_my_move(repertoire_moves, next_moves)
             if not my_move:
-                self.logger.warning(
-                    "Position with FEN %s is not in user %s repertoire.",
-                    position.fen,
-                    user.email,
-                )
-                return {}
+                message = f"Position with FEN {position.fen} is not in user {user.email} repertoire."
+                self.logger.warning(message)
+                raise InvalidRequestException(description=message)
 
             my_move_stats: Dict = position_service.get_move_stats(move=my_move)
             moves = []
