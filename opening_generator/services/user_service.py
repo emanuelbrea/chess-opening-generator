@@ -35,9 +35,10 @@ class UserService:
         except IntegrityError as err:
             raise UserException(f"Invalid style.") from err
 
-    def update_user(self, user: User, first_name: str, last_name: str):
+    def update_user(self, user: User, first_name: str, last_name: str, age: int, playing_since: int):
         try:
-            user_dao.update_user(user=user, first_name=first_name, last_name=last_name)
+            user_dao.update_user(user=user, first_name=first_name, last_name=last_name, age=age,
+                                 playing_since=playing_since)
         except IntegrityError as err:
             raise UserException(
                 f"Invalid values for user profile. Name: {first_name}. Last name: {last_name}"

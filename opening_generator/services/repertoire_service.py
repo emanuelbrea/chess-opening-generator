@@ -56,9 +56,12 @@ class RepertoireService:
             next_moves = position.next_moves
             my_move: Move = self.get_my_move(repertoire_moves, next_moves)
             if not my_move:
-                message = f"Position with FEN {position.fen} is not in user {user.email} repertoire."
-                self.logger.warning(message)
-                raise InvalidRequestException(description=message)
+                self.logger.warning(
+                    "Position with FEN %s is not in user %s repertoire.",
+                    position.fen,
+                    user.email,
+                )
+                return {}
 
             my_move_stats: Dict = position_service.get_move_stats(move=my_move)
             moves = []
@@ -110,17 +113,13 @@ class RepertoireService:
                 rival_moves.append(move)
         return rival_moves
 
-    def create_user_repertoire(self, position: Position, user: User):
-        self.logger.info("About to create both repertoires for user %s", user.email)
+    def create_user_repertoire(self, position: Position, user: User, color: bool):
+        self.logger.info("About to create %s repertoire for user %s", "white" if color else "black", user.email)
         moves: List[Move] = picker_service.pick_variations(
-            position=position, user=user, color=True
+            position=position, user=user, color=color
         )
-        repertoire_dao.create_repertoire(user=user, color=True, moves=moves)
-        moves: List[Move] = picker_service.pick_variations(
-            position=position, user=user, color=False
-        )
-        repertoire_dao.create_repertoire(user=user, color=False, moves=moves)
-        self.logger.info("Created both repertoires for user %s", user.email)
+        repertoire_dao.create_repertoire(user=user, color=color, moves=moves)
+        self.logger.info("Created repertoire for user %s", user.email)
 
     def update_user_repertoire(
         self, position: Position, user: User, color: bool, new_move: str
