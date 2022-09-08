@@ -26,7 +26,7 @@ def get_request_arguments(args):
     return dict(move=move, color=color, position=position, depth=board.fullmove_number)
 
 
-@repertoire_bp.route("/", methods=["GET"])
+@repertoire_bp.route("", methods=["GET"])
 def get_user_repertoire():
     user: User = user_service.get_user()
     args = get_request_arguments(request.args)
@@ -54,11 +54,17 @@ def get_user_repertoire_info():
     )
 
 
-@repertoire_bp.route("/", methods=["POST"])
+@repertoire_bp.route("", methods=["POST"])
 def create_user_repertoire():
+    body = request.json
+
+    color = body.get("color").upper()
+    if color not in ("WHITE", "BLACK"):
+        raise InvalidRequestException(description="Invalid color provided")
+
     user: User = user_service.get_user()
     initial_position = position_service.retrieve_initial_position()
-    repertoire_service.create_user_repertoire(position=initial_position, user=user)
+    repertoire_service.create_user_repertoire(position=initial_position, user=user, color=color == "WHITE")
     return jsonify(message=f"Repertoire created correctly.", data={}, success=True), 201
 
 

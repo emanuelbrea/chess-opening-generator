@@ -37,9 +37,11 @@ class UserDao:
         user = db_session.query(User).filter(User.email == email).one()
         return user
 
-    def update_user(self, user: User, first_name: str, last_name: str):
+    def update_user(self, user: User, first_name: str, last_name: str, age: int, playing_since: int):
         user.first_name = first_name
         user.last_name = last_name
+        user.age = age
+        user.playing_since = playing_since
         db_session.commit()
         self.logger.info(
             "Updated user profile: %s %s for user %s", first_name, last_name, user.email
