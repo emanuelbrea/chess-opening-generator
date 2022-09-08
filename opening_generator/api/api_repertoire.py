@@ -68,7 +68,7 @@ def create_user_repertoire():
     return jsonify(message=f"Repertoire created correctly.", data={}, success=True), 201
 
 
-@repertoire_bp.route("/", methods=["PUT"])
+@repertoire_bp.route("", methods=["PUT"])
 def edit_user_repertoire():
     user: User = user_service.get_user()
     args = get_request_arguments(request.args)
@@ -144,7 +144,7 @@ def remove_rival_move():
     )
 
 
-@repertoire_bp.route("/", methods=["PATCH"])
+@repertoire_bp.route("", methods=["PATCH"])
 def add_variant_to_repertoire():
     user: User = user_service.get_user()
     args = get_request_arguments(request.args)
