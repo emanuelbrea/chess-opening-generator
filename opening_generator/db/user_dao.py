@@ -19,6 +19,7 @@ class UserDao:
         self.logger.info(
             "Created new user with name %s and email %s", first_name, email
         )
+        return user
 
     def add_style_to_user(self, user: User, style: Style):
         user.style = style
