@@ -23,7 +23,7 @@ class UserService:
             ) from err
 
     def update_user_style(
-        self, user: User, popularity: float, fashion: float, risk: float, rating: int
+            self, user: User, popularity: float, fashion: float, risk: float, rating: int
     ):
         style: Style = user.style
         style.rating = rating
@@ -49,8 +49,11 @@ class UserService:
         email = user_claims.get("email")
         try:
             user = user_dao.get_user(email=email)
-        except NoResultFound as err:
-            raise UserException(f"User with email {email} does not exists.") from err
+        except NoResultFound:
+            self.logger.info("User with email %s does not exist. Will create it.", email)
+            first_name = user_claims.get("given_name", "")
+            last_name = user_claims.get("family_name", "")
+            user = user_dao.create_user(first_name=first_name, last_name=last_name, email=email)
         return user
 
 
