@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 from typing import List, Dict
 
+from sqlalchemy.exc import IntegrityError
+
 from opening_generator.db.repertoire_dao import repertoire_dao
 from opening_generator.exceptions import InvalidRequestException
 from opening_generator.models import Move, Position, User, Repertoire
@@ -114,7 +116,11 @@ class RepertoireService:
         return rival_moves
 
     def create_user_repertoire(self, position: Position, user: User, color: bool):
-        self.logger.info("About to create %s repertoire for user %s", "white" if color else "black", user.email)
+        self.logger.info(
+            "About to create %s repertoire for user %s",
+            "white" if color else "black",
+            user.email,
+        )
         moves: List[Move] = picker_service.pick_variations(
             position=position, user=user, color=color
         )
@@ -291,6 +297,15 @@ class RepertoireService:
             repertoire=repertoire, user=user, color=color, moves=moves, old_moves=[]
         )
         return moves
+
+    def delete_user_repertoire(self, user: User, color: bool):
+        try:
+            repertoire_dao.delete_repertoire(user=user, color=color)
+        except IntegrityError as err:
+            self.logger.error("There was an error deleting user repertoire.")
+            raise InvalidRequestException(
+                description=f"There was an error deleting user {user.email} repertoire."
+            ) from err
 
 
 repertoire_service = RepertoireService()

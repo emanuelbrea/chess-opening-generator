@@ -58,13 +58,15 @@ def get_user_repertoire_info():
 def create_user_repertoire():
     body = request.json
 
-    color = body.get("color").upper()
-    if color not in ("WHITE", "BLACK"):
+    color = body.get("color")
+    if not color or color.upper() not in ("WHITE", "BLACK"):
         raise InvalidRequestException(description="Invalid color provided")
 
     user: User = user_service.get_user()
     initial_position = position_service.retrieve_initial_position()
-    repertoire_service.create_user_repertoire(position=initial_position, user=user, color=color == "WHITE")
+    repertoire_service.create_user_repertoire(
+        position=initial_position, user=user, color=color.upper() == "WHITE"
+    )
     return jsonify(message=f"Repertoire created correctly.", data={}, success=True), 201
 
 
@@ -92,6 +94,25 @@ def edit_user_repertoire():
         jsonify(
             message=f"Repertoire updated correctly after {args['position'].fen}.",
             data=moves,
+            success=True,
+        ),
+        200,
+    )
+
+
+@repertoire_bp.route("", methods=["DELETE"])
+def delete_user_repertoire():
+    user: User = user_service.get_user()
+    body = request.json
+    color = body.get("color")
+    if not color or color.upper() not in ("WHITE", "BLACK"):
+        raise InvalidRequestException(description="Invalid color provided")
+
+    repertoire_service.delete_user_repertoire(user, color.upper() == "WHITE")
+    return (
+        jsonify(
+            message=f"{color} repertoire deleted correctly.",
+            data={},
             success=True,
         ),
         200,
