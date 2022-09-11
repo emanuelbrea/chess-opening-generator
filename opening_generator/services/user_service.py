@@ -23,7 +23,7 @@ class UserService:
             ) from err
 
     def update_user_style(
-            self, user: User, popularity: float, fashion: float, risk: float, rating: int
+        self, user: User, popularity: float, fashion: float, risk: float, rating: int
     ):
         style: Style = user.style
         style.rating = rating
@@ -35,10 +35,17 @@ class UserService:
         except IntegrityError as err:
             raise UserException(f"Invalid style.") from err
 
-    def update_user(self, user: User, first_name: str, last_name: str, age: int, playing_since: int):
+    def update_user(
+        self, user: User, first_name: str, last_name: str, age: int, playing_since: int
+    ):
         try:
-            user_dao.update_user(user=user, first_name=first_name, last_name=last_name, age=age,
-                                 playing_since=playing_since)
+            user_dao.update_user(
+                user=user,
+                first_name=first_name,
+                last_name=last_name,
+                age=age,
+                playing_since=playing_since,
+            )
         except IntegrityError as err:
             raise UserException(
                 f"Invalid values for user profile. Name: {first_name}. Last name: {last_name}"
@@ -50,10 +57,14 @@ class UserService:
         try:
             user = user_dao.get_user(email=email)
         except NoResultFound:
-            self.logger.info("User with email %s does not exist. Will create it.", email)
+            self.logger.info(
+                "User with email %s does not exist. Will create it.", email
+            )
             first_name = user_claims.get("given_name", "")
             last_name = user_claims.get("family_name", "")
-            user = user_dao.create_user(first_name=first_name, last_name=last_name, email=email)
+            user = user_dao.create_user(
+                first_name=first_name, last_name=last_name, email=email
+            )
         return user
 
 

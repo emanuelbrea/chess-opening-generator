@@ -38,7 +38,9 @@ class UserDao:
         user = db_session.query(User).filter(User.email == email).one()
         return user
 
-    def update_user(self, user: User, first_name: str, last_name: str, age: int, playing_since: int):
+    def update_user(
+        self, user: User, first_name: str, last_name: str, age: int, playing_since: int
+    ):
         user.first_name = first_name
         user.last_name = last_name
         user.age = age

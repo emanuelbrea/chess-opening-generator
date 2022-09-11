@@ -25,6 +25,8 @@ class RepertoireDao:
         user.repertoire = [
             repertoire for repertoire in user.repertoire if repertoire.color != color
         ]
+        db_session.add(user)
+        db_session.commit()
         self.logger.info(
             "Deleted %s repertoire for user %s.",
             "white" if color else "black",

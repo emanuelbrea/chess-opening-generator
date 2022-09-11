@@ -92,7 +92,11 @@ class PositionService:
             except ValueError:
                 return None
         else:
-            position_svg = str(svg.board(board=board))
+            position_svg = str(
+                svg.board(
+                    board=board, orientation=chess.WHITE if color else chess.BLACK
+                )
+            )
         return position_svg
 
 

@@ -41,8 +41,13 @@ def update_user():
     age = body.get("age")
     playing_since = body.get("playing_since")
 
-    user_service.update_user(user=user, first_name=first_name, last_name=last_name, age=age,
-                             playing_since=playing_since)
+    user_service.update_user(
+        user=user,
+        first_name=first_name,
+        last_name=last_name,
+        age=age,
+        playing_since=playing_since,
+    )
 
     popularity = body.get("popularity")
     fashion = body.get("fashion")
@@ -66,14 +71,14 @@ def get_user():
             last_name=user.last_name,
             email=user.email,
             age=user.age,
-            playing_since=user.playing_since),
+            playing_since=user.playing_since,
+        ),
         style=dict(
             popularity=style.popularity,
             fashion=style.fashion,
             risk=style.risk,
             rating=style.rating,
-        )
-
+        ),
     )
 
     return jsonify(message="User retrieved correctly", data=data, success=True), 200
