@@ -4,6 +4,7 @@ from typing import List
 
 from opening_generator.db import db_session
 from opening_generator.models import Repertoire, Move, User
+from opening_generator.models.repertoire import RepertoireHistory, RepertoireMetric
 
 
 class RepertoireDao:
@@ -57,6 +58,22 @@ class RepertoireDao:
             "white" if color else "black",
             user.email,
         )
+
+    def update_repertoire_history(self, user: User, new_move: Move, old_move: Move):
+        registry = RepertoireHistory(
+            user_id=user.user_id, move_id=new_move.move_id, old_move_id=old_move.move_id
+        )
+        db_session.add(registry)
+        db_session.commit()
+
+    def save_repertoire_metric(
+        self, user: User, moves: int, start_time: float, end_time: float
+    ):
+        metric = RepertoireMetric(
+            user_id=user.user_id, moves=moves, time_elapsed=end_time - start_time
+        )
+        db_session.add(metric)
+        db_session.commit()
 
 
 repertoire_dao = RepertoireDao()

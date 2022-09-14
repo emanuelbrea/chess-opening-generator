@@ -1,7 +1,8 @@
 import logging
 
 from opening_generator.db import db_session
-from opening_generator.models import Style
+from opening_generator.models import Style, Move
+from opening_generator.models.move import FavoriteMoves
 from opening_generator.models.user import User
 
 
@@ -49,6 +50,20 @@ class UserDao:
         self.logger.info(
             "Updated user profile: %s %s for user %s", first_name, last_name, user.email
         )
+
+    def add_favorite_move(self, user: User, move: Move):
+        favorite_move = FavoriteMoves(user=user, move=move)
+        user.favorites_moves.append(favorite_move)
+        db_session.commit()
+
+    def remove_favorite_move(self, user: User, move: Move):
+        fav_move = next(
+            (fav_move for fav_move in user.favorites_moves if fav_move.move == move),
+            None,
+        )
+        if fav_move:
+            db_session.delete(fav_move)
+            db_session.commit()
 
 
 user_dao = UserDao()

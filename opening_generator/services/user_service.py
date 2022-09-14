@@ -1,10 +1,11 @@
 import logging
+from typing import List
 
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from opening_generator.db.user_dao import user_dao
-from opening_generator.exceptions import UserException
-from opening_generator.models import Style, User
+from opening_generator.exceptions import UserException, InvalidRequestException
+from opening_generator.models import Style, User, Move, Position
 from opening_generator.services.auth_service import auth_service
 
 
@@ -66,6 +67,25 @@ class UserService:
                 first_name=first_name, last_name=last_name, email=email
             )
         return user
+
+    def add_favorite_move(self, user: User, position: Position, move_san: str):
+        user_favorite_moves: List[Move] = [
+            fav_move.move for fav_move in user.favorites_moves
+        ]
+
+        move: Move = next(
+            (move for move in position.next_moves if move.move_san == move_san),
+            None,
+        )
+
+        if not move:
+            raise InvalidRequestException(description="Invalid favorite move")
+
+        if move in user_favorite_moves:
+            user_dao.remove_favorite_move(user=user, move=move)
+        else:
+            user_dao.add_favorite_move(user=user, move=move)
+        return move
 
 
 user_service = UserService()

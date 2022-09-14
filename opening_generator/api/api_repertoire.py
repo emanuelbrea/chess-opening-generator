@@ -17,11 +17,9 @@ repertoire_bp = Blueprint("repertoire", __name__, url_prefix="/api/repertoire")
 
 def get_request_arguments(args):
     move: str = args.get("move")
-
+    color: bool = get_color(args=args)
     board: chess.Board = get_board_by_fen(args)
     position: Position = get_position_by_board(board)
-
-    color = get_color(args=args)
 
     return dict(move=move, color=color, position=position, depth=board.fullmove_number)
 
@@ -57,6 +55,9 @@ def get_user_repertoire_info():
 @repertoire_bp.route("", methods=["POST"])
 def create_user_repertoire():
     body = request.json
+
+    if not body:
+        raise InvalidRequestException(description="Missing request body")
 
     color = body.get("color")
     if not color or color.upper() not in ("WHITE", "BLACK"):

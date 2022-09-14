@@ -1,7 +1,9 @@
+import chess
 from flask import Blueprint, request, jsonify
 
+from opening_generator.api.api_position import get_board_by_fen, get_position_by_board
 from opening_generator.exceptions import InvalidRequestException
-from opening_generator.models import User, Style
+from opening_generator.models import User, Style, Position
 from opening_generator.services.user_service import user_service
 
 user_bp = Blueprint("user", __name__, url_prefix="/api/user")
@@ -30,11 +32,12 @@ def create_user():
 
 @user_bp.route("", methods=["PUT"])
 def update_user():
-    user: User = user_service.get_user()
     body = request.json
 
     if not body:
         raise InvalidRequestException(description="Missing style")
+
+    user: User = user_service.get_user()
 
     first_name = body.get("first_name")
     last_name = body.get("last_name")
@@ -82,3 +85,24 @@ def get_user():
     )
 
     return jsonify(message="User retrieved correctly", data=data, success=True), 200
+
+
+@user_bp.route("/favorite", methods=["PUT"])
+def add_favorite_move():
+    body = request.json
+
+    if not body:
+        raise InvalidRequestException(description="Missing request body")
+
+    move = body.get("move")
+
+    if not move:
+        raise InvalidRequestException(description="Missing favorite move")
+    board: chess.Board = get_board_by_fen(body)
+
+    user: User = user_service.get_user()
+    position: Position = get_position_by_board(board)
+
+    user_service.add_favorite_move(user=user, position=position, move_san=move)
+
+    return jsonify(message="Favorite move added correctly", data={}, success=True), 200
