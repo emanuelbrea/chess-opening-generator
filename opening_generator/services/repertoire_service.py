@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import List, Dict
 
 from sqlalchemy.exc import IntegrityError
@@ -66,13 +67,20 @@ class RepertoireService:
                 return {}
 
             my_move_stats: Dict = position_service.get_move_stats(move=my_move)
+            favorite_moves: List[Move] = [
+                fav_move.move for fav_move in user.favorites_moves
+            ]
+            my_move_stats["favorite"] = my_move in favorite_moves
             moves = []
             floor: float = picker_service.calculate_floor(
                 current_depth=depth, depth=picker_service.get_depth(user)
             )
             for move in next_moves:
                 if move.popularity_weight + move.played / 1000 / 100 >= floor:
-                    moves.append(position_service.get_move_stats(move=move))
+                    stats = position_service.get_move_stats(move=move)
+                    stats["favorite"] = move in favorite_moves
+                    moves.append(stats)
+
             my_moves_stats = sorted(moves, key=lambda d: d["played"], reverse=True)
             next_position: Position = my_move.next_position
         else:
@@ -121,15 +129,20 @@ class RepertoireService:
             "white" if color else "black",
             user.email,
         )
+        start_time = time.time()
         moves: List[Move] = picker_service.pick_variations(
             position=position, user=user, color=color
         )
         repertoire_dao.create_repertoire(user=user, color=color, moves=moves)
         self.logger.info("Created repertoire for user %s", user.email)
+        repertoire_dao.save_repertoire_metric(
+            user=user, moves=len(moves), start_time=start_time, end_time=time.time()
+        )
 
     def update_user_repertoire(
         self, position: Position, user: User, color: bool, new_move: str
     ):
+        start_time = time.time()
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
         next_moves = position.next_moves
@@ -182,6 +195,12 @@ class RepertoireService:
             color=color,
             moves=moves,
             old_moves=moves_to_remove,
+        )
+        repertoire_dao.update_repertoire_history(
+            user=user, new_move=new_move, old_move=move_to_remove
+        )
+        repertoire_dao.save_repertoire_metric(
+            user=user, moves=len(moves), start_time=start_time, end_time=time.time()
         )
         return moves
 
@@ -271,6 +290,7 @@ class RepertoireService:
             raise InvalidRequestException(
                 description=f"Invalid position for repertoire."
             )
+        start_time = time.time()
         repertoire = self.get_user_repertoire(user=user, color=color)
         previous_move = next(
             (move for move in repertoire.moves if move.next_pos_id == position.pos_id),
@@ -295,6 +315,9 @@ class RepertoireService:
         )
         repertoire_dao.insert_new_moves(
             repertoire=repertoire, user=user, color=color, moves=moves, old_moves=[]
+        )
+        repertoire_dao.save_repertoire_metric(
+            user=user, moves=len(moves), start_time=start_time, end_time=time.time()
         )
         return moves
 

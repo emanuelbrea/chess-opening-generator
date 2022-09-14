@@ -1,4 +1,11 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, CheckConstraint
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    func,
+    CheckConstraint,
+)
 from sqlalchemy.orm import relationship
 
 from opening_generator.db import Base
@@ -27,3 +34,5 @@ class User(Base):
     style = relationship(
         "Style", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
+
+    favorites_moves = relationship("FavoriteMoves", backref="user")
