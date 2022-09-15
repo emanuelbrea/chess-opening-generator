@@ -87,5 +87,11 @@ class UserService:
             user_dao.add_favorite_move(user=user, move=move)
         return move
 
+    def save_user_message(self, message: str, email: str, name: str, rating: int):
+        user_dao.save_user_message(
+            message=message, email=email, name=name, rating=rating
+        )
+        self.logger.info("Saved new message from %s", email)
+
 
 user_service = UserService()

@@ -106,3 +106,25 @@ def add_favorite_move():
     user_service.add_favorite_move(user=user, position=position, move_san=move)
 
     return jsonify(message="Favorite move added correctly", data={}, success=True), 200
+
+
+@user_bp.route("/message", methods=["POST"])
+def save_user_message():
+    body = request.json
+
+    if not body:
+        raise InvalidRequestException(description="Missing request body")
+
+    message = body.get("message")
+    email = body.get("email")
+    name = body.get("name")
+    rating = body.get("rating")
+
+    if None in [message, email, name]:
+        raise InvalidRequestException(description="Missing mandatory fields")
+
+    user_service.save_user_message(
+        message=message, email=email, name=name, rating=rating
+    )
+
+    return jsonify(message="User message saved correctly", data={}, success=True), 200
