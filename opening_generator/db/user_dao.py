@@ -1,7 +1,7 @@
 import logging
 
 from opening_generator.db import db_session
-from opening_generator.models import Style, Move
+from opening_generator.models import Style, Move, Contact
 from opening_generator.models.move import FavoriteMoves
 from opening_generator.models.user import User
 
@@ -64,6 +64,11 @@ class UserDao:
         if fav_move:
             db_session.delete(fav_move)
             db_session.commit()
+
+    def save_user_message(self, message: str, email: str, name: str, rating: int):
+        contact = Contact(message=message, email=email, name=name, rating=rating)
+        db_session.add(contact)
+        db_session.commit()
 
 
 user_dao = UserDao()
