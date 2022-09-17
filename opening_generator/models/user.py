@@ -22,7 +22,7 @@ class User(Base):
     age = Column(Integer, CheckConstraint("user.age > 0"), nullable=False, default=0)
     playing_since = Column(
         Integer,
-        CheckConstraint("user.playing_since > 0 and user.playing_since <= age"),
+        CheckConstraint("user.playing_since > 0 and user.playing_since <= user.age"),
         nullable=False,
         default=0,
     )
