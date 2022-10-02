@@ -5,7 +5,9 @@ from typing import Dict
 from opening_generator.models import Move, Position, User
 
 MIN_YEAR = 1970
+MAX_YEAR = 2022
 MIN_RATING = 2300
+DIFF_YEAR = MAX_YEAR - MIN_YEAR
 
 
 class PickerService:
@@ -45,69 +47,92 @@ class PickerService:
         return moves
 
     def pick_move(
-        self,
-        position: Position,
-        user: User,
-        color: bool,
-        depth: int,
-        current_depth: int = 5,
+            self,
+            position: Position,
+            user: User,
+            color: bool,
+            depth: int,
+            current_depth: int = 5,
     ):
         popularity = user.style.popularity
         fashion = user.style.fashion
         risk = user.style.risk
 
         year_sum = 0
+        popularity_sum = 0
         rating_sum = 0
         winning_rate_sum = 0
 
         next_moves = position.next_moves
 
-        candidates = {}
+        candidates = []
 
         floor = self.calculate_floor(depth, current_depth)
 
         floor = (0.5 * popularity + 1) * floor
+
+        ref_year = MIN_YEAR if fashion <= 0 else MAX_YEAR
 
         for move in next_moves:
             if move.popularity_weight < floor:
                 continue
             next_position: Position = move.next_position
 
+            draws = next_position.draws * 100 / next_position.total_games
+
             if color:
-                winning_rate = (
-                    next_position.white_wins
-                    + (0.5 * next_position.draws * (0.5 * risk + 1))
-                ) / next_position.total_games
+                wins = next_position.white_wins * 100 / next_position.total_games
+                loses = next_position.black_wins * 100 / next_position.total_games
             else:
-                winning_rate = (
-                    next_position.black_wins
-                    + (0.5 * next_position.draws * (0.5 * risk + 1))
-                ) / next_position.total_games
+                wins = next_position.black_wins * 100 / next_position.total_games
+                loses = next_position.white_wins * 100 / next_position.total_games
+
+            winning_rate = (wins + 0.5 * draws) ** 2
+            if risk < 0:  # aggressive, minimize draws
+                winning_rate *= (1 - draws / 100) ** (1 - risk)
+            if risk > 0:  # solid, minimize loses
+                winning_rate *= (1 - loses / 100) ** (1 + risk)
+            winning_rate *= winning_rate
             if winning_rate == 0:
                 continue
-            rating_sum += next_position.average_elo - MIN_RATING
-            year_sum += next_position.average_year - MIN_YEAR
+
             winning_rate_sum += winning_rate
-            candidates[move] = winning_rate
+
+            year_weight = ((next_position.average_year - ref_year) / DIFF_YEAR * fashion + 1) ** 2
+            year_sum += year_weight
+
+            rating_weight = ((next_position.average_elo - MIN_RATING) ** 2) + (
+                    next_position.performance - MIN_RATING) ** 2
+            rating_sum += rating_weight
+
+            popularity_weight = move.popularity_weight ** (0.5 * popularity + 1)
+            popularity_sum += popularity_weight
+
+            candidate = (move, winning_rate, year_weight, popularity_weight, rating_weight)
+            candidates.append(candidate)
 
         if len(candidates) == 0:
             return None
 
         move_weights: Dict[Move, (float, float)] = {}
 
-        for move, winning_rate in candidates.items():
-            next_position: Position = move.next_position
-            fashion_weight = (
-                (0.5 * fashion + 1) * (next_position.average_year - MIN_YEAR) / year_sum
-            )
-            rating_weight = (next_position.average_elo - MIN_RATING) / rating_sum
+        for candidate in candidates:
+            move = candidate[0]
+            winning_rate = candidate[1]
+            year_weight = candidate[2]
+            popularity_weight = candidate[3]
+            rating_weight = candidate[4]
+
+            fashion_weight = year_weight / year_sum
+            rating_weight = rating_weight / rating_sum
             winning_rate_weight = winning_rate / winning_rate_sum
+            popularity_weight = popularity_weight / popularity_sum
 
             move_weights[move] = (
-                move.popularity_weight
-                * fashion_weight
-                * rating_weight
-                * winning_rate_weight
+                    popularity_weight
+                    * fashion_weight
+                    * rating_weight
+                    * winning_rate_weight
             )
 
         choices = random.choices(
