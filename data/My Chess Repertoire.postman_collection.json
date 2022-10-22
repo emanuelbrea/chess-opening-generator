@@ -1,0 +1,434 @@
+{
+	"info": {
+		"_postman_id": "ba8b42d0-c9df-463a-bc0c-c2a904690247",
+		"name": "My Chess Repertoire",
+		"description": "REST API that allows chess players create an opening repertoire automatically based on their playing style.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14469653"
+	},
+	"item": [
+		{
+			"name": "Position",
+			"item": [
+				{
+					"name": "/position/stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/position/stats?fen=rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"position",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1"
+								}
+							]
+						},
+						"description": "Get the stats for a given position"
+					},
+					"response": []
+				},
+				{
+					"name": "/position/moves",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/position/moves?fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"position",
+								"moves"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+								}
+							]
+						},
+						"description": "Get the available moves for a given position"
+					},
+					"response": []
+				},
+				{
+					"name": "/position/moves/stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/position/moves/stats?fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"position",
+								"moves",
+								"stats"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+								}
+							]
+						},
+						"description": "Get the stats of the moves that can be played in a position"
+					},
+					"response": []
+				},
+				{
+					"name": "/eco",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/eco?fen=rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"eco"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 6"
+								}
+							]
+						},
+						"description": "Get the ECO Code of a given position if possible."
+					},
+					"response": []
+				},
+				{
+					"name": "/svg",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/position/svg?fen=rnbqkbnr/pppp1ppp/8/4p3/2P5/8/PP1PPPPP/RNBQKBNR w KQkq - 0 2&move=Nf3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"position",
+								"svg"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppp1ppp/8/4p3/2P5/8/PP1PPPPP/RNBQKBNR w KQkq - 0 2"
+								},
+								{
+									"key": "move",
+									"value": "Nf3"
+								}
+							]
+						},
+						"description": "Generate a .svg file from a given position and color"
+					},
+					"response": []
+				}
+			],
+			"description": "Get stats of positions"
+		},
+		{
+			"name": "Repertoire",
+			"item": [
+				{
+					"name": "/repertoire",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MGM0MmRhNS1kNTg0LTRhYTktYTgyYS0wNTgxYTU1ZjkzN2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfR0ZBcDBTRHhoIiwiY29nbml0bzp1c2VybmFtZSI6IjcwYzQyZGE1LWQ1ODQtNGFhOS1hODJhLTA1ODFhNTVmOTM3YyIsImdpdmVuX25hbWUiOiJlbWEiLCJvcmlnaW5fanRpIjoiNjlkMTdjMWUtNGIxYy00M2EwLTllZTItYTMwMGUxMzI1ZGY5IiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6IjYyNmE5ODE5LTNkODktNGZlYS1hOWNjLWVjNGE4MjE3NTAxMSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYyOTQyODQzLCJuYW1lIjoiZW1hIiwiZXhwIjoxNjYzMTEzMzUwLCJpYXQiOjE2NjMxMDk3NTAsImZhbWlseV9uYW1lIjoiYnJlYSIsImp0aSI6IjFhNjMxOTA2LWFmNmItNGI3Yi1iOWZlLTRlZTg3MmRlODNiYyIsImVtYWlsIjoiZW1hX2JyZWFAaG90bWFpbC5jb20ifQ.gIu1zW48SPrJbBwXj45ef_4wJbQgww4FzuDyrA8y_YHM59HoES9cT4tSGClDAroTdhQvqFZ3f79Glkt8Sz8d1gzwCz0FspEYH9P8CAlw6EqPXbwAHicxPiSNlj3Mno_rjcWWoCYoiifBVYFToOzebSAoGdPdZNGf0fuurbwLntzpjR4u7OvDFG1LKooiw0MnEvJppq1WX4ZMuXP9WxXe2Pi9mu4E_TTrmdgHKypxw0qQs5UOa0Ju238G6ljqDG2iIUs5pTJzruc_8sba4pacDVCA-FRO4m0FeLsL7H1M5sCTazMvKjoNvTCCzyLfNC1CJHVSrsqp65hswQlIrYnIBA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/repertoire?fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"repertoire"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/repertoire",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MGM0MmRhNS1kNTg0LTRhYTktYTgyYS0wNTgxYTU1ZjkzN2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfR0ZBcDBTRHhoIiwiY29nbml0bzp1c2VybmFtZSI6IjcwYzQyZGE1LWQ1ODQtNGFhOS1hODJhLTA1ODFhNTVmOTM3YyIsImdpdmVuX25hbWUiOiJlbWEiLCJvcmlnaW5fanRpIjoiNDUwYjlmOGEtYjQzNy00MmE4LWJhM2YtMzMyYjIxYTY5YzRmIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6ImM2Yzc4ZDE1LTUwNWQtNGNmYS05ZmRiLWM4OTI3ZGUzMzk3OSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYzMTA2ODQ3LCJuYW1lIjoiZW1hIiwiZXhwIjoxNjYzMTI3ODg4LCJpYXQiOjE2NjMxMjQyODgsImZhbWlseV9uYW1lIjoiYnJlYSIsImp0aSI6IjgwMjkyODA2LTg2MjYtNDQyZC04ODA0LTEyM2ExMzZjYTZkNCIsImVtYWlsIjoiZW1hX2JyZWFAaG90bWFpbC5jb20ifQ.d-fYV5if2DCzPUBPc-W5RZv31YzeZ5DW1UU6912P3oSs8uLRzfTunWeGnLff4G_joFSQ9vJSZ1IH7CQH4HSzY9upuLziv4yIfWgJz7oLAyi5Wlb405kR62cj9b6uUKLllz5to9BCB4fygchu6W1eCtJGln3jxwfkpB8ZZV0_gBdQyv--Ctr7UMt3Mt60b_Ywt6GgxoN6XIBQhNRiGdlewOzg_MJ2z3vSFg3VDGEw6T4aeSmItykVoa4_fgJkRFj5fTuvVHk7kVgv7hrO-BfnvXVgWv-unVeCwZzzdUUS2MmwEnP4Wn0rgFNbt4yPzap7CRLjXYv_j_rpXtE1Sd_RuA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"color\":\"white\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/repertoire",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"repertoire"
+							]
+						},
+						"description": "Create an opening repertoire for a given color"
+					},
+					"response": []
+				},
+				{
+					"name": "/repertoire",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MGM0MmRhNS1kNTg0LTRhYTktYTgyYS0wNTgxYTU1ZjkzN2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfR0ZBcDBTRHhoIiwiY29nbml0bzp1c2VybmFtZSI6IjcwYzQyZGE1LWQ1ODQtNGFhOS1hODJhLTA1ODFhNTVmOTM3YyIsImdpdmVuX25hbWUiOiJlbWEiLCJvcmlnaW5fanRpIjoiNDUwYjlmOGEtYjQzNy00MmE4LWJhM2YtMzMyYjIxYTY5YzRmIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6ImM2Yzc4ZDE1LTUwNWQtNGNmYS05ZmRiLWM4OTI3ZGUzMzk3OSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYzMTA2ODQ3LCJuYW1lIjoiZW1hIiwiZXhwIjoxNjYzMTI3ODg4LCJpYXQiOjE2NjMxMjQyODgsImZhbWlseV9uYW1lIjoiYnJlYSIsImp0aSI6IjgwMjkyODA2LTg2MjYtNDQyZC04ODA0LTEyM2ExMzZjYTZkNCIsImVtYWlsIjoiZW1hX2JyZWFAaG90bWFpbC5jb20ifQ.d-fYV5if2DCzPUBPc-W5RZv31YzeZ5DW1UU6912P3oSs8uLRzfTunWeGnLff4G_joFSQ9vJSZ1IH7CQH4HSzY9upuLziv4yIfWgJz7oLAyi5Wlb405kR62cj9b6uUKLllz5to9BCB4fygchu6W1eCtJGln3jxwfkpB8ZZV0_gBdQyv--Ctr7UMt3Mt60b_Ywt6GgxoN6XIBQhNRiGdlewOzg_MJ2z3vSFg3VDGEw6T4aeSmItykVoa4_fgJkRFj5fTuvVHk7kVgv7hrO-BfnvXVgWv-unVeCwZzzdUUS2MmwEnP4Wn0rgFNbt4yPzap7CRLjXYv_j_rpXtE1Sd_RuA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/repertoire?fen=r1bqkb1r/pp2pppp/2p2n2/8/3P4/5N2/PPP2PPP/R1BQKB1R w KQkq - 0 7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"repertoire"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "r1bqkb1r/pp2pppp/2p2n2/8/3P4/5N2/PPP2PPP/R1BQKB1R w KQkq - 0 7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/repertoire",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MGM0MmRhNS1kNTg0LTRhYTktYTgyYS0wNTgxYTU1ZjkzN2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfR0ZBcDBTRHhoIiwiY29nbml0bzp1c2VybmFtZSI6IjcwYzQyZGE1LWQ1ODQtNGFhOS1hODJhLTA1ODFhNTVmOTM3YyIsImdpdmVuX25hbWUiOiJlbWEiLCJvcmlnaW5fanRpIjoiNDUwYjlmOGEtYjQzNy00MmE4LWJhM2YtMzMyYjIxYTY5YzRmIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6ImM2Yzc4ZDE1LTUwNWQtNGNmYS05ZmRiLWM4OTI3ZGUzMzk3OSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYzMTA2ODQ3LCJuYW1lIjoiZW1hIiwiZXhwIjoxNjYzMTI3ODg4LCJpYXQiOjE2NjMxMjQyODgsImZhbWlseV9uYW1lIjoiYnJlYSIsImp0aSI6IjgwMjkyODA2LTg2MjYtNDQyZC04ODA0LTEyM2ExMzZjYTZkNCIsImVtYWlsIjoiZW1hX2JyZWFAaG90bWFpbC5jb20ifQ.d-fYV5if2DCzPUBPc-W5RZv31YzeZ5DW1UU6912P3oSs8uLRzfTunWeGnLff4G_joFSQ9vJSZ1IH7CQH4HSzY9upuLziv4yIfWgJz7oLAyi5Wlb405kR62cj9b6uUKLllz5to9BCB4fygchu6W1eCtJGln3jxwfkpB8ZZV0_gBdQyv--Ctr7UMt3Mt60b_Ywt6GgxoN6XIBQhNRiGdlewOzg_MJ2z3vSFg3VDGEw6T4aeSmItykVoa4_fgJkRFj5fTuvVHk7kVgv7hrO-BfnvXVgWv-unVeCwZzzdUUS2MmwEnP4Wn0rgFNbt4yPzap7CRLjXYv_j_rpXtE1Sd_RuA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/repertoire?fen=rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1&move=d4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"repertoire"
+							],
+							"query": [
+								{
+									"key": "fen",
+									"value": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+								},
+								{
+									"key": "move",
+									"value": "d4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/repertoire/info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MGM0MmRhNS1kNTg0LTRhYTktYTgyYS0wNTgxYTU1ZjkzN2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfR0ZBcDBTRHhoIiwiY29nbml0bzp1c2VybmFtZSI6IjcwYzQyZGE1LWQ1ODQtNGFhOS1hODJhLTA1ODFhNTVmOTM3YyIsImdpdmVuX25hbWUiOiJlbWEiLCJvcmlnaW5fanRpIjoiNDUwYjlmOGEtYjQzNy00MmE4LWJhM2YtMzMyYjIxYTY5YzRmIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6ImM2Yzc4ZDE1LTUwNWQtNGNmYS05ZmRiLWM4OTI3ZGUzMzk3OSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYzMTA2ODQ3LCJuYW1lIjoiZW1hIiwiZXhwIjoxNjYzMTI3ODg4LCJpYXQiOjE2NjMxMjQyODgsImZhbWlseV9uYW1lIjoiYnJlYSIsImp0aSI6IjgwMjkyODA2LTg2MjYtNDQyZC04ODA0LTEyM2ExMzZjYTZkNCIsImVtYWlsIjoiZW1hX2JyZWFAaG90bWFpbC5jb20ifQ.d-fYV5if2DCzPUBPc-W5RZv31YzeZ5DW1UU6912P3oSs8uLRzfTunWeGnLff4G_joFSQ9vJSZ1IH7CQH4HSzY9upuLziv4yIfWgJz7oLAyi5Wlb405kR62cj9b6uUKLllz5to9BCB4fygchu6W1eCtJGln3jxwfkpB8ZZV0_gBdQyv--Ctr7UMt3Mt60b_Ywt6GgxoN6XIBQhNRiGdlewOzg_MJ2z3vSFg3VDGEw6T4aeSmItykVoa4_fgJkRFj5fTuvVHk7kVgv7hrO-BfnvXVgWv-unVeCwZzzdUUS2MmwEnP4Wn0rgFNbt4yPzap7CRLjXYv_j_rpXtE1Sd_RuA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/repertoire/info",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"repertoire",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Manage an opening repertoire"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "/user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0dGQXAwU0R4aCIsImNvZ25pdG86dXNlcm5hbWUiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJvcmlnaW5fanRpIjoiYjIzZjUyMTctNzY1Ni00MmU1LWExYzYtZWZiOGZkODI1ZDNlIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6IjMzYzM0MDVmLTkyODAtNDM5NS1hZTkxLTk5MGFiMmM3Y2IzNiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYyMDc1MjU2LCJuYW1lIjoiZW1hbnVlbCIsImV4cCI6MTY2MjA3ODg1NiwiaWF0IjoxNjYyMDc1MjU2LCJqdGkiOiI5MjRiZTczNS1jYTliLTRiOGQtYTI5OS02MjhlMmQzN2ZjNTIiLCJlbWFpbCI6ImJyZWEuZW1hbnVlbEBnbWFpbC5jb20ifQ.Rf6c_bWHuZV9sPFYHPmqpVnpPN-hhN1IYTg7S6z_93JmOkN5_oFFtcLq_nL9yaqe56s5KsuL5rePaGDX6YvBzFU6D7Q_j_8mOm1-o_qp6HBSD0RIg5m03_yqXxFVtqIyirOpSNWeEFoTYZZX0549WFL6GTNOX3PnGLMFaFj-5_7OCanhvRbxADN6PSCCwrw140gxYqUQvs7bKkTohmgdCj6g5eoB0EJ6qsoeQwz-o-bpnnuuCNRh3pBdmscKJSqW9HEW_OD7KjvwhpLnZ9AtvXKe-APKCGYrdn2wLpjoj7ay3A-d-zdZzYpUBi2tAFbBWr4T2BVNRlkYnAkFJzDIDw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"brea.emanuel@gmail.com\",\r\n    \"first_name\": \"emanuel\",\r\n    \"last_name\": \"brea\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0dGQXAwU0R4aCIsImNvZ25pdG86dXNlcm5hbWUiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJvcmlnaW5fanRpIjoiYjIzZjUyMTctNzY1Ni00MmU1LWExYzYtZWZiOGZkODI1ZDNlIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6IjMzYzM0MDVmLTkyODAtNDM5NS1hZTkxLTk5MGFiMmM3Y2IzNiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYyMDc1MjU2LCJuYW1lIjoiZW1hbnVlbCIsImV4cCI6MTY2MjA3ODg1NiwiaWF0IjoxNjYyMDc1MjU2LCJqdGkiOiI5MjRiZTczNS1jYTliLTRiOGQtYTI5OS02MjhlMmQzN2ZjNTIiLCJlbWFpbCI6ImJyZWEuZW1hbnVlbEBnbWFpbC5jb20ifQ.Rf6c_bWHuZV9sPFYHPmqpVnpPN-hhN1IYTg7S6z_93JmOkN5_oFFtcLq_nL9yaqe56s5KsuL5rePaGDX6YvBzFU6D7Q_j_8mOm1-o_qp6HBSD0RIg5m03_yqXxFVtqIyirOpSNWeEFoTYZZX0549WFL6GTNOX3PnGLMFaFj-5_7OCanhvRbxADN6PSCCwrw140gxYqUQvs7bKkTohmgdCj6g5eoB0EJ6qsoeQwz-o-bpnnuuCNRh3pBdmscKJSqW9HEW_OD7KjvwhpLnZ9AtvXKe-APKCGYrdn2wLpjoj7ay3A-d-zdZzYpUBi2tAFbBWr4T2BVNRlkYnAkFJzDIDw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"brea.emanuel@gmail.com\",\r\n    \"first_name\": \"emanuel\",\r\n    \"last_name\": \"brea\",\r\n    \"popularity\": 0,\r\n    \"fashion\": 0,\r\n    \"risk\": 0,\r\n    \"rating\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/favorite",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJraWQiOiI5SzRtYjNIbzIwQUMyZlQyK0I5SHZYUHR3ZTgra0txOUFPcTB1Ym9LNDBjPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX0dGQXAwU0R4aCIsImNvZ25pdG86dXNlcm5hbWUiOiJlOTNhN2QwOC0zYjRjLTQwMTUtYWM1ZS1jMjc3YzUzNzQ0ODAiLCJvcmlnaW5fanRpIjoiYjIzZjUyMTctNzY1Ni00MmU1LWExYzYtZWZiOGZkODI1ZDNlIiwiYXVkIjoiMXJudTE4YWthOGdrOGs5aHJqbHR0ZzQwY3MiLCJldmVudF9pZCI6IjMzYzM0MDVmLTkyODAtNDM5NS1hZTkxLTk5MGFiMmM3Y2IzNiIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjYyMDc1MjU2LCJuYW1lIjoiZW1hbnVlbCIsImV4cCI6MTY2MjA3ODg1NiwiaWF0IjoxNjYyMDc1MjU2LCJqdGkiOiI5MjRiZTczNS1jYTliLTRiOGQtYTI5OS02MjhlMmQzN2ZjNTIiLCJlbWFpbCI6ImJyZWEuZW1hbnVlbEBnbWFpbC5jb20ifQ.Rf6c_bWHuZV9sPFYHPmqpVnpPN-hhN1IYTg7S6z_93JmOkN5_oFFtcLq_nL9yaqe56s5KsuL5rePaGDX6YvBzFU6D7Q_j_8mOm1-o_qp6HBSD0RIg5m03_yqXxFVtqIyirOpSNWeEFoTYZZX0549WFL6GTNOX3PnGLMFaFj-5_7OCanhvRbxADN6PSCCwrw140gxYqUQvs7bKkTohmgdCj6g5eoB0EJ6qsoeQwz-o-bpnnuuCNRh3pBdmscKJSqW9HEW_OD7KjvwhpLnZ9AtvXKe-APKCGYrdn2wLpjoj7ay3A-d-zdZzYpUBi2tAFbBWr4T2BVNRlkYnAkFJzDIDw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fen\": \"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1\",\r\n    \"move\": \"e4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/favorite",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

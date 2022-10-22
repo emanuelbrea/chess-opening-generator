@@ -1,0 +1,501 @@
+id,eco_code,name,line
+0,A00,Uncommon Opening,1. g4
+1,A01,Nimzovich-Larsen Attack,1. b3
+2,A02,Bird's Opening,1. f4
+3,A03,Bird's Opening,1. f4 d5
+4,A04,Reti Opening,1. Nf3
+5,A05,Reti Opening,1. Nf3 Nf6
+6,A06,Reti Opening,1. Nf3 d5
+7,A07,King's Indian Attack,1. Nf3 d5 2. g3
+8,A08,King's Indian Attack,1. Nf3 d5 2. g3 c5 3. Bg2
+9,A09,Reti Opening,1. Nf3 d5 2. c4
+10,A10,English,1. c4
+11,A11,"English, Caro-Kann Defensive System",1. c4 c6
+12,A12,English with b3,1. c4 c6 2. Nf3 d5 3. b3
+13,A13,English,1. c4 e6
+14,A14,English,1. c4 e6 2. Nf3 d5 3. g3 Nf6 4. Bg2 Be7 5. O-O
+15,A15,English,1. c4 Nf6
+16,A16,English,1. c4 Nf6 2. Nc3
+17,A17,English,1. c4 Nf6 2. Nc3 e6
+18,A18,"English, Mikenas-Carls",1. c4 Nf6 2. Nc3 e6 3. e4
+19,A19,"English, Mikenas-Carls, Sicilian Variation",1. c4 Nf6 2. Nc3 e6 3. e4 c5
+20,A20,English,1. c4 e5
+21,A21,English,1. c4 e5 2. Nc3
+22,A22,English,1. c4 e5 2. Nc3 Nf6
+23,A23,"English, Bremen System, Keres Variation",1. c4 e5 2. Nc3 Nf6 3. g3 c6
+24,A24,"English, Bremen System with ...g6",1. c4 e5 2. Nc3 Nf6 3. g3 g6
+25,A25,English,1. c4 e5 2. Nc3 Nc6
+26,A26,English,1. c4 e5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. d3 d6
+27,A27,"English, Three Knights System",1. c4 e5 2. Nc3 Nc6 3. Nf3
+28,A28,English,1. c4 e5 2. Nc3 Nc6 3. Nf3 Nf6
+29,A29,"English, Four Knights, Kingside Fianchetto",1. c4 e5 2. Nc3 Nc6 3. Nf3 Nf6 4. g3
+30,A30,"English, Symmetrical",1. c4 c5
+31,A31,"English, Symmetrical, Benoni Formation",1. c4 c5 2. Nf3 Nf6 3. d4
+32,A32,"English, Symmetrical Variation",1. c4 c5 2. Nf3 Nf6 3. d4 cxd4 4. Nxd4 e6
+33,A33,"English, Symmetrical",1. c4 c5 2. Nf3 Nf6 3. d4 cxd4 4. Nxd4 e6 5. Nc3 Nc6
+34,A34,"English, Symmetrical",1. c4 c5 2. Nc3
+35,A35,"English, Symmetrical",1. c4 c5 2. Nc3 Nc6
+36,A36,"English, Symmetrical",1. c4 c5 2. Nc3 Nc6 3. g3
+37,A37,"English, Symmetrical",1. c4 c5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. Nf3
+38,A38,"English, Symmetrical",1. c4 c5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. Nf3 Nf6
+39,A39,"English, Symmetrical, Main line with d4",1. c4 c5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. Nf3 Nf6 6. O-O O-O 7. d4
+40,A40,Queen's Pawn Game,1. d4
+41,A41,Queen's Pawn Game (with ...d6),1. d4 d6
+42,A42,"Modern Defense, Averbakh System",1. d4 d6 2. c4 g6 3. Nc3 Bg7 4. e4
+43,A43,Old Benoni,1. d4 c5
+44,A44,Old Benoni Defense,1. d4 c5 2. d5 e5
+45,A45,Queen's Pawn Game,1. d4 Nf6
+46,A46,Queen's Pawn Game,1. d4 Nf6 2. Nf3
+47,A47,Queen's Indian,1. d4 Nf6 2. Nf3 b6
+48,A48,King's Indian,1. d4 Nf6 2. Nf3 g6
+49,A49,"King's Indian, Fianchetto without c4",1. d4 Nf6 2. Nf3 g6 3. g3
+50,A50,Queen's Pawn Game,1. d4 Nf6 2. c4
+51,A51,Budapest Gambit,1. d4 Nf6 2. c4 e5
+52,A52,Budapest Gambit,1. d4 Nf6 2. c4 e5 3. dxe5 Ng4
+53,A53,Old Indian,1. d4 Nf6 2. c4 d6
+54,A54,"Old Indian, Ukrainian Variation, 4.Nf3",1. d4 Nf6 2. c4 d6 3. Nc3 e5 4. Nf3
+55,A55,"Old Indian, Main line",1. d4 Nf6 2. c4 d6 3. Nc3 e5 4. Nf3 Nbd7 5. e4
+56,A56,Benoni Defense,1. d4 Nf6 2. c4 c5
+57,A57,Benko Gambit,1. d4 Nf6 2. c4 c5 3. d5 b5
+58,A58,Benko Gambit,1. d4 Nf6 2. c4 c5 3. d5 b5 4. cxb5 a6 5. bxa6
+59,A59,Benko Gambit,1. d4 Nf6 2. c4 c5 3. d5 b5 4. cxb5 a6 5. bxa6 Bxa6 6. Nc3 d6 7. e4
+60,A60,Benoni Defense,1. d4 Nf6 2. c4 c5 3. d5 e6
+61,A61,Benoni,1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. Nf3 g6
+62,A62,"Benoni, Fianchetto Variation",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. Nf3 g6 7. g3 Bg7 8. Bg2 O-O
+63,A63,"Benoni, Fianchetto, 9...Nbd7",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. Nf3 g6 7. g3 Bg7 8. Bg2 O-O 9. O-O Nbd7
+64,A64,"Benoni, Fianchetto, 11...Re8",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. Nf3 g6 7. g3 Bg7 8. Bg2 O-O 9. O-O Nbd7 10. Nd2 a6 11. a4 Re8
+65,A65,"Benoni, 6.e4",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4
+66,A66,Benoni,1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. f4
+67,A67,"Benoni, Taimanov Variation",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. f4 Bg7 8. Bb5+
+68,A68,"Benoni, Four Pawns Attack",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. f4 Bg7 8. Nf3 O-O
+69,A69,"Benoni, Four Pawns Attack, Main line",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. f4 Bg7 8. Nf3 O-O 9. Be2 Re8
+70,A70,"Benoni, Classical with 7.Nf3",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3
+71,A71,"Benoni, Classical, 8.Bg5",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Bg5
+72,A72,"Benoni, Classical without 9.O-O",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O
+73,A73,"Benoni, Classical, 9.O-O",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O
+74,A74,"Benoni, Classical, 9...a6, 10.a4",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O a6 10. a4
+75,A75,"Benoni, Classical with ...a6 and 10...Bg4",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O a6 10. a4 Bg4
+76,A76,"Benoni, Classical, 9...Re8",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9.  O-O Re8
+77,A77,"Benoni, Classical, 9...Re8, 10.Nd2",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O Re8 10. Nd2
+78,A78,"Benoni, Classical with ...Re8 and ...Na6",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O Re8 10. Nd2 Na6
+79,A79,"Benoni, Classical, 11.f3",1. d4 Nf6 2. c4 c5 3. d5 e6 4. Nc3 exd5 5. cxd5 d6 6. e4 g6 7. Nf3 Bg7 8. Be2 O-O 9. O-O Re8 10. Nd2 Na6 11. f3
+80,A80,Dutch,1. d4 f5
+81,A81,Dutch,1. d4 f5 2. g3
+82,A82,"Dutch, Staunton Gambit",1. d4 f5 2. e4
+83,A83,"Dutch, Staunton Gambit",1. d4 f5 2. e4 fxe4 3. Nc3 Nf6 4. Bg5
+84,A84,Dutch,1. d4 f5 2. c4
+85,A85,"Dutch, with c4 & Nc3",1. d4 f5 2. c4 Nf6 3. Nc3
+86,A86,Dutch,1. d4 f5 2. c4 Nf6 3. g3
+87,A87,"Dutch, Leningrad, Main Variation",1. d4 f5 2. c4 Nf6 3. g3 g6 4. Bg2 Bg7 5. Nf3
+88,A88,"Dutch, Leningrad, Main Variation with c6",1. d4 f5 2. c4 Nf6 3. g3 g6 4. Bg2 Bg7 5. Nf3 O-O 6. O-O d6 7. Nc3 c6
+89,A89,"Dutch, Leningrad, Main Variation with Nc6",1. d4 f5 2. c4 Nf6 3. g3 g6 4. Bg2 Bg7 5. Nf3 O-O 6. O-O d6 7. Nc3 Nc6
+90,A90,Dutch,1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2
+91,A91,Dutch Defense,1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7
+92,A92,Dutch,1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O
+93,A93,"Dutch, Stonewall, Botvinnik Variation",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d5 7. b3
+94,A94,"Dutch, Stonewall with Ba3",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d5 7. b3 c6 8. Ba3
+95,A95,"Dutch, Stonewall",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d5 7. Nc3 c6
+96,A96,"Dutch, Classical Variation",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d6
+97,A97,"Dutch, Ilyin-Genevsky",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d6 7. Nc3 Qe8
+98,A98,"Dutch, Ilyin-Genevsky Variation with Qc2",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d6 7. Nc3 Qe8 8. Qc2
+99,A99,"Dutch, Ilyin-Genevsky Variation with b3",1. d4 f5 2. c4 Nf6 3. g3 e6 4. Bg2 Be7 5. Nf3 O-O 6. O-O d6 7. Nc3 Qe8 8. b3
+100,B00,Uncommon King's Pawn Opening,1. e4
+101,B01,Scandinavian,1. e4 d5
+102,B02,Alekhine's Defense,1. e4 Nf6
+103,B03,Alekhine's Defense,1. e4 Nf6 2. e5 Nd5 3. d4
+104,B04,"Alekhine's Defense, Modern",1. e4 Nf6 2. e5 Nd5 3. d4 d6 4. Nf3
+105,B05,"Alekhine's Defense, Modern",1. e4 Nf6 2. e5 Nd5 3. d4 d6 4. Nf3 Bg4
+106,B06,Robatsch,1. e4 g6
+107,B07,Pirc,1. e4 d6 2. d4 Nf6
+108,B08,"Pirc, Classical",1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. Nf3
+109,B09,"Pirc, Austrian Attack",1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. f4
+110,B10,Caro-Kann,1. e4 c6
+111,B11,"Caro-Kann, Two Knights, 3...Bg4",1. e4 c6 2. Nc3 d5 3. Nf3 Bg4
+112,B12,Caro-Kann Defense,1. e4 c6 2. d4
+113,B13,"Caro-Kann, Exchange",1. e4 c6 2. d4 d5 3. exd5 cxd5
+114,B14,"Caro-Kann, Panov-Botvinnik Attack",1. e4 c6 2. d4 d5 3. exd5 cxd5 4. c4 Nf6 5. Nc3 e6
+115,B15,Caro-Kann,1. e4 c6 2. d4 d5 3. Nc3
+116,B16,"Caro-Kann, Bronstein-Larsen Variation",1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Nf6 5. Nxf6+ gxf6
+117,B17,"Caro-Kann, Steinitz Variation",1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Nd7
+118,B18,"Caro-Kann, Classical",1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5
+119,B19,"Caro-Kann, Classical",1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5 5. Ng3 Bg6 6. h4 h6 7. Nf3 Nd7
+120,B20,Sicilian,1. e4 c5
+121,B21,"Sicilian, 2.f4 and 2.d4",1. e4 c5 2. f4
+122,B22,"Sicilian, Alapin",1. e4 c5 2. c3
+123,B23,"Sicilian, Closed",1. e4 c5 2. Nc3
+124,B24,"Sicilian, Closed",1. e4 c5 2. Nc3 Nc6 3. g3
+125,B25,"Sicilian, Closed",1. e4 c5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. d3 d6
+126,B26,"Sicilian, Closed, 6.Be3",1. e4 c5 2. Nc3 Nc6 3. g3 g6 4. Bg2 Bg7 5. d3 d6 6. Be3
+127,B27,Sicilian,1. e4 c5 2. Nf3
+128,B28,"Sicilian, O'Kelly Variation",1. e4 c5 2. Nf3 a6
+129,B29,"Sicilian, Nimzovich-Rubinstein",1. e4 c5 2. Nf3 Nf6
+130,B30,Sicilian,1. e4 c5 2. Nf3 Nc6
+131,B31,"Sicilian, Rossolimo Variation",1. e4 c5 2. Nf3 Nc6 3. Bb5 g6
+132,B32,Sicilian,1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 e5
+133,B33,Sicilian,1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4
+134,B34,"Sicilian, Accelerated Fianchetto",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. Nxc6
+135,B35,"Sicilian, Accelerated Fianchetto, Modern Variation with Bc4",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. Nc3 Bg7 6. Be3 Nf6 7. Bc4
+136,B36,"Sicilian, Accelerated Fianchetto",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. c4
+137,B37,"Sicilian, Accelerated Fianchetto",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. c4 Bg7
+138,B38,"Sicilian, Accelerated Fianchetto, Maroczy Bind, 6.Be3",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. c4 Bg7 6. Be3
+139,B39,"Sicilian, Accelerated Fianchetto, Breyer Variation",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 g6 5. c4 Bg7 6. Be3 Nf6 7. Nc3 Ng4
+140,B40,Sicilian,1. e4 c5 2. Nf3 e6
+141,B41,"Sicilian, Kan",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6
+142,B42,"Sicilian, Kan",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Bd3
+143,B43,"Sicilian, Kan, 5.Nc3",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Nc3
+144,B44,Sicilian,1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6
+145,B45,"Sicilian, Taimanov",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nc3
+146,B46,"Sicilian, Taimanov Variation",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nc3 a6
+147,B47,"Sicilian, Taimanov (Bastrikov) Variation",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nc3 Qc7
+148,B48,"Sicilian, Taimanov Variation",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nc3 Qc7 6. Be3
+149,B49,"Sicilian, Taimanov Variation",1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nc3 Qc7 6. Be3 a6 7. Be2
+150,B50,Sicilian,1. e4 c5 2. Nf3 d6
+151,B51,"Sicilian, Canal-Sokolsky (Rossolimo) Attack",1. e4 c5 2. Nf3 d6 3. Bb5+
+152,B52,"Sicilian, Canal-Sokolsky (Rossolimo) Attack",1. e4 c5 2. Nf3 d6 3. Bb5+ Bd7
+153,B53,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Qxd4
+154,B54,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4
+155,B55,"Sicilian, Prins Variation, Venice Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. f3 e5 6. Bb5+
+156,B56,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3
+157,B57,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bc4
+158,B58,Sicilian,1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 d6 6. Be2
+159,B59,"Sicilian, Boleslavsky Variation, 7.Nb3",1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 d6 6. Be2 e5 7. Nb3
+160,B60,"Sicilian, Richter-Rauzer",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5
+161,B61,"Sicilian, Richter-Rauzer, Larsen Variation, 7.Qd2",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 Bd7 7. Qd2
+162,B62,"Sicilian, Richter-Rauzer",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6
+163,B63,"Sicilian, Richter-Rauzer Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2
+164,B64,"Sicilian, Richter-Rauzer Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 Be7 8. O-O-O O-O 9. f4
+165,B65,"Sicilian, Richter-Rauzer Attack, 7...Be7 Defense, 9...Nxd4",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 Be7 8. O-O-O O-O 9. f4 Nxd4 10 Qxd4
+166,B66,"Sicilian, Richter-Rauzer Attack, 7...a6",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 a6
+167,B67,"Sicilian, Richter-Rauzer Attack, 7...a6 Defense, 8...Bd7",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 a6 8. O-O-O Bd7
+168,B68,"Sicilian, Richter-Rauzer Attack, 7...a6 Defense, 9...Be7",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 a6 8. O-O-O Bd7 9. f4 Be7
+169,B69,"Sicilian, Richter-Rauzer Attack, 7...a6 Defense, 11.Bxf6",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bg5 e6 7. Qd2 a6 8. O-O-O Bd7 9. f4 Be7 10 Nf3 b5 11 Bxf6
+170,B70,"Sicilian, Dragon Variation",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6
+171,B71,"Sicilian, Dragon, Levenfish Variation",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. f4
+172,B72,"Sicilian, Dragon",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3
+173,B73,"Sicilian, Dragon, Classical",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. Be2 Nc6 8. O-O
+174,B74,"Sicilian, Dragon, Classical",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. Be2 Nc6 8. O-O O-O 9. Nb3
+175,B75,"Sicilian, Dragon, Yugoslav Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. f3
+176,B76,"Sicilian, Dragon, Yugoslav Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. f3 O-O
+177,B77,"Sicilian, Dragon, Yugoslav Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. f3 O-O 8. Qd2 Nc6 9. Bc4
+178,B78,"Sicilian, Dragon, Yugoslav Attack, 10.castle long",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. f3 O-O 8. Qd2 Nc6 9. Bc4 Bd7 10 O-O-O
+179,B79,"Sicilian, Dragon, Yugoslav Attack, 12.h4",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 g6 6. Be3 Bg7 7. f3 O-O 8. Qd2 Nc6 9. Bc4 Bd7 10 O-O-O Qa5 11 Bb3 Rfc8 12 h4
+180,B80,"Sicilian, Scheveningen",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6
+181,B81,"Sicilian, Scheveningen, Keres Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. g4
+182,B82,"Sicilian, Scheveningen",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. f4
+183,B83,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Be2
+184,B84,"Sicilian, Scheveningen",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Be2 a6
+185,B85,"Sicilian, Scheveningen, Classical",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Be2 a6 7. O-O Qc7 8. f4 Nc6
+186,B86,"Sicilian, Fischer-Sozin Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Bc4
+187,B87,"Sicilian, Fischer-Sozin with ...a6 and ...b5",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Bc4 a6 7. Bb3 b5
+188,B88,"Sicilian, Fischer-Sozin Attack",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Bc4 Nc6
+189,B89,Sicilian,1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6 6. Bc4 Nc6 7. Be3
+190,B90,"Sicilian, Najdorf",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6
+191,B91,"Sicilian, Najdorf, Zagreb (Fianchetto) Variation",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. g3
+192,B92,"Sicilian, Najdorf, Opocensky Variation",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Be2
+193,B93,"Sicilian, Najdorf, 6.f4",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. f4
+194,B94,"Sicilian, Najdorf",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5
+195,B95,"Sicilian, Najdorf, 6...e6",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6
+196,B96,"Sicilian, Najdorf",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4
+197,B97,"Sicilian, Najdorf",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4 Qb6
+198,B98,"Sicilian, Najdorf",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4 Be7
+199,B99,"Sicilian, Najdorf, 7...Be7 Main line",1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4 Be7 8. Qf3 Qc7 9. O-O-O Nbd7
+200,C00,French Defense,1. e4 e6
+201,C01,"French, Exchange",1. e4 e6 2. d4 d5 3. exd5 exd5 4. Nc3 Nf6 5. Bg5
+202,C02,"French, Advance",1. e4 e6 2. d4 d5 3. e5
+203,C03,"French, Tarrasch",1. e4 e6 2. d4 d5 3. Nd2
+204,C04,"French, Tarrasch, Guimard Main line",1. e4 e6 2. d4 d5 3. Nd2 Nc6 4. Ngf3 Nf6
+205,C05,"French, Tarrasch",1. e4 e6 2. d4 d5 3. Nd2 Nf6
+206,C06,"French, Tarrasch",1. e4 e6 2. d4 d5 3. Nd2 Nf6 4. e5 Nfd7 5. Bd3 c5 6. c3 Nc6 7. Ne2 cxd4 8. cxd4
+207,C07,"French, Tarrasch",1. e4 e6 2. d4 d5 3. Nd2 c5
+208,C08,"French, Tarrasch, Open, 4.ed ed",1. e4 e6 2. d4 d5 3. Nd2 c5 4. exd5 exd5
+209,C09,"French, Tarrasch, Open Variation, Main line",1. e4 e6 2. d4 d5 3. Nd2 c5 4. exd5 exd5 5. Ngf3 Nc6
+210,C10,French,1. e4 e6 2. d4 d5 3. Nc3
+211,C11,French,1. e4 e6 2. d4 d5 3. Nc3 Nf6
+212,C12,"French, McCutcheon",1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Bb4
+213,C13,French,1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Be7
+214,C14,"French, Classical",1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Be7 5. e5 Nfd7 6. Bxe7 Qxe7
+215,C15,"French, Winawer",1. e4 e6 2. d4 d5 3. Nc3 Bb4
+216,C16,"French, Winawer",1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5
+217,C17,"French, Winawer, Advance",1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5 c5
+218,C18,"French, Winawer",1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5 c5 5. a3 Bxc3+ 6. bxc3
+219,C19,"French, Winawer, Advance",1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5 c5 5. a3 Bxc3+ 6. bxc3 Ne7
+220,C20,King's Pawn Game,1. e4 e5
+221,C21,Center Game,1. e4 e5 2. d4 exd4
+222,C22,Center Game,1. e4 e5 2. d4 exd4 3. Qxd4 Nc6
+223,C23,Bishop's Opening,1. e4 e5 2. Bc4
+224,C24,Bishop's Opening,1. e4 e5 2. Bc4 Nf6
+225,C25,Vienna,1. e4 e5 2. Nc3
+226,C26,Vienna,1. e4 e5 2. Nc3 Nf6
+227,C27,Vienna Game,1. e4 e5 2. Nc3 Nf6 3. Bc4 Nxe4
+228,C28,Vienna Game,1. e4 e5 2. Nc3 Nf6 3. Bc4 Nc6
+229,C29,Vienna Gambit,1. e4 e5 2. Nc3 Nf6 3. f4
+230,C30,King's Gambit Declined,1. e4 e5 2. f4
+231,C31,"King's Gambit Declined, Falkbeer Counter Gambit",1. e4 e5 2. f4 d5
+232,C32,"King's Gambit Declined, Falkbeer Counter Gambit",1. e4 e5 2. f4 d5 3. exd5 e4 4. d3 Nf6
+233,C33,King's Gambit Accepted,1. e4 e5 2. f4 exf4
+234,C34,King's Gambit Accepted,1. e4 e5 2. f4 exf4 3. Nf3
+235,C35,"King's Gambit Accepted, Cunningham",1. e4 e5 2. f4 exf4 3. Nf3 Be7
+236,C36,"King's Gambit Accepted, Abbazia Defense",1. e4 e5 2. f4 exf4 3. Nf3 d5
+237,C37,King's Gambit Accepted,1. e4 e5 2. f4 exf4 3. Nf3 g5 4. Nc3
+238,C38,King's Gambit Accepted,1. e4 e5 2. f4 exf4 3. Nf3 g5 4. Bc4 Bg7
+239,C39,King's Gambit Accepted,1. e4 e5 2. f4 exf4 3. Nf3 g5 4. h4
+240,C40,King's Knight Opening,1. e4 e5 2. Nf3
+241,C41,Philidor Defense,1. e4 e5 2. Nf3 d6
+242,C42,Petrov Defense,1. e4 e5 2. Nf3 Nf6
+243,C43,"Petrov, Modern Attack",1. e4 e5 2. Nf3 Nf6 3. d4 exd4 4. e5 Ne4 5. Qxd4
+244,C44,King's Pawn Game,1. e4 e5 2. Nf3 Nc6
+245,C45,Scotch Game,1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4
+246,C46,Three Knights,1. e4 e5 2. Nf3 Nc6 3. Nc3
+247,C47,Four Knights,1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6
+248,C48,Four Knights,1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. Bb5
+249,C49,Four Knights,1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. Bb5 Bb4
+250,C50,Giuoco Piano,1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5
+251,C51,Evans Gambit,1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4
+252,C52,Evans Gambit,1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 5. c3 Ba5
+253,C53,Giuoco Piano,1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3
+254,C54,Giuoco Piano,1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4
+255,C55,Two Knights Defense,1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6
+256,C56,Two Knights,1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. d4 exd4 5. O-O Nxe4
+257,C57,Two Knights,1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5
+258,C58,Two Knights,1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 d5 5. exd5 Na5
+259,C59,Two Knights,1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 d5 5. exd5 Na5 6. Bb5+ c6 7. dxc6 bxc6 8. Be2 h6
+260,C60,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5
+261,C61,"Ruy Lopez, Bird's Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 Nd4
+262,C62,"Ruy Lopez, Old Steinitz Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 d6
+263,C63,"Ruy Lopez, Schliemann Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 f5
+264,C64,"Ruy Lopez, Classical",1. e4 e5 2. Nf3 Nc6 3. Bb5 Bc5
+265,C65,"Ruy Lopez, Berlin Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6
+266,C66,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O d6
+267,C67,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4
+268,C68,"Ruy Lopez, Exchange",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6
+269,C69,"Ruy Lopez, Exchange, Gligoric Variation",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 dxc6 5. O-O f6
+270,C70,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4
+271,C71,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6
+272,C72,"Ruy Lopez, Modern Steinitz Defense, 5.O-O",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6 5. O-O
+273,C73,"Ruy Lopez, Modern Steinitz Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6 5. Bxc6+ bxc6 6. d4
+274,C74,"Ruy Lopez, Modern Steinitz Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6 5. c3
+275,C75,"Ruy Lopez, Modern Steinitz Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6 5. c3 Bd7
+276,C76,"Ruy Lopez, Modern Steinitz Defense, Fianchetto Variation",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 d6 5. c3 Bd7 6. d4 g6
+277,C77,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6
+278,C78,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O
+279,C79,"Ruy Lopez, Steinitz Defense Deferred",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O d6
+280,C80,"Ruy Lopez, Open",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4
+281,C81,"Ruy Lopez, Open, Howell Attack",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6 9. Qe2
+282,C82,"Ruy Lopez, Open",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6 9. c3
+283,C83,"Ruy Lopez, Open",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Nxe4 6. d4 b5 7. Bb3 d5 8. dxe5 Be6
+284,C84,"Ruy Lopez, Closed",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7
+285,C85,"Ruy Lopez, Exchange Variation Doubly Deferred (DERLD)",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Bxc6 dxc6
+286,C86,"Ruy Lopez, Worrall Attack",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Qe2
+287,C87,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 d6
+288,C88,Ruy Lopez,1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3
+289,C89,"Ruy Lopez, Marshall",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d5
+290,C90,"Ruy Lopez, Closed",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6
+291,C91,"Ruy Lopez, Closed",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. d4
+292,C92,"Ruy Lopez, Closed",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3
+293,C93,"Ruy Lopez, Closed, Smyslov Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 h6
+294,C94,"Ruy Lopez, Closed, Breyer Defense",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Nb8
+295,C95,"Ruy Lopez, Closed, Breyer",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Nb8 10 d4
+296,C96,"Ruy Lopez, Closed",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Na5 10 Bc2
+297,C97,"Ruy Lopez, Closed, Chigorin",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Na5 10 Bc2 c5 11 d4 Qc7
+298,C98,"Ruy Lopez, Closed, Chigorin",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Na5 10 Bc2 c5 11 d4 Qc7 12 Nbd2 Nc6
+299,C99,"Ruy Lopez, Closed, Chigorin, 12...cd",1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 O-O 8. c3 d6 9. h3 Na5 10 Bc2 c5 11 d4 Qc7 12 Nbd2 cxd4 13 cxd4
+300,D00,Queen's Pawn Game,1. d4 d5
+301,D01,Richter-Veresov Attack,1. d4 d5 2. Nc3 Nf6 3. Bg5
+302,D02,Queen's Pawn Game,1. d4 d5 2. Nf3
+303,D03,Torre Attack (Tartakower Variation),1. d4 d5 2. Nf3 Nf6 3. Bg5
+304,D04,Queen's Pawn Game,1. d4 d5 2. Nf3 Nf6 3. e3
+305,D05,Queen's Pawn Game,1. d4 d5 2. Nf3 Nf6 3. e3 e6
+306,D06,Queen's Gambit Declined,1. d4 d5 2. c4
+307,D07,"Queen's Gambit Declined, Chigorin Defense",1. d4 d5 2. c4 Nc6
+308,D08,"Queen's Gambit Declined, Albin Counter Gambit",1. d4 d5 2. c4 e5
+309,D09,"Queen's Gambit Declined, Albin Counter Gambit, 5.g3",1. d4 d5 2. c4 e5 3. dxe5 d4 4. Nf3 Nc6 5. g3
+310,D10,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6
+311,D11,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6 3. Nf3
+312,D12,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. e3 Bf5
+313,D13,"Queen's Gambit Declined Slav, Exchange Variation",1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. cxd5 cxd5
+314,D14,"Queen's Gambit Declined Slav, Exchange Variation",1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. cxd5 cxd5 5. Nc3 Nc6 6. Bf4 Bf5
+315,D15,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3
+316,D16,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4 5. a4
+317,D17,Queen's Gambit Declined Slav,1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4 5. a4 Bf5
+318,D18,"Queen's Gambit Declined Slav, Dutch",1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4 5. a4 Bf5 6. e3
+319,D19,"Queen's Gambit Declined Slav, Dutch",1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 dxc4 5. a4 Bf5 6. e3 e6 7. Bxc4 Bb4 8. O-O O-O 9. Qe2
+320,D20,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4
+321,D21,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3
+322,D22,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3 a6 4. e3 Bg4 5. Bxc4 e6 6. d5
+323,D23,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3 Nf6
+324,D24,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. Nc3
+325,D25,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3
+326,D26,Queen's Gambit Accepted,1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 e6
+327,D27,"Queen's Gambit Accepted, Classical",1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 e6 5. Bxc4 c5 6. O-O a6
+328,D28,"Queen's Gambit Accepted, Classical",1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 e6 5. Bxc4 c5 6. O-O a6 7. Qe2
+329,D29,"Queen's Gambit Accepted, Classical",1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 e6 5. Bxc4 c5 6. O-O a6 7. Qe2 b5 8. Bb3 Bb7
+330,D30,Queen's Gambit Declined,1. d4 d5 2. c4 e6
+331,D31,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3
+332,D32,"Queen's Gambit Declined, Tarrasch",1. d4 d5 2. c4 e6 3. Nc3 c5
+333,D33,"Queen's Gambit Declined, Tarrasch",1. d4 d5 2. c4 e6 3. Nc3 c5 4. cxd5 exd5 5. Nf3 Nc6 6. g3
+334,D34,"Queen's Gambit Declined, Tarrasch",1. d4 d5 2. c4 e6 3. Nc3 c5 4. cxd5 exd5 5. Nf3 Nc6 6. g3 Nf6 7. Bg2 Be7
+335,D35,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6
+336,D36,"Queen's Gambit Declined, Exchange, Positional line, 6.Qc2",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. cxd5 exd5 5. Bg5 c6 6. Qc2
+337,D37,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3
+338,D38,"Queen's Gambit Declined, Ragozin Variation",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 Bb4
+339,D39,"Queen's Gambit Declined, Ragozin, Vienna Variation",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 Bb4 5. Bg5 dxc4
+340,D40,"Queen's Gambit Declined, Semi-Tarrasch",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c5
+341,D41,"Queen's Gambit Declined, Semi-Tarrasch",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c5 5. cxd5
+342,D42,"Queen's Gambit Declined, Semi-Tarrasch, 7.Bd3",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c5 5. cxd5 Nxd5 6. e3 Nc6 7. Bd3
+343,D43,Queen's Gambit Declined Semi-Slav,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6
+344,D44,Queen's Gambit Declined Semi-Slav,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. Bg5 dxc4
+345,D45,Queen's Gambit Declined Semi-Slav,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. e3
+346,D46,Queen's Gambit Declined Semi-Slav,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. e3 Nbd7 6. Bd3
+347,D47,Queen's Gambit Declined Semi-Slav,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4
+348,D48,"Queen's Gambit Declined Semi-Slav, Meran",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 a6
+349,D49,"Queen's Gambit Declined Semi-Slav, Meran",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Nf3 c6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 a6 9. e4 c5 10 e5 cxd4 11 Nxb5
+350,D50,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5
+351,D51,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Nbd7
+352,D52,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Nbd7 5. e3 c6 6. Nf3
+353,D53,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7
+354,D54,"Queen's Gambit Declined, Anti-Neo-Orthodox Variation",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Rc1
+355,D55,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3
+356,D56,Queen's Gambit Declined,1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 h6 7. Bh4
+357,D57,"Queen's Gambit Declined, Lasker Defense",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 h6 7. Bh4 Ne4 8. Bxe7 Qxe7
+358,D58,"Queen's Gambit Declined, Tartakower (Makagonov-Bondarevsky) System",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 h6 7. Bh4 b6
+359,D59,"Queen's Gambit Declined, Tartakower",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 h6 7. Bh4 b6 8. cxd5 Nxd5
+360,D60,"Queen's Gambit Declined, Orthodox Defense",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7
+361,D61,"Queen's Gambit Declined, Orthodox, Rubinstein Attack",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Qc2
+362,D62,"Queen's Gambit Declined, Orthodox, Rubinstein Attack",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Qc2 c5 8. cxd5
+363,D63,"Queen's Gambit Declined, Orthodox Defense",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1
+364,D64,"Queen's Gambit Declined, Orthodox, Rubinstein Attack",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Qc2
+365,D65,"Queen's Gambit Declined, Orthodox, Rubinstein Attack, Main line",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Qc2 a6 9. cxd5
+366,D66,"Queen's Gambit Declined, Orthodox Defense, Bd3 line",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Bd3
+367,D67,"Queen's Gambit Declined, Orthodox Defense, Bd3 line",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Bd3 dxc4 9. Bxc4 Nd5
+368,D68,"Queen's Gambit Declined, Orthodox Defense, Classical",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Bd3 dxc4
+369,D69,"Queen's Gambit Declined, Orthodox Defense, Classical, 13.de",1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. Nf3 Nbd7 7. Rc1 c6 8. Bd3 dxc4
+370,D70,Neo-Grunfeld Defense,1. d4 Nf6 2. c4 g6 3. f3 d5
+371,D71,Neo-Grunfeld,1. d4 Nf6 2. c4 g6 3. g3 d5
+372,D72,"Neo-Grunfeld, 5.cd, Main line",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. cxd5 Nxd5 6. e4 Nb6 7. Ne2
+373,D73,"Neo-Grunfeld, 5.Nf3",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3
+374,D74,"Neo-Grunfeld, 6.cd Nxd5, 7.O-O",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. cxd5 Nxd5 7. O-O
+375,D75,"Neo-Grunfeld, 6.cd Nxd5, 7.O-O c5, 8.dxc5",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. cxd5 Nxd5 7. O-O c5 8. dxc5
+376,D76,"Neo-Grunfeld, 6.cd Nxd5, 7.O-O Nb6",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. cxd5 Nxd5 7. O-O Nb6
+377,D77,"Neo-Grunfeld, 6.O-O",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. O-O
+378,D78,"Neo-Grunfeld, 6.O-O c6",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. O-O c6
+379,D79,"Neo-Grunfeld, 6.O-O, Main line",1. d4 Nf6 2. c4 g6 3. g3 d5 4. Bg2 Bg7 5. Nf3 O-O 6. O-O c6 7. cxd5 cxd5
+380,D80,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5
+381,D81,"Grunfeld, Russian Variation",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Qb3
+382,D82,"Grunfeld, 4.Bf4",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Bf4
+383,D83,"Grunfeld, Grunfeld Gambit",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Bf4 Bg7 5. e3 O-O
+384,D84,"Grunfeld, Grunfeld Gambit Accepted",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Bf4 Bg7 5. e3 O-O 6. cxd5 Nxd5 7. Nxd5 Qxd5 8. Bxc7
+385,D85,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. cxd5 Nxd5
+386,D86,"Grunfeld, Exchange",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. cxd5 Nxd5 5. e4 Nxc3 6. bxc3 Bg7 7. Bc4
+387,D87,"Grunfeld, Exchange",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. cxd5 Nxd5 5. e4 Nxc3 6. bxc3 Bg7 7. Bc4 O-O 8. Ne2 c5
+388,D88,"Grunfeld, Spassky Variation, Main line, 10...cd, 11.cd",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. cxd5 Nxd5 5. e4 Nxc3 6. bxc3 Bg7 7. Bc4 O-O 8. Ne2
+389,D89,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. cxd5 Nxd5 5. e4 Nxc3 6. bxc3 Bg7 7. Bc4 O-O 8. Ne2
+390,D90,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3
+391,D91,"Grunfeld, 5.Bg5",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Bg5
+392,D92,"Grunfeld, 5.Bf4",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Bf4
+393,D93,"Grunfeld, with Bf4 & e3",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Bf4 O-O 6. e3
+394,D94,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. e3
+395,D95,Grunfeld,1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. e3 O-O 6. Qb3
+396,D96,"Grunfeld, Russian Variation",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Qb3
+397,D97,"Grunfeld, Russian",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Qb3 dxc4 6. Qxc4 O-O 7. e4
+398,D98,"Grunfeld, Russian",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Qb3 dxc4 6. Qxc4 O-O 7. e4 Bg4
+399,D99,"Grunfeld Defense, Smyslov",1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Qb3 dxc4 6. Qxc4 O-O 7. e4 Bg4 8. Be3
+400,E00,Queen's Pawn Game,1. d4 Nf6 2. c4 e6
+401,E01,"Catalan, Closed",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2
+402,E02,"Catalan, Open, 5.Qa4",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Qa4+
+403,E03,"Catalan, Open",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Qa4+ Nbd7 6. Qxc4
+404,E04,"Catalan, Open, 5.Nf3",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Nf3
+405,E05,"Catalan, Open, Classical line",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Nf3 Be7
+406,E06,"Catalan, Closed, 5.Nf3",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 Be7 5. Nf3
+407,E07,"Catalan, Closed",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 Be7 5. Nf3 O-O 6. O-O Nbd7
+408,E08,"Catalan, Closed",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 Be7 5. Nf3 O-O 6. O-O Nbd7 7. Qc2
+409,E09,"Catalan, Closed",1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 Be7 5. Nf3 O-O 6. O-O Nbd7 7. Qc2 c6 8. Nbd2
+410,E10,Queen's Pawn Game,1. d4 Nf6 2. c4 e6 3. Nf3
+411,E11,Bogo-Indian Defense,1. d4 Nf6 2. c4 e6 3. Nf3 Bb4+
+412,E12,Queen's Indian,1. d4 Nf6 2. c4 e6 3. Nf3 b6
+413,E13,"Queen's Indian, 4.Nc3, Main line",1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. Nc3 Bb7 5. Bg5 h6 6. Bh4 Bb4
+414,E14,Queen's Indian,1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. e3
+415,E15,Queen's Indian,1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3
+416,E16,Queen's Indian,1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Bb4+
+417,E17,Queen's Indian,1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Be7
+418,E18,"Queen's Indian, Old Main line, 7.Nc3",1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Be7 6. O-O O-O 7. Nc3
+419,E19,"Queen's Indian, Old Main line, 9.Qxc3",1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Be7 6. O-O O-O 7. Nc3 Ne4 8. Qc2 Nxc3
+420,E20,Nimzo-Indian,1. d4 Nf6 2. c4 e6 3. Nc3 Bb4
+421,E21,"Nimzo-Indian, Three Knights",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Nf3
+422,E22,"Nimzo-Indian, Spielmann Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qb3
+423,E23,"Nimzo-Indian, Spielmann",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qb3 c5 5. dxc5 Nc6
+424,E24,"Nimzo-Indian, Samisch",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3
+425,E25,"Nimzo-Indian, Samisch",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 c5 6. f3 d5 7. cxd5
+426,E26,"Nimzo-Indian, Samisch",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 c5 6. e3
+427,E27,"Nimzo-Indian, Samisch Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 O-O
+428,E28,"Nimzo-Indian, Samisch Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 O-O 6. e3
+429,E29,"Nimzo-Indian, Samisch",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. a3 Bxc3+ 5. bxc3 O-O 6. e3 c5 7. Bd3 Nc6
+430,E30,"Nimzo-Indian, Leningrad",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Bg5
+431,E31,"Nimzo-Indian, Leningrad, Main line",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Bg5 h6 5. Bh4 c5 6. d5 d6
+432,E32,"Nimzo-Indian, Classical",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2
+433,E33,"Nimzo-Indian, Classical",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 Nc6
+434,E34,"Nimzo-Indian, Classical, Noa Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 d5
+435,E35,"Nimzo-Indian, Classical, Noa Variation, 5.cd ed",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 d5 5. cxd5 exd5
+436,E36,"Nimzo-Indian, Classical",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 d5 5. a3
+437,E37,"Nimzo-Indian, Classical",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 d5 5. a3 Bxc3+ 6. Qxc3 Ne4 7. Qc2
+438,E38,"Nimzo-Indian, Classical, 4...c5",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 c5
+439,E39,"Nimzo-Indian, Classical, Pirc Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 c5 5. dxc5 O-O
+440,E40,"Nimzo-Indian, 4.e3",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3
+441,E41,Nimzo-Indian,1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 c5
+442,E42,"Nimzo-Indian, 4.e3 c5, 5.Ne2 (Rubinstein)",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 c5 5. Ne2
+443,E43,"Nimzo-Indian, Fischer Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 b6
+444,E44,"Nimzo-Indian, Fischer Variation, 5.Ne2",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 b6 5. Ne2
+445,E45,"Nimzo-Indian, 4.e3, Bronstein (Byrne) Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 b6 5. Ne2 Ba6
+446,E46,Nimzo-Indian,1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O
+447,E47,"Nimzo-Indian, 4.e3 O-O 5.Bd3",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Bd3
+448,E48,"Nimzo-Indian, 4.e3 O-O 5.Bd3 d5",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Bd3 d5
+449,E49,"Nimzo-Indian, 4.e3, Botvinnik System",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Bd3 d5 6. a3 Bxc3+ 7. bxc3
+450,E50,"Nimzo-Indian, 4.e3 O-O 5.Nf3, without ...d5",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3
+451,E51,"Nimzo-Indian, 4.e3",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5
+452,E52,"Nimzo-Indian, 4.e3, Main line with ...b6",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 b6
+453,E53,"Nimzo-Indian, 4.e3",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5
+454,E54,"Nimzo-Indian, 4.e3, Gligoric System",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O dxc4 8. Bxc4
+455,E55,"Nimzo-Indian, 4.e3, Gligoric System, Bronstein Variation",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O dxc4 8. Bxc4 Nbd7
+456,E56,"Nimzo-Indian, 4.e3, Main line with 7...Nc6",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O Nc6
+457,E57,"Nimzo-Indian, 4.e3, Main line with 8...dc and 9...cd",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O Nc6 8. a3 dxc4 9. Bxc4
+458,E58,"Nimzo-Indian, 4.e3, Main line with 8...Bxc3",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O Nc6 8. a3 Bxc3 9. bxc3
+459,E59,"Nimzo-Indian, 4.e3, Main line",1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Nf3 d5 6. Bd3 c5 7. O-O Nc6 8. a3 Bxc3 9. bxc3 dxc4 10 Bxc4
+460,E60,King's Indian Defense,1. d4 Nf6 2. c4 g6
+461,E61,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3
+462,E62,"King's Indian, Fianchetto",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3
+463,E63,"King's Indian, Fianchetto, Panno Variation",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 Nc6 7. O-O a6
+464,E64,"King's Indian, Fianchetto, Yugoslav System",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 c5
+465,E65,"King's Indian, Fianchetto, Yugoslav, 7.O-O",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 c5 7. O-O
+466,E66,"King's Indian, Fianchetto, Yugoslav Panno",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 c5 7. O-O Nc6 8. d5
+467,E67,"King's Indian, Fianchetto",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 Nbd7
+468,E68,"King's Indian, Fianchetto, Classical Variation, 8.e4",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 Nbd7 7. O-O e5 8. e4
+469,E69,"King's Indian, Fianchetto, Classical Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 d6 5. g3 O-O 6. Bg2 Nbd7 7. O-O e5 8. e4 c6 9. h3
+470,E70,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4
+471,E71,"King's Indian, Makagonov System (5.h3)",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. h3
+472,E72,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. g3
+473,E73,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Be2
+474,E74,"King's Indian, Averbakh, 6...c5",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Be2 O-O 6. Bg5 c5
+475,E75,"King's Indian, Averbakh, Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Be2 O-O 6. Bg5 c5 7. d5 e6
+476,E76,"King's Indian, Four Pawns Attack",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f4
+477,E77,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f4 O-O 6. Be2
+478,E78,"King's Indian, Four Pawns Attack, with Be2 and Nf3",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f4 O-O 6. Be2 c5 7. Nf3
+479,E79,"King's Indian, Four Pawns Attack, Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f4 O-O 6. Be2 c5 7. Nf3 cxd4 8. Nxd4 Nc6 9. Be3
+480,E80,"King's Indian, Samisch Variation",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3
+481,E81,"King's Indian, Samisch",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O
+482,E82,"King's Indian, Samisch, double Fianchetto Variation",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 b6
+483,E83,"King's Indian, Samisch",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 Nc6
+484,E84,"King's Indian, Samisch, Panno Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 Nc6 7. Nge2 a6 8. Qd2 Rb8
+485,E85,"King's Indian, Samisch, Orthodox Variation",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 e5
+486,E86,"King's Indian, Samisch, Orthodox, 7.Nge2 c6",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 e5 7. Nge2 c6
+487,E87,"King's Indian, Samisch, Orthodox",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 e5 7. d5
+488,E88,"King's Indian, Samisch, Orthodox, 7.d5 c6",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 e5 7. d5 c6
+489,E89,"King's Indian, Samisch, Orthodox Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. f3 O-O 6. Be3 e5 7. d5 c6 8. Nge2 cxd5
+490,E90,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3
+491,E91,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2
+492,E92,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5
+493,E93,"King's Indian, Petrosian System",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. d5 Nbd7
+494,E94,"King's Indian, Orthodox",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O
+495,E95,"King's Indian, Orthodox, 7...Nbd7, 8.Re1",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O Nbd7 8. Re1
+496,E96,"King's Indian, Orthodox, 7...Nbd7, Main line",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O Nbd7 8. Re1 c6 9. Bf1 a5
+497,E97,King's Indian,1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O Nc6
+498,E98,"King's Indian, Orthodox, Taimanov, 9.Ne1",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O Nc6 8. d5 Ne7 9. Ne1
+499,E99,"King's Indian, Orthodox, Taimanov",1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O Nc6 8. d5 Ne7 9. Ne1 Nd7 10 f3 f5
