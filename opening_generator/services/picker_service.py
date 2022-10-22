@@ -47,12 +47,12 @@ class PickerService:
         return moves
 
     def pick_move(
-            self,
-            position: Position,
-            user: User,
-            color: bool,
-            depth: int,
-            current_depth: int = 5,
+        self,
+        position: Position,
+        user: User,
+        color: bool,
+        depth: int,
+        current_depth: int = 5,
     ):
         popularity = user.style.popularity
         fashion = user.style.fashion
@@ -98,17 +98,26 @@ class PickerService:
 
             winning_rate_sum += winning_rate
 
-            year_weight = ((next_position.average_year - ref_year) / DIFF_YEAR * fashion + 1) ** 2
+            year_weight = (
+                (next_position.average_year - ref_year) / DIFF_YEAR * fashion + 1
+            ) ** 2
             year_sum += year_weight
 
             rating_weight = ((next_position.average_elo - MIN_RATING) ** 2) + (
-                    next_position.performance - MIN_RATING) ** 2
+                next_position.performance - MIN_RATING
+            ) ** 2
             rating_sum += rating_weight
 
             popularity_weight = move.popularity_weight ** (0.5 * popularity + 1)
             popularity_sum += popularity_weight
 
-            candidate = (move, winning_rate, year_weight, popularity_weight, rating_weight)
+            candidate = (
+                move,
+                winning_rate,
+                year_weight,
+                popularity_weight,
+                rating_weight,
+            )
             candidates.append(candidate)
 
         if len(candidates) == 0:
@@ -129,10 +138,7 @@ class PickerService:
             popularity_weight = popularity_weight / popularity_sum
 
             move_weights[move] = (
-                    popularity_weight
-                    * fashion_weight
-                    * rating_weight
-                    * winning_rate_weight
+                popularity_weight * fashion_weight * rating_weight * winning_rate_weight
             )
 
         choices = random.choices(
