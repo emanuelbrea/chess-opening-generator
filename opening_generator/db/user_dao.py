@@ -39,6 +39,10 @@ class UserDao:
         user = db_session.query(User).filter(User.email == email).one()
         return user
 
+    def get_default_user(self):
+        user = db_session.query(User).first()
+        return user
+
     def update_user(
         self, user: User, first_name: str, last_name: str, age: int, playing_since: int
     ):

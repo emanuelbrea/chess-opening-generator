@@ -53,6 +53,9 @@ class UserService:
             ) from err
 
     def get_user(self):
+        from flask import current_app as app
+        if app.config['DEBUG']:
+            return user_dao.get_default_user()
         user_claims = auth_service.get_user_claims()
         email = user_claims.get("email")
         try:

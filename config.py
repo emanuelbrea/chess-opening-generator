@@ -14,14 +14,3 @@ class Config:
     COGNITO_POOL_ID = 'us-east-1_GFAp0SDxh'
     JSON_SORT_KEYS = False
 
-
-class ProdConfig(Config):
-    FLASK_ENV = 'production'
-    DEBUG = False
-    TESTING = False
-
-
-class DevConfig(Config):
-    FLASK_ENV = 'development'
-    DEBUG = True
-    TESTING = True
