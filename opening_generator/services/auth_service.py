@@ -1,7 +1,7 @@
 import logging
 
 import jwt
-from flask import request
+from flask import request, current_app as app
 from jwt import PyJWKClient, PyJWKClientError, DecodeError
 
 from config import Config
@@ -23,6 +23,8 @@ class AuthService:
 
     def get_user_claims(self):
         token = self.get_token()
+        if not token:
+            return None
         try:
             signing_key = self.jwks_client.get_signing_key_from_jwt(token)
         except PyJWKClientError as err:
@@ -43,7 +45,9 @@ class AuthService:
     def get_token(self):
         header = request.headers.get("Authorization")
         if not header:
-            raise InvalidRequestException("Missing authorization header")
+            if not app.config['DEBUG']:
+                raise InvalidRequestException("Missing authorization header")
+            return None
         if "Bearer " not in header:
             raise InvalidRequestException("Invalid authorization header")
         token = header.replace("Bearer ", "")

@@ -20,6 +20,7 @@ class EcoCodeDao:
 
     def get_eco_codes(self):
         ecos = db_session.query(EcoCode).all()
+        db_session.commit()
         return ecos
 
 
