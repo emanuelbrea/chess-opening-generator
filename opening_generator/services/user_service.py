@@ -1,30 +1,30 @@
 import logging
 from typing import List
 
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from opening_generator.db.user_dao import user_dao
-from opening_generator.exceptions import UserException, InvalidRequestException
+from opening_generator.db.user_dao import UserDao
 from opening_generator.models import Style, User, Move, Position
-from opening_generator.services.auth_service import auth_service
 
 
 class UserService:
-    def __init__(self):
+    def __init__(self, session: Session):
         self.logger = logging.getLogger(__name__)
+        self.user_dao = UserDao(session)
 
     def create_user(self, first_name: str, last_name: str, email: str):
         try:
-            user_dao.create_user(
+            self.user_dao.create_user(
                 first_name=first_name, last_name=last_name, email=email
             )
         except IntegrityError as err:
-            raise UserException(
-                f"User {first_name} {last_name} with email {email} already exists."
-            ) from err
+            raise HTTPException(status_code=400,
+                                detail=f"User {first_name} {last_name} with email {email} already exists.") from err
 
     def update_user_style(
-        self, user: User, popularity: float, fashion: float, risk: float, rating: int
+            self, user: User, popularity: float, fashion: float, risk: float, rating: int
     ):
         style: Style = user.style
         style.rating = rating
@@ -32,15 +32,16 @@ class UserService:
         style.fashion = fashion
         style.popularity = popularity
         try:
-            user_dao.add_style_to_user(user=user, style=style)
+            self.user_dao.add_style_to_user(user=user, style=style)
         except IntegrityError as err:
-            raise UserException(f"Invalid style.") from err
+            raise HTTPException(status_code=400,
+                                detail=f"Invalid style.") from err
 
     def update_user(
-        self, user: User, first_name: str, last_name: str, age: int, playing_since: int
+            self, user: User, first_name: str, last_name: str, age: int, playing_since: int
     ):
         try:
-            user_dao.update_user(
+            self.user_dao.update_user(
                 user=user,
                 first_name=first_name,
                 last_name=last_name,
@@ -48,27 +49,9 @@ class UserService:
                 playing_since=playing_since,
             )
         except IntegrityError as err:
-            raise UserException(
-                f"Invalid values for user profile. Name: {first_name}. Last name: {last_name}"
-            ) from err
-
-    def get_user(self):
-        user_claims = auth_service.get_user_claims()
-        if not user_claims:
-            return user_dao.get_default_user()
-        email = user_claims.get("email")
-        try:
-            user = user_dao.get_user(email=email)
-        except NoResultFound:
-            self.logger.info(
-                "User with email %s does not exist. Will create it.", email
-            )
-            first_name = user_claims.get("given_name", "")
-            last_name = user_claims.get("family_name", "")
-            user = user_dao.create_user(
-                first_name=first_name, last_name=last_name, email=email
-            )
-        return user
+            raise HTTPException(status_code=400,
+                                detail=f"Invalid values for user profile. "
+                                       f"Name: {first_name}. Last name: {last_name}") from err
 
     def add_favorite_move(self, user: User, position: Position, move_san: str):
         user_favorite_moves: List[Move] = [
@@ -81,19 +64,16 @@ class UserService:
         )
 
         if not move:
-            raise InvalidRequestException(description="Invalid favorite move")
+            raise HTTPException(status_code=400, detail="Invalid favorite move")
 
         if move in user_favorite_moves:
-            user_dao.remove_favorite_move(user=user, move=move)
+            self.user_dao.remove_favorite_move(user=user, move=move)
         else:
-            user_dao.add_favorite_move(user=user, move=move)
+            self.user_dao.add_favorite_move(user=user, move=move)
         return move
 
     def save_user_message(self, message: str, email: str, name: str, rating: int):
-        user_dao.save_user_message(
+        self.user_dao.save_user_message(
             message=message, email=email, name=name, rating=rating
         )
         self.logger.info("Saved new message from %s", email)
-
-
-user_service = UserService()

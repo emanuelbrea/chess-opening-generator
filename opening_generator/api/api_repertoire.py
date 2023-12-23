@@ -1,184 +1,139 @@
 import chess
-from flask import Blueprint, jsonify, request
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 
 from opening_generator.api.api_position import (
     get_board_by_fen,
-    get_position_by_board,
     get_color,
 )
-from opening_generator.exceptions import InvalidRequestException
+from opening_generator.db import get_db
 from opening_generator.models import Position, User
-from opening_generator.services.position_service import position_service
-from opening_generator.services.repertoire_service import repertoire_service
-from opening_generator.services.user_service import user_service
+from opening_generator.models.schemas import ColorRequest, SuccessfulDataResponse
+from opening_generator.services.auth import get_user
+from opening_generator.services.position_service import PositionService
+from opening_generator.services.repertoire_service import RepertoireService
 
-repertoire_bp = Blueprint("repertoire", __name__, url_prefix="/api/repertoire")
-
-
-def get_request_arguments(args):
-    move: str = args.get("move")
-    color: bool = get_color(args=args)
-    board: chess.Board = get_board_by_fen(args)
-    position: Position = get_position_by_board(board)
-
-    return dict(move=move, color=color, position=position, depth=board.fullmove_number)
+repertoire_router = APIRouter(prefix="/repertoire", tags=["repertoire"])
 
 
-@repertoire_bp.route("", methods=["GET"])
-def get_user_repertoire():
-    user: User = user_service.get_user()
-    args = get_request_arguments(request.args)
+@repertoire_router.get("", response_model=SuccessfulDataResponse, status_code=200)
+def get_user_repertoire(color: str, fen: str, session: Session = Depends(get_db), user: User = Depends(get_user)):
+    repertoire_service = RepertoireService(session=session)
+    color: bool = get_color(color)
+    board: chess.Board = get_board_by_fen(fen)
+    position_service = PositionService(session=session)
+    position: Position = position_service.get_position_by_board(board)
+    depth = board.fullmove_number
 
     moves = repertoire_service.get_repertoire_moves(
-        args["position"], user, args["color"], args["depth"]
+        position=position, user=user, color=color, depth=depth
     )
-    return (
-        jsonify(message=f"Repertoire retrieved correctly.", data=moves, success=True),
-        200,
-    )
+    return SuccessfulDataResponse(message="Repertoire retrieved correctly.", data=moves, success=True)
 
 
-@repertoire_bp.route("/info", methods=["GET"])
-def get_user_repertoire_info():
-    user: User = user_service.get_user()
+@repertoire_router.get("/info", response_model=SuccessfulDataResponse, status_code=200)
+def get_user_repertoire_info(session: Session = Depends(get_db), user: User = Depends(get_user)):
+    repertoire_service = RepertoireService(session=session)
 
     info = repertoire_service.get_user_repertoire_info(user=user)
-
-    return (
-        jsonify(
-            message=f"Repertoire info retrieved correctly.", data=info, success=True
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message="Repertoire info retrieved correctly.", data=info, success=True)
 
 
-@repertoire_bp.route("", methods=["POST"])
-def create_user_repertoire():
-    body = request.json
+@repertoire_router.post("", response_model=SuccessfulDataResponse, status_code=201)
+def create_user_repertoire(color_request: ColorRequest, session: Session = Depends(get_db),
+                           user: User = Depends(get_user)):
+    color = color_request.color
+    color = get_color(color)
+    repertoire_service = RepertoireService(session=session)
+    position_service = PositionService(session=session)
 
-    if not body:
-        raise InvalidRequestException(description="Missing request body")
-
-    color = body.get("color")
-    if not color or color.upper() not in ("WHITE", "BLACK"):
-        raise InvalidRequestException(description="Invalid color provided")
-
-    user: User = user_service.get_user()
     initial_position = position_service.retrieve_initial_position()
     repertoire_service.create_user_repertoire(
-        position=initial_position, user=user, color=color.upper() == "WHITE"
+        position=initial_position, user=user, color=color
     )
-    return jsonify(message=f"Repertoire created correctly.", data={}, success=True), 201
+    return SuccessfulDataResponse(message="Repertoire created correctly.", data={}, success=True)
 
 
-@repertoire_bp.route("", methods=["PUT"])
-def edit_user_repertoire():
-    user: User = user_service.get_user()
-    args = get_request_arguments(request.args)
+@repertoire_router.put("", response_model=SuccessfulDataResponse, status_code=200)
+def edit_user_repertoire(color: str, fen: str, move: str, session: Session = Depends(get_db),
+                         user: User = Depends(get_user)):
+    color: bool = get_color(color)
+    board: chess.Board = get_board_by_fen(fen)
+    position_service = PositionService(session=session)
+    position: Position = position_service.get_position_by_board(board)
+    depth = board.fullmove_number
+    repertoire_service = RepertoireService(session=session)
 
     moves = repertoire_service.update_user_repertoire(
-        args["position"], user, args["color"], args["move"]
+        position=position, user=user, color=color, new_move=move
     )
     if len(moves) == 0:
-        return (
-            jsonify(
-                message=f"Repertoire could not be updated. Try with another move.",
-                data={},
-                success=False,
-            ),
-            400,
-        )
+        raise HTTPException(status_code=400, detail="Repertoire could not be updated. Try with another move.")
+
     moves = repertoire_service.get_repertoire_moves(
-        args["position"], user, args["color"], args["depth"]
+        position=position, user=user, color=color, depth=depth
     )
-    return (
-        jsonify(
-            message=f"Repertoire updated correctly after {args['position'].fen}.",
-            data=moves,
-            success=True,
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message=f"Repertoire updated correctly after {position}.",
+                                  data=moves, success=True)
 
 
-@repertoire_bp.route("", methods=["DELETE"])
-def delete_user_repertoire():
-    user: User = user_service.get_user()
-    body = request.json
-    color = body.get("color")
-    if not color or color.upper() not in ("WHITE", "BLACK"):
-        raise InvalidRequestException(description="Invalid color provided")
+@repertoire_router.delete("", response_model=SuccessfulDataResponse, status_code=200)
+def delete_user_repertoire(color_request: ColorRequest, session: Session = Depends(get_db),
+                           user: User = Depends(get_user)):
+    color = color_request.color
+    color = get_color(color)
+    repertoire_service = RepertoireService(session=session)
 
-    repertoire_service.delete_user_repertoire(user, color.upper() == "WHITE")
-    return (
-        jsonify(
-            message=f"{color} repertoire deleted correctly.",
-            data={},
-            success=True,
-        ),
-        200,
-    )
+    repertoire_service.delete_user_repertoire(user=user, color=color)
+    return SuccessfulDataResponse(message=f"{color} repertoire deleted correctly.",
+                                  data={}, success=True)
 
 
-@repertoire_bp.route("/rival", methods=["PUT"])
-def add_rival_move():
-    user: User = user_service.get_user()
-    args = get_request_arguments(request.args)
-
-    if not args["move"]:
-        raise InvalidRequestException(description="Please provide a rival move to add")
+@repertoire_router.put("/rival", response_model=SuccessfulDataResponse, status_code=201)
+def add_rival_move(color: str, fen: str, move: str, session: Session = Depends(get_db),
+                   user: User = Depends(get_user)):
+    color: bool = get_color(color)
+    board: chess.Board = get_board_by_fen(fen)
+    position_service = PositionService(session=session)
+    position: Position = position_service.get_position_by_board(board)
+    repertoire_service = RepertoireService(session=session)
 
     moves = repertoire_service.add_rival_move_to_repertoire(
-        args["position"], user, args["color"], args["move"]
+        position=position, user=user, color=color, move_san=move
     )
-
-    return (
-        jsonify(
-            message=f"Repertoire updated correctly after {args['position'].fen}.",
-            data=len(moves),
-            success=True,
-        ),
-        201,
-    )
+    return SuccessfulDataResponse(message=f"Repertoire updated correctly after {position.fen}.",
+                                  data=moves, success=True)
 
 
-@repertoire_bp.route("/rival", methods=["DELETE"])
-def remove_rival_move():
-    user: User = user_service.get_user()
-    args = get_request_arguments(request.args)
-
-    if not args["move"]:
-        raise InvalidRequestException(
-            description="Please provide a rival move to remove"
-        )
+@repertoire_router.delete("/rival", response_model=SuccessfulDataResponse, status_code=200)
+def remove_rival_move(color: str, fen: str, move: str, session: Session = Depends(get_db),
+                      user: User = Depends(get_user)):
+    color: bool = get_color(color)
+    board: chess.Board = get_board_by_fen(fen)
+    position_service = PositionService(session=session)
+    position: Position = position_service.get_position_by_board(board)
+    repertoire_service = RepertoireService(session=session)
 
     moves = repertoire_service.remove_rival_move_from_repertoire(
-        args["position"], user, args["color"], args["move"]
+        position=position, user=user, color=color, move_san=move
     )
-
-    return (
-        jsonify(
-            message=f"Move {args['move']} deleted correctly from user repertoire.",
-            data=len(moves),
-            success=True,
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message=f"Move {move} deleted correctly from user repertoire.",
+                                  data=moves, success=True)
 
 
-@repertoire_bp.route("", methods=["PATCH"])
-def add_variant_to_repertoire():
-    user: User = user_service.get_user()
-    args = get_request_arguments(request.args)
-    repertoire_service.add_variant_to_repertoire(args["position"], user, args["color"])
+@repertoire_router.patch("", response_model=SuccessfulDataResponse, status_code=200)
+def add_variant_to_repertoire(color: str, fen: str, session: Session = Depends(get_db),
+                              user: User = Depends(get_user)):
+    color: bool = get_color(color)
+    board: chess.Board = get_board_by_fen(fen)
+    position_service = PositionService(session=session)
+    position: Position = position_service.get_position_by_board(board)
+    depth = board.fullmove_number
+    repertoire_service = RepertoireService(session=session)
+
+    repertoire_service.add_variant_to_repertoire(position=position, user=user, color=color)
     moves = repertoire_service.get_repertoire_moves(
-        args["position"], user, args["color"], args["depth"]
+        position=position, user=user, color=color, depth=depth
     )
-    return (
-        jsonify(
-            message=f"Variant added correctly after {args['position'].fen}.",
-            data=moves,
-            success=True,
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message=f"Variant added correctly after {position.fen}.",
+                                  data=moves, success=True)

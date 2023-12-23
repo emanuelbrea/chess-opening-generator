@@ -3,30 +3,39 @@ import logging
 import chess
 from chess import svg
 from chess.polyglot import zobrist_hash
+from fastapi import HTTPException
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import Session
 
-from opening_generator.db.position_dao import position_dao
+from opening_generator.db.position_dao import PositionDao
 from opening_generator.models import Position, Move
 from opening_generator.services.position_loader_service import PositionLoaderService
 
 
 class PositionService:
-    def __init__(self):
+    def __init__(self, session: Session):
         self.logger = logging.getLogger(__name__)
+        self.position_dao = PositionDao(session)
         self.retrieve_initial_position()
+
+    def get_position_by_board(self, board: chess.Board) -> Position:
+        position: Position = self.get_position(board=board)
+        if not position:
+            raise HTTPException(status_code=404, detail="Position not found in database")
+        return position
 
     def retrieve_initial_position(self) -> Position:
         try:
-            initial_position = position_dao.get_initial_position()
+            initial_position = self.position_dao.get_initial_position()
         except NoResultFound:
             position_loader = PositionLoaderService()
             initial_position = position_loader.load_games()
-            position_dao.save_positions(initial_position)
+            self.position_dao.save_positions(initial_position)
         return initial_position
 
     def get_position(self, board: chess.Board):
         pos_id: str = str(zobrist_hash(board=board))
-        return position_dao.get_position(pos_id)
+        return self.position_dao.get_position(pos_id)
 
     def get_next_moves(self, position):
         return [move.move_san for move in position.next_moves]
@@ -60,7 +69,7 @@ class PositionService:
             link=move.description,
         )
 
-    def get_position_stats(self, position: Position):
+    def get_position_stats(self, position: Position) -> dict:
         return dict(
             total_games=position.total_games,
             white_wins=position.white_wins,
@@ -75,7 +84,7 @@ class PositionService:
             turn=position.turn,
         )
 
-    def get_position_svg(self, position: Position, move: str, color: bool = True):
+    def get_position_svg(self, position: Position, move: str, color: bool = True) -> str:
         fen = position.fen
         board = chess.Board(fen=fen)
         if move:
@@ -98,6 +107,3 @@ class PositionService:
                 )
             )
         return position_svg
-
-
-position_service = PositionService()

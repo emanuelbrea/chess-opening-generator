@@ -1,114 +1,88 @@
 from typing import List
 
 import chess
-from flask import request, jsonify, Blueprint, Response
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
 
-from opening_generator.exceptions import InvalidRequestException
+from opening_generator.db import get_db
 from opening_generator.models import Position
-from opening_generator.services.position_service import position_service
+from opening_generator.models.schemas import SuccessfulDataResponse
+from opening_generator.services.position_service import PositionService
 
-pos_bp = Blueprint("position", __name__, url_prefix="/api/position")
+position_router = APIRouter(prefix="/position", tags=["position"])
 
 
-def get_board_by_fen(args):
-    fen: str = args.get("fen")
-    if not fen:
-        raise InvalidRequestException(description="FEN not provided")
+def get_board_by_fen(fen: str) -> chess.Board:
     try:
         board: chess.Board = chess.Board(fen)
         return board
     except ValueError:
-        raise InvalidRequestException(description="Invalid FEN provided")
+        raise HTTPException(status_code=400, detail="Invalid FEN provided")
 
 
-def get_position_by_board(board: chess.Board):
-    position: Position = position_service.get_position(board=board)
-    if not position:
-        raise InvalidRequestException(description="Position not found in database")
-    return position
-
-
-def get_color(args):
-    color = args.get("color", "WHITE").upper()
+def get_color(color: str = "WHITE") -> bool:
+    color = color.upper()
     if color not in ("WHITE", "BLACK"):
-        raise InvalidRequestException(description="Invalid color provided")
+        raise HTTPException(status_code=400, detail="Invalid color provided")
     return color == "WHITE"
 
 
-@pos_bp.route("/stats", methods=["GET"])
-def get_stats():
-    args = request.args
+@position_router.get("/stats", response_model=SuccessfulDataResponse, status_code=200)
+def get_stats(fen: str, session: Session = Depends(get_db)):
+    position_service = PositionService(session=session)
+    board: chess.Board = get_board_by_fen(fen=fen)
 
-    board: chess.Board = get_board_by_fen(args)
-
-    position: Position = get_position_by_board(board)
+    position: Position = position_service.get_position_by_board(board)
 
     stats = position_service.get_position_stats(position=position)
-    return jsonify(message="Stats retrieved correctly.", data=stats, success=True), 200
+    return SuccessfulDataResponse(message="Stats retrieved correctly.",
+                                  data=stats, success=True)
 
 
-@pos_bp.route("/moves", methods=["GET"])
-def get_moves():
-    args = request.args
+@position_router.get("/moves", response_model=SuccessfulDataResponse, status_code=200)
+def get_moves(fen: str, session: Session = Depends(get_db)):
+    position_service = PositionService(session=session)
+    board: chess.Board = get_board_by_fen(fen=fen)
 
-    board: chess.Board = get_board_by_fen(args)
-
-    position: Position = get_position_by_board(board)
+    position: Position = position_service.get_position_by_board(board)
 
     next_moves: List[str] = position_service.get_next_moves(position=position)
 
-    return (
-        jsonify(
-            message="Next moves retrieved correctly.", data=next_moves, success=True
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message="Next moves retrieved correctly.",
+                                  data=next_moves, success=True)
 
 
-@pos_bp.route("/moves/stats", methods=["GET"])
-def get_next_moves_stats():
-    args = request.args
+@position_router.get("/moves/stats", response_model=SuccessfulDataResponse, status_code=200)
+def get_next_moves_stats(fen: str, session: Session = Depends(get_db)):
+    position_service = PositionService(session=session)
+    board: chess.Board = get_board_by_fen(fen=fen)
 
-    board: chess.Board = get_board_by_fen(args)
-
-    position: Position = get_position_by_board(board)
+    position: Position = position_service.get_position_by_board(board)
 
     moves_stats = position_service.get_next_moves_stats(position=position)
 
-    return (
-        jsonify(
-            message="Next moves stats retrieved correctly.",
-            data=moves_stats,
-            success=True,
-        ),
-        200,
-    )
+    return SuccessfulDataResponse(message="Next moves stats retrieved correctly.",
+                                  data=moves_stats, success=True)
 
 
-@pos_bp.route("/svg", methods=["GET"])
-def get_position_svg():
-    args = request.args
+@position_router.get("/svg", status_code=200)
+def get_position_svg(move: str, color: str, fen: str, session: Session = Depends(get_db)):
+    position_service = PositionService(session=session)
+    board: chess.Board = get_board_by_fen(fen=fen)
 
-    move_san = args.get("move")
+    position: Position = position_service.get_position_by_board(board)
 
-    board: chess.Board = get_board_by_fen(args)
-
-    position: Position = get_position_by_board(board)
-
-    color = get_color(args=args)
+    color = get_color(color=color)
 
     position_svg = position_service.get_position_svg(
-        position=position, move=move_san, color=color
+        position=position, move=move, color=color
     )
 
     if not position_svg:
-        return (
-            jsonify(
-                message=f"Move {move_san} is not valid in this position.",
-                data={},
-                success=False,
-            ),
-            400,
-        )
+        raise HTTPException(status_code=400, detail=f"Move {move} is not valid in this position.")
 
-    return Response(position_svg, mimetype="image/svg+xml"), 200
+    return StreamingResponse(
+        content=position_svg,
+        media_type="image/svg+xml",
+    )
