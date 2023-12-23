@@ -1,27 +1,26 @@
 import logging
 from typing import List
 
-from opening_generator.db import db_session
+from sqlalchemy.orm import Session
+
 from opening_generator.models import Position
 from opening_generator.models.eco_code import EcoCode
 
 
 class EcoCodeDao:
-    def __init__(self):
+    def __init__(self, session: Session) -> None:
         self.logger = logging.getLogger(__name__)
+        self.session = session
 
     def get_eco_code(self, position: Position):
-        return db_session.query(EcoCode).filter(EcoCode.position == position).first()
+        return self.session.query(EcoCode).filter(EcoCode.position == position).first()
 
     def add_eco_codes(self, ecos: List[EcoCode]):
-        db_session.add_all(ecos)
-        db_session.commit()
-        db_session.close()
+        self.session.add_all(ecos)
+        self.session.commit()
+        self.session.close()
 
     def get_eco_codes(self):
-        ecos = db_session.query(EcoCode).all()
-        db_session.commit()
+        ecos = self.session.query(EcoCode).all()
+        self.session.commit()
         return ecos
-
-
-eco_code_dao = EcoCodeDao()

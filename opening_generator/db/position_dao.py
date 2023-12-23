@@ -2,28 +2,27 @@ import logging
 
 import chess
 from chess.polyglot import zobrist_hash
+from sqlalchemy.orm import Session
 
-from opening_generator.db import db_session
 from opening_generator.models import Position
 
 
 class PositionDao:
-    def __init__(self):
+    def __init__(self, session: Session) -> None:
         self.logger = logging.getLogger(__name__)
+        self.session = session
 
     def get_initial_position(self):
         board: chess.Board = chess.Board()
         initial_pos_id: str = str(zobrist_hash(board=board))
         return (
-            db_session.query(Position).filter(Position.pos_id == initial_pos_id).one()
+            self.session.query(Position).filter(Position.pos_id == initial_pos_id).first()
         )
 
     def get_position(self, pos_id):
-        return db_session.query(Position).filter(Position.pos_id == pos_id).first()
+        return self.session.query(Position).filter(Position.pos_id == pos_id).first()
 
     def save_positions(self, positions):
-        db_session.add_all(positions.values())
-        db_session.commit()
+        self.session.add_all(positions.values())
+        self.session.commit()
 
-
-position_dao = PositionDao()

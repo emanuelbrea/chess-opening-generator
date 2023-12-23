@@ -4,31 +4,32 @@ import logging
 import time
 from typing import List, Dict
 
+from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from opening_generator.db.repertoire_dao import repertoire_dao
-from opening_generator.exceptions import InvalidRequestException
+from opening_generator.db.repertoire_dao import RepertoireDao
 from opening_generator.models import Move, Position, User, Repertoire
 from opening_generator.services.picker_service import picker_service
-from opening_generator.services.position_service import position_service
+from opening_generator.services.position_service import PositionService
 
 
 class RepertoireService:
-    def __init__(self):
+    def __init__(self, session: Session):
         self.logger = logging.getLogger(__name__)
+        self.repertoire_dao = RepertoireDao(session=session)
+        self.position_service = PositionService(session=session)
 
     def get_user_repertoire(
-        self, user: User, color: bool
-    ) -> Repertoire | InvalidRequestException:
+            self, user: User, color: bool
+    ) -> Repertoire | HTTPException:
         repertoire = next(
             (repertoire for repertoire in user.repertoire if repertoire.color == color),
             None,
         )
         if repertoire is None:
             color = "white" if color else "black"
-            raise InvalidRequestException(
-                description=f"User {user.email} does not have a {color} repertoire"
-            )
+            raise HTTPException(status_code=400, detail=f"User {user.email} does not have a {color} repertoire")
         return repertoire
 
     def get_user_repertoire_info(self, user: User):
@@ -41,16 +42,16 @@ class RepertoireService:
             repertoire: Repertoire = self.get_user_repertoire(user=user, color=color)
             repertoire_moves: List[Move] = repertoire.moves
             last_updated = repertoire.updated_at
-        except InvalidRequestException:
+        except HTTPException:
             return {}
         return dict(total=len(repertoire_moves), last_updated=last_updated)
 
     def get_repertoire_moves(
-        self, position: Position, user: User, color: bool, depth: int
-    ) -> Dict | InvalidRequestException:
+            self, position: Position, user: User, color: bool, depth: int
+    ) -> Dict | HTTPException:
         try:
             repertoire = self.get_user_repertoire(user=user, color=color)
-        except InvalidRequestException:
+        except HTTPException:
             self.logger.warning("User %s does not have a repertoire", user.email)
             return {}
         repertoire_moves = repertoire.moves
@@ -66,7 +67,7 @@ class RepertoireService:
                 )
                 return {}
 
-            my_move_stats: Dict = position_service.get_move_stats(move=my_move)
+            my_move_stats: Dict = self.position_service.get_move_stats(move=my_move)
             favorite_moves: List[Move] = [
                 fav_move.move for fav_move in user.favorites_moves
             ]
@@ -77,7 +78,7 @@ class RepertoireService:
             )
             for move in next_moves:
                 if move.popularity_weight + move.played / 1000 / 100 >= floor:
-                    stats = position_service.get_move_stats(move=move)
+                    stats = self.position_service.get_move_stats(move=move)
                     stats["favorite"] = move in favorite_moves
                     moves.append(stats)
 
@@ -88,14 +89,14 @@ class RepertoireService:
             my_move_stats = {}
             my_moves_stats = {}
 
-        position_stats: Dict = position_service.get_position_stats(position=position)
+        position_stats: Dict = self.position_service.get_position_stats(position=position)
 
         rival_moves: List[Move] = self.get_rival_moves(
             repertoire_moves, next_position.next_moves
         )
         rival_moves_stats = []
         for move in rival_moves:
-            rival_moves_stats.append(position_service.get_move_stats(move=move))
+            rival_moves_stats.append(self.position_service.get_move_stats(move=move))
         rival_moves_stats = sorted(
             rival_moves_stats, key=lambda d: d["played"], reverse=True
         )
@@ -109,7 +110,7 @@ class RepertoireService:
         )
 
     def get_my_move(
-        self, repertoire_moves: List[Move], next_moves: List[Move]
+            self, repertoire_moves: List[Move], next_moves: List[Move]
     ) -> Move | None:
         for move in next_moves:
             if move in repertoire_moves:
@@ -133,14 +134,14 @@ class RepertoireService:
         moves: List[Move] = picker_service.pick_variations(
             position=position, user=user, color=color
         )
-        repertoire_dao.create_repertoire(user=user, color=color, moves=moves)
+        self.repertoire_dao.create_repertoire(user=user, color=color, moves=moves)
         self.logger.info("Created repertoire for user %s", user.email)
-        repertoire_dao.save_repertoire_metric(
+        self.repertoire_dao.save_repertoire_metric(
             user=user, moves=len(moves), start_time=start_time, end_time=time.time()
         )
 
     def update_user_repertoire(
-        self, position: Position, user: User, color: bool, new_move: str
+            self, position: Position, user: User, color: bool, new_move: str
     ):
         start_time = time.time()
         repertoire = self.get_user_repertoire(user=user, color=color)
@@ -150,10 +151,8 @@ class RepertoireService:
             repertoire_moves=repertoire_moves, next_moves=next_moves
         )
         if not move_to_remove:
-            raise InvalidRequestException(
-                description=f"Position with FEN {position.fen} is not in user {user.email} "
-                f"repertoire."
-            )
+            raise HTTPException(status_code=400, detail=f"Position with FEN {position.fen} is not in user {user.email} "
+                                                        f"repertoire.")
 
         if not new_move:
             tries = 0
@@ -167,19 +166,16 @@ class RepertoireService:
                 )
                 tries += 1
                 if tries == 10:
-                    raise InvalidRequestException(
-                        description=f"Not able to find a good move to replace {move_to_remove.move_san}."
-                        f" Consider passing it manually."
-                    )
+                    raise HTTPException(status_code=400,
+                                        detail=f"Not able to find a good move to replace {move_to_remove.move_san}."
+                                               f" Consider passing it manually.")
         else:
             new_move = next(
                 (move for move in next_moves if move.move_san == new_move), None
             )
             if not new_move:
-                raise InvalidRequestException(
-                    description=f"Suggested move is not available in this position. Choose"
-                    f" a different one."
-                )
+                raise HTTPException(status_code=400, detail=f"Suggested move is not available in this position. Choose"
+                                                            f" a different one.")
         next_position = new_move.next_position
         moves = picker_service.pick_variations(
             position=next_position, user=user, color=color, current_depth=1
@@ -189,23 +185,23 @@ class RepertoireService:
         moves_to_remove = self.get_moves_after_position(
             repertoire=repertoire, move=move_to_remove, visited={}
         )
-        repertoire_dao.insert_new_moves(
+        self.repertoire_dao.insert_new_moves(
             repertoire=repertoire,
             user=user,
             color=color,
             moves=moves,
             old_moves=moves_to_remove,
         )
-        repertoire_dao.update_repertoire_history(
+        self.repertoire_dao.update_repertoire_history(
             user=user, new_move=new_move, old_move=move_to_remove
         )
-        repertoire_dao.save_repertoire_metric(
+        self.repertoire_dao.save_repertoire_metric(
             user=user, moves=len(moves), start_time=start_time, end_time=time.time()
         )
         return moves
 
     def get_moves_after_position(
-        self, repertoire: Repertoire, move: Move, visited: Dict
+            self, repertoire: Repertoire, move: Move, visited: Dict
     ) -> List[Move]:
         if move in visited:
             return []
@@ -229,7 +225,7 @@ class RepertoireService:
         return moves
 
     def add_rival_move_to_repertoire(
-        self, position: Position, user: User, color: bool, move_san: str
+            self, position: Position, user: User, color: bool, move_san: str
     ):
         repertoire = self.get_user_repertoire(user=user, color=color)
         rival_moves = position.next_moves
@@ -237,28 +233,24 @@ class RepertoireService:
             (move for move in rival_moves if move.move_san == move_san), None
         )
         if not new_move:
-            raise InvalidRequestException(
-                description=f"Suggested move is not available in this position. Choose"
-                f" a different one."
-            )
+            raise HTTPException(status_code=400, detail=f"Suggested move is not available in this position. Choose"
+                                                        f" a different one.")
         if new_move in self.get_rival_moves(
-            repertoire_moves=repertoire.moves, next_moves=rival_moves
+                repertoire_moves=repertoire.moves, next_moves=rival_moves
         ):
-            raise InvalidRequestException(
-                description=f"Suggested move is already in repertoire."
-            )
+            raise HTTPException(status_code=400, detail=f"Suggested move is already in repertoire.")
         next_position = new_move.next_position
         moves = picker_service.pick_variations(
             position=next_position, user=user, color=color, current_depth=1
         )
         moves.append(new_move)
-        repertoire_dao.insert_new_moves(
+        self.repertoire_dao.insert_new_moves(
             repertoire=repertoire, user=user, color=color, moves=moves, old_moves=[]
         )
         return moves
 
     def remove_rival_move_from_repertoire(
-        self, position: Position, user: User, color: bool, move_san: str
+            self, position: Position, user: User, color: bool, move_san: str
     ):
         repertoire = self.get_user_repertoire(user=user, color=color)
         repertoire_moves = repertoire.moves
@@ -269,14 +261,11 @@ class RepertoireService:
             (move for move in rival_moves if move.move_san == move_san), None
         )
         if not move_to_remove:
-            raise InvalidRequestException(
-                description=f"Suggested move is not available in this position. Choose"
-                f" a different one."
-            )
-        moves_to_remove = set(
-            self.get_moves_after_position(repertoire=repertoire, move=move_to_remove)
-        )
-        repertoire_dao.insert_new_moves(
+            raise HTTPException(status_code=400, detail=f"Suggested move is not available in this position. Choose"
+                                                        f" a different one.")
+        moves_to_remove = self.get_moves_after_position(repertoire=repertoire, move=move_to_remove, visited={})
+
+        self.repertoire_dao.insert_new_moves(
             repertoire=repertoire,
             user=user,
             color=color,
@@ -287,9 +276,7 @@ class RepertoireService:
 
     def add_variant_to_repertoire(self, position: Position, user: User, color: bool):
         if position.turn != color:
-            raise InvalidRequestException(
-                description=f"Invalid position for repertoire."
-            )
+            raise HTTPException(status_code=400, detail=f"Invalid position for repertoire.")
         start_time = time.time()
         repertoire = self.get_user_repertoire(user=user, color=color)
         previous_move = next(
@@ -297,38 +284,31 @@ class RepertoireService:
             None,
         )
         if not previous_move:
-            raise InvalidRequestException(
-                description=f"Position not available in user {user.email} repertoire."
-            )
+            raise HTTPException(status_code=400, detail=f"Position not available in user {user.email} repertoire.")
 
         move = self.get_my_move(
             repertoire_moves=repertoire.moves, next_moves=position.next_moves
         )
         if move:
-            raise InvalidRequestException(
-                description=f"Position with FEN {position.fen} is already in user {user.email} "
-                f"repertoire."
-            )
+            raise HTTPException(status_code=400,
+                                detail=f"Position with FEN {position.fen} is already in user {user.email} "
+                                       f"repertoire.")
 
         moves = picker_service.pick_variations(
             position=position, user=user, color=color, current_depth=1
         )
-        repertoire_dao.insert_new_moves(
+        self.repertoire_dao.insert_new_moves(
             repertoire=repertoire, user=user, color=color, moves=moves, old_moves=[]
         )
-        repertoire_dao.save_repertoire_metric(
+        self.repertoire_dao.save_repertoire_metric(
             user=user, moves=len(moves), start_time=start_time, end_time=time.time()
         )
         return moves
 
     def delete_user_repertoire(self, user: User, color: bool):
         try:
-            repertoire_dao.delete_repertoire(user=user, color=color)
+            self.repertoire_dao.delete_repertoire(user=user, color=color)
         except IntegrityError as err:
-            self.logger.error("There was an error deleting user repertoire.")
-            raise InvalidRequestException(
-                description=f"There was an error deleting user {user.email} repertoire."
-            ) from err
-
-
-repertoire_service = RepertoireService()
+            message = f"There was an error deleting user {user.email} repertoire."
+            self.logger.error(message)
+            raise HTTPException(status_code=400, detail=message) from err

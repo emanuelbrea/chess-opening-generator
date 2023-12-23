@@ -1,0 +1,5 @@
+SECRET_KEY = "your-secret-key"
+AWS_REGION = "us-east-1"
+COGNITO_CLIENT_ID = "1rnu18aka8gk8k9hrjlttg40cs"
+COGNITO_POOL_ID = "us-east-1_GFAp0SDxh"
+JSON_SORT_KEYS = false
