@@ -2,12 +2,12 @@ from typing import List
 
 import chess
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from opening_generator.db import get_db
 from opening_generator.models import Position
-from opening_generator.models.schemas import SuccessfulDataResponse
+from opening_generator.models.schemas import SuccessfulDataResponse, SuccessfulListResponse, Color
 from opening_generator.services.position_service import PositionService
 
 position_router = APIRouter(prefix="/position", tags=["position"])
@@ -21,11 +21,8 @@ def get_board_by_fen(fen: str) -> chess.Board:
         raise HTTPException(status_code=400, detail="Invalid FEN provided")
 
 
-def get_color(color: str = "WHITE") -> bool:
-    color = color.upper()
-    if color not in ("WHITE", "BLACK"):
-        raise HTTPException(status_code=400, detail="Invalid color provided")
-    return color == "WHITE"
+def get_color(color: Color = Color.WHITE) -> bool:
+    return color == Color.WHITE
 
 
 @position_router.get("/stats", response_model=SuccessfulDataResponse, status_code=200)
@@ -40,7 +37,7 @@ def get_stats(fen: str, session: Session = Depends(get_db)):
                                   data=stats, success=True)
 
 
-@position_router.get("/moves", response_model=SuccessfulDataResponse, status_code=200)
+@position_router.get("/moves", response_model=SuccessfulListResponse, status_code=200)
 def get_moves(fen: str, session: Session = Depends(get_db)):
     position_service = PositionService(session=session)
     board: chess.Board = get_board_by_fen(fen=fen)
@@ -49,7 +46,7 @@ def get_moves(fen: str, session: Session = Depends(get_db)):
 
     next_moves: List[str] = position_service.get_next_moves(position=position)
 
-    return SuccessfulDataResponse(message="Next moves retrieved correctly.",
+    return SuccessfulListResponse(message="Next moves retrieved correctly.",
                                   data=next_moves, success=True)
 
 
@@ -67,7 +64,7 @@ def get_next_moves_stats(fen: str, session: Session = Depends(get_db)):
 
 
 @position_router.get("/svg", status_code=200)
-def get_position_svg(move: str, color: str, fen: str, session: Session = Depends(get_db)):
+def get_position_svg(move: str, color: Color, fen: str, session: Session = Depends(get_db)):
     position_service = PositionService(session=session)
     board: chess.Board = get_board_by_fen(fen=fen)
 
@@ -82,7 +79,4 @@ def get_position_svg(move: str, color: str, fen: str, session: Session = Depends
     if not position_svg:
         raise HTTPException(status_code=400, detail=f"Move {move} is not valid in this position.")
 
-    return StreamingResponse(
-        content=position_svg,
-        media_type="image/svg+xml",
-    )
+    return Response(content=position_svg, media_type="image/svg+xml")
