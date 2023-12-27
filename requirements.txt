@@ -8,3 +8,5 @@ pydantic~=2.5.3
 uvicorn~=0.25.0
 toml~=0.10.2
 psycopg2~=2.9.9
+python-multipart~=0.0.6
+pycognito~=2023.5.0

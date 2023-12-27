@@ -16,7 +16,7 @@ class PositionService:
     def __init__(self, session: Session):
         self.logger = logging.getLogger(__name__)
         self.position_dao = PositionDao(session)
-        self.retrieve_initial_position()
+        # self.retrieve_initial_position()
 
     def get_position_by_board(self, board: chess.Board) -> Position:
         position: Position = self.get_position(board=board)
