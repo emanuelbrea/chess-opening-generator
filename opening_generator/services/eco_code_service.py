@@ -19,18 +19,24 @@ class EcoCodeService:
         self.logger = logging.getLogger(__name__)
         self.eco_code_dao = EcoCodeDao(session=session)
         self.position_service = PositionService(session=session)
-        self.folder = "/../../data/eco/"
         self.link = "https://en.wikibooks.org/wiki/Chess_Opening_Theory"
         self.load_eco_codes()
         self.positions_loaded = {}
 
     def load_eco_codes(self):
         eco_codes = self.get_eco_codes()
+        self.logger.info(f"Got {len(eco_codes)} eco codes")
+
         if len(eco_codes) == 0:
-            for filename in os.listdir(os.path.dirname(__file__) + self.folder):
+            current_dir = os.path.dirname(__file__)
+            parent_dir = os.path.dirname(current_dir)
+            data_dir = os.path.join(parent_dir, 'data', 'eco')
+
+            self.logger.info(f"Loading Eco Codes from {data_dir}")
+            for filename in os.listdir(data_dir):
                 if os.path.splitext(filename)[1] == ".csv":
                     filename = os.path.join(
-                        os.path.dirname(__file__), self.folder, filename
+                        data_dir, filename
                     )
                     with open(filename) as file:
                         csvreader = csv.reader(file)

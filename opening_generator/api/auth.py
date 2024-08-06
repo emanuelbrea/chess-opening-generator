@@ -1,9 +1,9 @@
 from typing import Annotated
 
+from botocore.exceptions import ClientError
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from pycognito import Cognito
-from pycognito.exceptions import WarrantException
 
 from opening_generator.config import config_data
 
@@ -19,6 +19,6 @@ def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depen
                    username=form_data.username)
     try:
         user.authenticate(password=form_data.password)
-    except WarrantException:
+    except ClientError:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     return {"access_token": user.id_token, "token_type": "bearer"}

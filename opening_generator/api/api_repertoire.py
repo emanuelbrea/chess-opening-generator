@@ -72,18 +72,17 @@ def edit_user_repertoire(color: Color, fen: str, move: str, session: Session = D
     moves = repertoire_service.get_repertoire_moves(
         position=position, user=user, color=color, depth=depth
     )
-    return SuccessfulDataResponse(message=f"Repertoire updated correctly after {position}.",
+    return SuccessfulDataResponse(message=f"Repertoire updated correctly with {move}",
                                   data=moves, success=True)
 
 
 @repertoire_router.delete("", response_model=SuccessfulDataResponse, status_code=200)
 def delete_user_repertoire(color: Color, session: Session = Depends(get_db),
                            user: User = Depends(get_user)):
-    color = get_color(color)
     repertoire_service = RepertoireService(session=session)
 
-    repertoire_service.delete_user_repertoire(user=user, color=color)
-    return SuccessfulDataResponse(message=f"{color} repertoire deleted correctly.",
+    repertoire_service.delete_user_repertoire(user=user, color=get_color(color))
+    return SuccessfulDataResponse(message=f"{color.value} repertoire deleted correctly.",
                                   data={}, success=True)
 
 
@@ -99,7 +98,7 @@ def add_rival_move(color: Color, fen: str, move: str, session: Session = Depends
     moves = repertoire_service.add_rival_move_to_repertoire(
         position=position, user=user, color=color, move_san=move
     )
-    return SuccessfulDataResponse(message=f"Repertoire updated correctly after {position.fen}.",
+    return SuccessfulDataResponse(message=f"Repertoire updated correctly after {fen}.",
                                   data=moves, success=True)
 
 

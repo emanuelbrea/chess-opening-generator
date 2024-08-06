@@ -30,10 +30,10 @@ def update_user(user_input: Union[UserStyle, UserData], session: Session = Depen
 
     user_service.update_user(
         user=user,
-        first_name=user_input.first_name,
-        last_name=user_input.last_name,
-        age=user_input.age,
-        playing_since=user_input.playing_since,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        age=user.age,
+        playing_since=user.playing_since,
     )
 
     popularity = user_input.popularity
@@ -41,10 +41,9 @@ def update_user(user_input: Union[UserStyle, UserData], session: Session = Depen
     risk = user_input.risk
     rating = user_input.rating
 
-    if None not in [popularity, fashion, risk, rating]:
-        user_service.update_user_style(
-            user=user, popularity=popularity, fashion=fashion, risk=risk, rating=rating
-        )
+    user_service.update_user_style(
+        user=user, popularity=popularity, fashion=fashion, risk=risk, rating=rating
+    )
     return SuccessfulResponse(
         success=True,
         message="User updated correctly"
@@ -52,7 +51,7 @@ def update_user(user_input: Union[UserStyle, UserData], session: Session = Depen
 
 
 @user_router.get("", response_model=SuccessfulDataResponse, status_code=200)
-def get_user(session: Session = Depends(get_db), user: User = Depends(get_user)):
+def get_current_user(user: User = Depends(get_user)):
     style: Style = user.style
     user_data = UserData(
         first_name=user.first_name,

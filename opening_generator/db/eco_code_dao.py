@@ -22,5 +22,4 @@ class EcoCodeDao:
 
     def get_eco_codes(self):
         ecos = self.session.query(EcoCode).all()
-        self.session.commit()
         return ecos

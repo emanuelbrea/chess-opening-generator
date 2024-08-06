@@ -11,24 +11,24 @@ class Style(Base):
     user_id = Column(ForeignKey("user.user_id"), primary_key=True)
     popularity = Column(
         Float,
-        CheckConstraint("style.popularity >= -1 and style.popularity <= 1"),
+        CheckConstraint("popularity >= -1 and popularity <= 1"),
         nullable=False,
         default=0,
     )
     fashion = Column(
         Float,
-        CheckConstraint("style.fashion >= -1 and style.fashion <= 1"),
+        CheckConstraint("fashion >= -1 and fashion <= 1"),
         nullable=False,
         default=0,
     )
     risk = Column(
         Float,
-        CheckConstraint("style.risk >= -1 and style.risk <= 1"),
+        CheckConstraint("risk >= -1 and risk <= 1"),
         nullable=False,
         default=0,
     )
     rating = Column(
-        Integer, CheckConstraint("style.rating >= 0"), nullable=False, default=0
+        Integer, CheckConstraint("rating >= 0"), nullable=False, default=0
     )
 
     user = relationship("User", back_populates="style")

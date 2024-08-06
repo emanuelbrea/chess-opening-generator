@@ -20,6 +20,7 @@ class UserService:
                 first_name=first_name, last_name=last_name, email=email
             )
         except IntegrityError as err:
+            self.logger.error(err)
             raise HTTPException(status_code=400,
                                 detail=f"User {first_name} {last_name} with email {email} already exists.") from err
 
@@ -34,6 +35,7 @@ class UserService:
         try:
             self.user_dao.add_style_to_user(user=user, style=style)
         except IntegrityError as err:
+            self.logger.error(err)
             raise HTTPException(status_code=400,
                                 detail=f"Invalid style.") from err
 
@@ -49,6 +51,7 @@ class UserService:
                 playing_since=playing_since,
             )
         except IntegrityError as err:
+            self.logger.error(err)
             raise HTTPException(status_code=400,
                                 detail=f"Invalid values for user profile. "
                                        f"Name: {first_name}. Last name: {last_name}") from err

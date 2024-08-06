@@ -28,25 +28,25 @@ class Position(Base):
     total_games = Column(
         Integer,
         CheckConstraint(
-            "position.white_wins + position.draws + position.black_wins = position.total_games"
+            "white_wins + draws + black_wins = total_games"
         ),
         nullable=False,
     )
     white_wins = Column(
-        Integer, CheckConstraint("position.white_wins >= 0"), nullable=False
+        Integer, CheckConstraint("white_wins >= 0"), nullable=False
     )
-    draws = Column(Integer, CheckConstraint("position.draws >= 0"), nullable=False)
+    draws = Column(Integer, CheckConstraint("draws >= 0"), nullable=False)
     black_wins = Column(
-        Integer, CheckConstraint("position.black_wins >= 0"), nullable=False
+        Integer, CheckConstraint("black_wins >= 0"), nullable=False
     )
     average_year = Column(
-        Integer, CheckConstraint("position.average_year > 0"), nullable=False
+        Integer, CheckConstraint("average_year > 0"), nullable=False
     )
     average_elo = Column(
-        Integer, CheckConstraint("position.average_elo > 0"), nullable=False
+        Integer, CheckConstraint("average_elo > 0"), nullable=False
     )
     performance = Column(
-        Integer, CheckConstraint("position.performance > 0"), nullable=False
+        Integer, CheckConstraint("performance > 0"), nullable=False
     )
     winning_rate = Column(Float, nullable=False)
     turn = Column(Boolean)
