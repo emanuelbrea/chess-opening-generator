@@ -47,7 +47,7 @@ class UserData(UserInput):
 
 
 class UserStyle(BaseModel):
-    popularity: Optional[float]
-    fashion: Optional[float]
-    risk: Optional[float]
-    rating: Optional[int]
+    popularity: float
+    fashion: float
+    risk: float
+    rating: int

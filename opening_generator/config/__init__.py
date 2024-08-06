@@ -1,3 +1,3 @@
 import toml
 
-config_data = toml.load("config/config.toml")
+config_data = toml.load("config.toml")
