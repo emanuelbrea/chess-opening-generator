@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, List
+from typing import List
 
 from pydantic import BaseModel
 
@@ -43,7 +43,6 @@ class UserInput(BaseModel):
 class UserData(UserInput):
     age: int
     playing_since: int
-    last_name: str
 
 
 class UserStyle(BaseModel):
@@ -51,3 +50,10 @@ class UserStyle(BaseModel):
     fashion: float
     risk: float
     rating: int
+
+
+class UpdatedUser(UserStyle):
+    first_name: str
+    age: int
+    playing_since: int
+    last_name: str

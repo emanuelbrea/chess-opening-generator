@@ -30,7 +30,7 @@ app.include_router(repertoire_router)
 app.include_router(position_router)
 app.include_router(user_router)
 app.include_router(auth_router)
-handler = Mangum(app)
+handler = Mangum(app, lifespan='off')
 
 if __name__ == "__main__":
     run(app, host="127.0.0.1", port=8000)

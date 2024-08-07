@@ -8,7 +8,7 @@ from opening_generator.api.api_position import get_board_by_fen
 from opening_generator.db import get_db
 from opening_generator.models import User, Style, Position
 from opening_generator.models.schemas import InputRequest, MessageInput, SuccessfulResponse, UserInput, \
-    SuccessfulDataResponse, UserStyle, UserData
+    SuccessfulDataResponse, UserStyle, UserData, UpdatedUser
 from opening_generator.services.auth import get_user
 from opening_generator.services.position_service import PositionService
 from opening_generator.services.user_service import UserService
@@ -24,16 +24,16 @@ def create_user(user: UserInput, session: Session = Depends(get_db)):
 
 
 @user_router.put("", response_model=SuccessfulResponse)
-def update_user(user_input: Union[UserStyle, UserData], session: Session = Depends(get_db),
+def update_user(user_input: UpdatedUser, session: Session = Depends(get_db),
                 user: User = Depends(get_user)):
     user_service = UserService(session=session)
 
     user_service.update_user(
         user=user,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        age=user.age,
-        playing_since=user.playing_since,
+        first_name=user_input.first_name,
+        last_name=user_input.last_name,
+        age=user_input.age,
+        playing_since=user_input.playing_since,
     )
 
     popularity = user_input.popularity
