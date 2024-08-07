@@ -9,6 +9,7 @@ from opening_generator.api.api_position import position_router
 from opening_generator.api.api_repertoire import repertoire_router
 from opening_generator.api.api_user import user_router
 from opening_generator.api.auth import auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 logging.getLogger().setLevel('INFO')
 logging.basicConfig(
@@ -17,6 +18,13 @@ logging.basicConfig(
 )
 
 app = FastAPI(title="Opening Generator", root_path="/api")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["POST", "GET", "OPTIONS", "DELETE", "PUT", "PATCH"],
+    allow_headers=["*"])
+
 app.include_router(eco_router)
 app.include_router(repertoire_router)
 app.include_router(position_router)
