@@ -1,15 +1,15 @@
-FROM python:3.12-slim
+FROM public.ecr.aws/lambda/python:3.12
+
 LABEL version="1.0"
 LABEL authors="emanuel_brea"
 LABEL description="Opening generator"
 
-WORKDIR /code
+COPY ./requirements.txt ${LAMBDA_TASK_ROOT}
 
-COPY ./requirements.txt /code/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 
-COPY ./opening_generator /code/opening_generator
-COPY ./config.toml /code/config.toml
+COPY ./opening_generator ${LAMBDA_TASK_ROOT}/opening_generator
+COPY ./config.toml ${LAMBDA_TASK_ROOT}
 
-CMD ["uvicorn", "opening_generator.application:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["opening_generator.application.handler"]

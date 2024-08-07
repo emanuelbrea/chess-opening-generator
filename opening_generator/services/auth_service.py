@@ -1,34 +1,41 @@
+import json
 import logging
+import os
 
 import jwt
 from fastapi import HTTPException
-from jwt import PyJWKClient, PyJWKClientError, DecodeError
+from jwt import PyJWKClientError, DecodeError
+from jwt.algorithms import RSAAlgorithm
 
-from opening_generator.config import config_data
+from opening_generator import config_data
 
 
 class AuthService:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        region = config_data["AWS_REGION"]
-        userpool_id = config_data["COGNITO_POOL_ID"]
-        keys_url = (
-            "https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json".format(
-                region, userpool_id
-            )
-        )
-        self.jwks_client = PyJWKClient(keys_url)
         self.app_client_id = config_data["COGNITO_CLIENT_ID"]
+
+        keys_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'jwks.json')
+        with open(keys_path, "r") as f:
+            self.jwks = json.load(f)
+
+    def get_signing_key(self, kid):
+        for key in self.jwks["keys"]:
+            if key["kid"] == kid:
+                return key
+        raise HTTPException(status_code=401, detail="Invalid jwt")
 
     def get_user_claims(self, token: str):
         try:
-            signing_key = self.jwks_client.get_signing_key_from_jwt(token)
+            unverified_header = jwt.get_unverified_header(token)
+            signing_key = self.get_signing_key(unverified_header["kid"])
+            public_key = RSAAlgorithm.from_jwk(json.dumps(signing_key))
         except PyJWKClientError as err:
             raise HTTPException(status_code=401, detail="Invalid jwt") from err
         try:
             data = jwt.decode(
                 token,
-                signing_key.key,
+                public_key,
                 algorithms=["RS256"],
                 audience=self.app_client_id,
                 options={"verify_exp": False},

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from pycognito import Cognito
 
-from opening_generator.config import config_data
+from opening_generator import config_data
 
 auth_router = APIRouter(tags=["Auth"])
 COGNITO_POOL_ID = config_data["COGNITO_POOL_ID"]
