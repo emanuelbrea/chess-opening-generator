@@ -8,7 +8,7 @@ from opening_generator.api.api_position import (
 )
 from opening_generator.db import get_db
 from opening_generator.models import Position, User
-from opening_generator.models.schemas import SuccessfulDataResponse, Color
+from opening_generator.models.schemas import SuccessfulDataResponse, Color, RepertoireRequest
 from opening_generator.services.auth import get_user
 from opening_generator.services.position_service import PositionService
 from opening_generator.services.repertoire_service import RepertoireService
@@ -40,9 +40,9 @@ def get_user_repertoire_info(session: Session = Depends(get_db), user: User = De
 
 
 @repertoire_router.post("", response_model=SuccessfulDataResponse, status_code=201)
-def create_user_repertoire(color: Color, session: Session = Depends(get_db),
+def create_user_repertoire(request: RepertoireRequest, session: Session = Depends(get_db),
                            user: User = Depends(get_user)):
-    color = get_color(color)
+    color: bool = get_color(request.color)
     repertoire_service = RepertoireService(session=session)
     position_service = PositionService(session=session)
 
@@ -77,12 +77,12 @@ def edit_user_repertoire(color: Color, fen: str, move: str, session: Session = D
 
 
 @repertoire_router.delete("", response_model=SuccessfulDataResponse, status_code=200)
-def delete_user_repertoire(color: Color, session: Session = Depends(get_db),
+def delete_user_repertoire(request: RepertoireRequest, session: Session = Depends(get_db),
                            user: User = Depends(get_user)):
     repertoire_service = RepertoireService(session=session)
 
-    repertoire_service.delete_user_repertoire(user=user, color=get_color(color))
-    return SuccessfulDataResponse(message=f"{color.value} repertoire deleted correctly.",
+    repertoire_service.delete_user_repertoire(user=user, color=get_color(request.color))
+    return SuccessfulDataResponse(message=f"{request.color.value} repertoire deleted correctly.",
                                   data={}, success=True)
 
 

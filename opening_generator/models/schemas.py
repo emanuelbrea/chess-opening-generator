@@ -9,6 +9,10 @@ class Color(str, Enum):
     BLACK = "black"
 
 
+class RepertoireRequest(BaseModel):
+    color: Color
+
+
 class InputRequest(BaseModel):
     move: str
     fen: str
